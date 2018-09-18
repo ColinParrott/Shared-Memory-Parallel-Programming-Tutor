@@ -1,7 +1,7 @@
-package com.colinparrott.parallelsimulator.instructions;
+package com.colinparrott.parallelsimulator.engine.instructions;
 
-import com.colinparrott.parallelsimulator.hardware.Memory;
-import com.colinparrott.parallelsimulator.hardware.Register;
+import com.colinparrott.parallelsimulator.engine.hardware.Memory;
+import com.colinparrott.parallelsimulator.engine.hardware.Register;
 
 public class AddImmediate extends Instruction
 {
@@ -21,5 +21,11 @@ public class AddImmediate extends Instruction
     public void execute(Memory memory, Register[] registers) {
         int sum = registers[sourceRegisterNumber].getValue() + constant;
         registers[destRegisterNumber].setValue(sum);
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("%s $R%d $R%d %d", this.getKeyword(), destRegisterNumber, sourceRegisterNumber, constant);
     }
 }

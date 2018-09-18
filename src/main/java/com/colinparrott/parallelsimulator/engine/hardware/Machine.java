@@ -1,15 +1,12 @@
-package com.colinparrott.parallelsimulator.hardware;
-
-import com.colinparrott.parallelsimulator.instructions.Instruction;
+package com.colinparrott.parallelsimulator.engine.hardware;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Machine
 {
-    private static final int MAX_THREADS = 4;
+    public static final int MAX_THREADS = 4;
 
-    private int numberOfThreads = 0;
     private List<SimulatorThread> threads = new ArrayList<>(MAX_THREADS);
     private Memory memory;
 
@@ -18,9 +15,10 @@ public class Machine
         memory = new Memory();
     }
 
-    public void createThread(int id) {
-        threads.add(new SimulatorThread(memory, id));
-        numberOfThreads++;
+
+    public SimulatorThread createThread(int id) {
+        threads.add(id, new SimulatorThread(memory, id));
+        return threads.get(id);
     }
 
     public void executeInstruction(int threadId)
@@ -37,4 +35,10 @@ public class Machine
     {
         return memory;
     }
+
+    public int numberUsedThreads()
+    {
+        return threads.size();
+    }
+
 }

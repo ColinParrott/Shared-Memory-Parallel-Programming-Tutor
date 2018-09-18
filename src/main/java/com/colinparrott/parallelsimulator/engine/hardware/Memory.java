@@ -1,5 +1,6 @@
-package com.colinparrott.parallelsimulator.hardware;
+package com.colinparrott.parallelsimulator.engine.hardware;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -61,7 +62,7 @@ public class Memory
     public String toString()
     {
         StringBuilder s = new StringBuilder();
-        for(MemoryLocation variable : variables.keySet())
+        for(MemoryLocation variable : MemoryLocation.values())
         {
             s.append(variable.toString()).append(":").append(variables.get(variable)).append(" ");
         }

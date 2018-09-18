@@ -1,7 +1,7 @@
-package com.colinparrott.parallelsimulator.instructions;
+package com.colinparrott.parallelsimulator.engine.instructions;
 
-import com.colinparrott.parallelsimulator.hardware.Memory;
-import com.colinparrott.parallelsimulator.hardware.Register;
+import com.colinparrott.parallelsimulator.engine.hardware.Memory;
+import com.colinparrott.parallelsimulator.engine.hardware.Register;
 
 public abstract class Instruction
 {

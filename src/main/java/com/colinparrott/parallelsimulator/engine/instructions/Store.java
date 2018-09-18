@@ -1,8 +1,8 @@
-package com.colinparrott.parallelsimulator.instructions;
+package com.colinparrott.parallelsimulator.engine.instructions;
 
-import com.colinparrott.parallelsimulator.hardware.Memory;
-import com.colinparrott.parallelsimulator.hardware.MemoryLocation;
-import com.colinparrott.parallelsimulator.hardware.Register;
+import com.colinparrott.parallelsimulator.engine.hardware.Memory;
+import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
+import com.colinparrott.parallelsimulator.engine.hardware.Register;
 
 public class Store extends Instruction
 {
@@ -19,5 +19,11 @@ public class Store extends Instruction
     @Override
     public void execute(Memory memory, Register[] registers) {
         memory.setVariable(memoryLocation, registers[registerNumber].getValue());
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("%s %s $R%s", this.getKeyword(), memoryLocation, registerNumber);
     }
 }

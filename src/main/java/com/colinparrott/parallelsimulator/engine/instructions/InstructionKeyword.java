@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.instructions;
+package com.colinparrott.parallelsimulator.engine.instructions;
 
 public enum InstructionKeyword
 {

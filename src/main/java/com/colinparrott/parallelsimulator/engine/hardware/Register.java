@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.hardware;
+package com.colinparrott.parallelsimulator.engine.hardware;
 
 /**
  * Represents a register on a processor core
