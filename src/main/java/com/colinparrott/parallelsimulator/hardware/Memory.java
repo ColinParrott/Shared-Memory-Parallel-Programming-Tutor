@@ -9,12 +9,16 @@ import java.util.NoSuchElementException;
 
 public class Memory
 {
-    private HashMap<String, Integer> variables;
+    private HashMap<MemoryLocation, Integer> variables;
 
 
     public Memory()
     {
         variables = new HashMap<>();
+        for(MemoryLocation location : MemoryLocation.values())
+        {
+            variables.put(location, 0);
+        }
     }
 
     /**
@@ -22,7 +26,7 @@ public class Memory
      * @param variable Name of the variable
      * @param value Value to set variable to
      */
-    public void setVariable(String variable, int value)
+    public void setVariable(MemoryLocation variable, int value)
     {
         variables.put(variable, value);
     }
@@ -33,7 +37,7 @@ public class Memory
      * @return The value of the variable if present, throws exception if not
      * @throws NoSuchElementException Exception should not happen unless there's a serious problem with the code
      */
-    public int getValue(String variable) throws NoSuchElementException
+    public int getValue(MemoryLocation variable) throws NoSuchElementException
     {
         if(variables.containsKey(variable))
         {
@@ -51,6 +55,18 @@ public class Memory
     public void clearAll()
     {
         variables.clear();
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder s = new StringBuilder();
+        for(MemoryLocation variable : variables.keySet())
+        {
+            s.append(variable.toString()).append(":").append(variables.get(variable)).append(" ");
+        }
+
+        return s.toString();
     }
 
 }

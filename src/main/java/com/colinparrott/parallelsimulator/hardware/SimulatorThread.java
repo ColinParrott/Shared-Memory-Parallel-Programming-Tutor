@@ -2,6 +2,10 @@ package com.colinparrott.parallelsimulator.hardware;
 
 import com.colinparrott.parallelsimulator.instructions.Instruction;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 
 public class SimulatorThread
@@ -9,17 +13,15 @@ public class SimulatorThread
     private static final int REGISTERS_PER_THREAD = 10;
 
     private int threadId;
-    private static int threadCount = 0;
-    private Instruction currentInstruction;
+    private Queue<Instruction> instructionQueue;
     private  Register[] registers;
     private static Memory memory;
 
-    public SimulatorThread(Instruction instruction, Memory memory)
+    public SimulatorThread(Memory m, int id)
     {
-        threadCount++;
-        this.threadId = threadCount;
-        this.currentInstruction = instruction;
-        memory = memory;
+        this.threadId = id;
+        instructionQueue = new LinkedList<>();
+        memory = m;
         initialiseRegisters();
     }
 
@@ -33,17 +35,15 @@ public class SimulatorThread
         }
     }
 
-    public void loadInstruction(Instruction instruction)
+    public void queueInstructions(ArrayList<Instruction> instructions)
     {
-        this.currentInstruction = instruction;
+        instructionQueue.addAll(instructions);
     }
 
     public void executeInstruction()
     {
+        Instruction currentInstruction = instructionQueue.remove();
         currentInstruction.execute(memory, registers);
-
-        // TODO: better way possibly, sanity reasons for now
-        this.currentInstruction = null;
     }
 
     public Register[] getRegisters()
