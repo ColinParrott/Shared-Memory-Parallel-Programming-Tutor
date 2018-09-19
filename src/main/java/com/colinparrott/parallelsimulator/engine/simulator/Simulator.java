@@ -1,6 +1,7 @@
 package com.colinparrott.parallelsimulator.engine.simulator;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Machine;
+import com.rits.cloning.Cloner;
 
 public abstract class Simulator
 {
@@ -23,8 +24,8 @@ public abstract class Simulator
     {
         if (stateHistory.machineStates.size() > 1)
         {
-            stateHistory.popState();
-            machine = stateHistory.getCurrentState();
+            Cloner cloner = new Cloner();
+            machine = cloner.deepClone(stateHistory.rollbackState());
         }
 
     }

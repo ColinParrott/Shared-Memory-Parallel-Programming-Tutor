@@ -7,14 +7,13 @@ import java.util.Stack;
 
 public class MachineStateHolder
 {
-    public Stack<Machine> machineStates = new Stack<>();
+    Stack<Machine> machineStates = new Stack<>();
     private static Cloner cloner = new Cloner();
 
 
-    public void addState(Machine machine)
+    void addState(Machine machine)
     {
         machineStates.push(cloner.deepClone(machine));
-        System.out.println("States: " + machineStates.size());
     }
 
     public Machine getCurrentState()
@@ -22,8 +21,25 @@ public class MachineStateHolder
         return machineStates.peek();
     }
 
-    public void popState()
+    public Machine rollbackState()
     {
         machineStates.pop();
+        return machineStates.peek();
+    }
+
+    private void printStates()
+    {
+        int counter = 1;
+        for(Machine m : machineStates)
+        {
+            System.out.println("-----------------------");
+            System.out.println("State " + counter);
+            for(int i = 0; i < m.numberUsedThreads(); i++)
+            {
+                System.out.println("Thread 1: " + m.getThread(i).getNextInstruction());
+            }
+            System.out.println("-----------------------");
+            counter++;
+        }
     }
 }

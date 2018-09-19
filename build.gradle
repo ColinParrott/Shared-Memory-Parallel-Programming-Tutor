@@ -15,3 +15,13 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'uk.com.robust-it:cloning:1.9.10'
 }
+
+jar {
+    manifest {
+        attributes "Main-Class": "com.colinparrott.parallelsimulator.Launcher"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

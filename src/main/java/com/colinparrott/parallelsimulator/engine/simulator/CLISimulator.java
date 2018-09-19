@@ -50,6 +50,8 @@ public class CLISimulator extends Simulator
                 input = scanner.next().charAt(0);
             } while (!isValidCommand(input));
 
+            System.out.println();
+
             if (input == 'b')
             {
                 stepBackward();
@@ -84,6 +86,8 @@ public class CLISimulator extends Simulator
         }
 
         System.out.println("\nAll instructions executed.");
+        System.out.println("Press enter to exit...");
+        new Scanner(System.in).nextLine();
 
     }
 
@@ -127,12 +131,12 @@ public class CLISimulator extends Simulator
                 System.out.print(String.format("$R%d: %d\t", r.getRegisterNum(), r.getValue()));
             }
 
-            System.out.println();
-            System.out.println("Next Instruction: " + thread.getNextInstruction());
-            System.out.println("Pointer: " + thread.getInstructionPointer());
+             System.out.println();
+             System.out.println("Next Instruction: " + thread.getNextInstruction());
 
         }
         System.out.println();
+
 
     }
 

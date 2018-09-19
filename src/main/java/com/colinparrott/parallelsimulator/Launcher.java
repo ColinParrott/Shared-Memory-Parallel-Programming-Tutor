@@ -1,3 +1,5 @@
+package com.colinparrott.parallelsimulator;
+
 import com.colinparrott.parallelsimulator.engine.simulator.CLISimulator;
 
 public class Launcher
