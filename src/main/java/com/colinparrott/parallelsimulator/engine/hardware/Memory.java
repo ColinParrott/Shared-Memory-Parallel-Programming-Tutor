@@ -1,6 +1,5 @@
 package com.colinparrott.parallelsimulator.engine.hardware;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -13,10 +12,10 @@ public class Memory
     private HashMap<MemoryLocation, Integer> variables;
 
 
-    public Memory()
+    Memory()
     {
         variables = new HashMap<>();
-        for(MemoryLocation location : MemoryLocation.values())
+        for (MemoryLocation location : MemoryLocation.values())
         {
             variables.put(location, 0);
         }
@@ -24,8 +23,9 @@ public class Memory
 
     /**
      * Set a variable in memory
+     *
      * @param variable Name of the variable
-     * @param value Value to set variable to
+     * @param value    Value to set variable to
      */
     public void setVariable(MemoryLocation variable, int value)
     {
@@ -34,17 +34,17 @@ public class Memory
 
     /**
      * Get the value of a variable in memory
+     *
      * @param variable Name of the variable
      * @return The value of the variable if present, throws exception if not
      * @throws NoSuchElementException Exception should not happen unless there's a serious problem with the code
      */
     public int getValue(MemoryLocation variable) throws NoSuchElementException
     {
-        if(variables.containsKey(variable))
+        if (variables.containsKey(variable))
         {
             return variables.get(variable);
-        }
-        else
+        } else
         {
             throw new NoSuchElementException();
         }
@@ -62,7 +62,7 @@ public class Memory
     public String toString()
     {
         StringBuilder s = new StringBuilder();
-        for(MemoryLocation variable : MemoryLocation.values())
+        for (MemoryLocation variable : MemoryLocation.values())
         {
             s.append(variable.toString()).append(":").append(variables.get(variable)).append(" ");
         }

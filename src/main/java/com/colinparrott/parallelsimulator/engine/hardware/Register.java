@@ -9,7 +9,7 @@ public class Register
     private int registerNum;
     private int value;
 
-    public Register(int registerNum)
+    Register(int registerNum)
     {
         this.registerNum = registerNum;
         this.value = 0;

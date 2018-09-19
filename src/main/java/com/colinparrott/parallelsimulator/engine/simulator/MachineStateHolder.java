@@ -5,6 +5,10 @@ import com.rits.cloning.Cloner;
 
 import java.util.Stack;
 
+/**
+ * Class for holding and altering the historical states of the current execution
+ */
+
 public class MachineStateHolder
 {
     Stack<Machine> machineStates = new Stack<>();
@@ -16,17 +20,28 @@ public class MachineStateHolder
         machineStates.push(cloner.deepClone(machine));
     }
 
+    /**
+     * Gets the current machine state
+     * @return Current machine
+     */
     public Machine getCurrentState()
     {
         return machineStates.peek();
     }
 
-    public Machine rollbackState()
+    /**
+     * Remove current state off stack and return previous state
+     * @return Machine as it was in the previous state
+     */
+    Machine rollbackState()
     {
         machineStates.pop();
         return machineStates.peek();
     }
 
+    /**
+     * For debugging
+     */
     private void printStates()
     {
         int counter = 1;

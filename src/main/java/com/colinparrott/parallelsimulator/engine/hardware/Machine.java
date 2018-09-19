@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Machine
 {
-    public static final int MAX_THREADS = 4;
+    private static final int MAX_THREADS = 4;
 
     private List<SimulatorThread> threads = new ArrayList<>(MAX_THREADS);
     private Memory memory;
@@ -21,21 +21,38 @@ public class Machine
         return threads.get(id);
     }
 
+    /**
+     * Asks a thread to execute its next instruction
+     * @param threadId ID of the thread to execute
+     */
     public void executeInstruction(int threadId)
     {
         threads.get(threadId).executeInstruction();
     }
 
+    /**
+     * Get a thread
+     * @param id ID of thread
+     * @return The thread
+     */
     public SimulatorThread getThread(int id)
     {
         return threads.get(id);
     }
 
+    /**
+     * Get the memory of the machine
+     * @return Memory
+     */
     public Memory getMemory()
     {
         return memory;
     }
 
+    /**
+     * Get the number of threads used in the current program
+     * @return Number of threads used in the program
+     */
     public int numberUsedThreads()
     {
         return threads.size();

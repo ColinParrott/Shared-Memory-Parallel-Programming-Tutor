@@ -91,6 +91,10 @@ public class CLISimulator extends Simulator
 
     }
 
+    /**
+     * Check if a thread has any instructions left
+     * @return True if instructions left; false otherwise
+     */
     private boolean threadsHaveInstructionsLeft()
     {
         for (int i = 0; i < machine.numberUsedThreads(); i++)
@@ -102,6 +106,11 @@ public class CLISimulator extends Simulator
         return false;
     }
 
+    /**
+     * Helper function that checks if char is in list of valid command characters
+     * @param check Character to check
+     * @return True if valid, false otherwise
+     */
     private boolean isValidCommand(char check)
     {
         for (char c : validCommands)
@@ -113,6 +122,11 @@ public class CLISimulator extends Simulator
         return false;
     }
 
+    /**
+     * Prints the state of the memory and each thread
+     * @param variables Variables in memory to show
+     * @param threadIds Threads to show
+     */
     private void printState(MemoryLocation[] variables, int[] threadIds)
     {
         System.out.println("--- MEMORY ---");
@@ -140,8 +154,4 @@ public class CLISimulator extends Simulator
 
     }
 
-    private char validateInput(char... validChars)
-    {
-        return '?';
-    }
 }

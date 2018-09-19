@@ -7,14 +7,14 @@ public abstract class Instruction
 {
     private InstructionKeyword keyword;
 
-    public Instruction(InstructionKeyword keyword)
+    Instruction(InstructionKeyword keyword)
     {
         this.keyword = keyword;
     }
 
     public abstract void execute(Memory memory, Register[] registers);
 
-    public InstructionKeyword getKeyword()
+    InstructionKeyword getKeyword()
     {
         return keyword;
     }
