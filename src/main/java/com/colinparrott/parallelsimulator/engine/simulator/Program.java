@@ -40,4 +40,22 @@ public class Program
         return instructionLists.get(threadId);
     }
 
+    /**
+     * Get an array of thread IDs in use in this program
+     * @return Array of thread IDs
+     */
+    public int[] getUsedThreadIDs()
+    {
+        int[] ids = new int[instructionLists.size()];
+
+        int i = 0;
+        for(int id : instructionLists.keySet())
+        {
+            ids[i] = id;
+            i++;
+        }
+
+        return ids;
+    }
+
 }

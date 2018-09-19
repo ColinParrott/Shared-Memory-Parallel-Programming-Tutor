@@ -29,16 +29,27 @@ public class CLISimulator extends Simulator
         instructions.add(new AddImmediate(0, 0, 1));
         instructions.add(new Store(0, MemoryLocation.x));
 
-        SimulatorThread[] threads = new SimulatorThread[2];
-        threads[0] = machine.createThread(0);
-        threads[1] = machine.createThread(1);
-        threads[0].queueInstructions(instructions);
-        threads[1].queueInstructions(instructions);
+        Program p = new Program();
+        p.setInstructionsForThread(0, instructions);
+        p.setInstructionsForThread(1, instructions);
 
+        executeProgram(p, new MemoryLocation[]{MemoryLocation.x});
+
+    }
+
+    private void executeProgram(Program p, MemoryLocation[] relevantVariables)
+    {
+        SimulatorThread[] threads = new SimulatorThread[p.getUsedThreadIDs().length];
+
+        for(int i = 0; i < p.getUsedThreadIDs().length; i++)
+        {
+            threads[i] = machine.createThread(i);
+            threads[i].queueInstructions(p.getInstructionsForThread(i));
+        }
         stateHistory.addState(machine);
 
         System.out.println("Loaded program (" + threads.length + " threads): \n{\nx=0;\nx++ // x++\n}\n");
-        printState(new MemoryLocation[]{MemoryLocation.x}, new int[]{0, 1});
+        printState(relevantVariables, new int[]{0, 1});
 
         Scanner scanner = new Scanner(System.in);
         while (threadsHaveInstructionsLeft())
@@ -56,7 +67,7 @@ public class CLISimulator extends Simulator
             {
                 stepBackward();
                 System.out.println("Stepped backwards, new state:\n");
-                printState(new MemoryLocation[]{MemoryLocation.x}, new int[]{0, 1});
+                printState(relevantVariables, new int[]{0, 1});
             }
             else if (input == '0' || input == '1' || input == '2' || input == '3')
             {
@@ -68,7 +79,7 @@ public class CLISimulator extends Simulator
                     if (machine.getThread(threadId).getNextInstruction() != null)
                     {
                         stepForward(threadId);
-                        printState(new MemoryLocation[]{MemoryLocation.x}, new int[]{0, 1});
+                        printState(relevantVariables, new int[]{0, 1});
                     }
                     else
                     {
@@ -88,7 +99,6 @@ public class CLISimulator extends Simulator
         System.out.println("\nAll instructions executed.");
         System.out.println("Press enter to exit...");
         new Scanner(System.in).nextLine();
-
     }
 
     /**
