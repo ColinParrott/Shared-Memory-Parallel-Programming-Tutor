@@ -196,10 +196,147 @@ public class BasicInstructionTests
     }
 
     @Test
-    public void branchIfEqual()
+    public void branchIfEqualWhenTrue()
     {
         ArrayList<Instruction> instructions = new ArrayList<>();
-        // TODO: COMPLETE
+        instructions.add(new LoadImmediate(0, 5));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new BranchIfEqual(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Execute all instructions (assuming one is missed due to branch)
+        for(int i = 0; i < 5; i++)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(-1, machine.getThread(0).getRegisters()[2].getValue());
+
     }
+
+    @Test
+    public void branchIfEqualWhenFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 4));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new BranchIfEqual(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Make sure negative load is not skipped
+        for(int i = 0; i < 5; i++)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+
+    }
+
+    @Test
+    public void branchIfGreaterThanWhenTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 6));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new BranchGreaterThan(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Execute all instructions (assuming one is missed due to branch)
+        for(int i = 0; i < 5; i++)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(-1, machine.getThread(0).getRegisters()[2].getValue());
+
+    }
+
+    @Test
+    public void branchIfGreaterThanWhenFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 3));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new BranchGreaterThan(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Execute all instructions (assuming one is missed due to branch)
+        for(int i = 0; i < 5; i++)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void branchIfNotEqualWhenTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 3));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new BranchNotEqual(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Execute all instructions (assuming one is missed due to branch)
+        for(int i = 0; i < 5; i++)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(-1, machine.getThread(0).getRegisters()[2].getValue());
+
+    }
+
+    @Test
+    public void branchIfNotEqualWhenFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 7));
+        instructions.add(new LoadImmediate(1, 7));
+        instructions.add(new BranchNotEqual(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Execute all instructions (assuming one is missed due to branch)
+        for(int i = 0; i < 5; i++)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+
+    }
+
 
 }

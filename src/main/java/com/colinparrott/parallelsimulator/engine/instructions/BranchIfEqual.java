@@ -10,7 +10,7 @@ public class BranchIfEqual extends Instruction
     private int secondRegisterNumber;
     private String label;
 
-    BranchIfEqual(InstructionKeyword keyword, int firstRegisterNumber, int secondRegisterNumber, String label)
+    public BranchIfEqual(int firstRegisterNumber, int secondRegisterNumber, String label)
     {
         super(InstructionKeyword.BEQ);
         this.firstRegisterNumber = firstRegisterNumber;

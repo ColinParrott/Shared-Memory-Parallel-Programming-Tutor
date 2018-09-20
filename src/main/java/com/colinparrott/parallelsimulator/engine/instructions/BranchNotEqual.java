@@ -10,7 +10,7 @@ public class BranchNotEqual extends Instruction
     private int secondRegisterNumber;
     private String label;
 
-    BranchNotEqual(InstructionKeyword keyword, int firstRegisterNumber, int secondRegisterNumber, String label)
+    public BranchNotEqual(int firstRegisterNumber, int secondRegisterNumber, String label)
     {
         super(InstructionKeyword.BNE);
         this.firstRegisterNumber = firstRegisterNumber;

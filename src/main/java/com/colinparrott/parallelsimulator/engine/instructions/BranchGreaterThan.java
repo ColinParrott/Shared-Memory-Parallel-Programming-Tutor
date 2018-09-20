@@ -10,7 +10,7 @@ public class BranchGreaterThan extends Instruction
     private int secondRegisterNumber;
     private String label;
 
-    BranchGreaterThan(InstructionKeyword keyword, int firstRegisterNumber, int secondRegisterNumber, String label)
+    public BranchGreaterThan(int firstRegisterNumber, int secondRegisterNumber, String label)
     {
         super(InstructionKeyword.BGT);
         this.firstRegisterNumber = firstRegisterNumber;
