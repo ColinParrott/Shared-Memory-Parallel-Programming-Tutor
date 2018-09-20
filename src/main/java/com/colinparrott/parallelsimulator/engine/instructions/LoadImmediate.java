@@ -1,30 +1,30 @@
 package com.colinparrott.parallelsimulator.engine.instructions;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
-import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.hardware.Register;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 
-public class Store extends Instruction
+public class LoadImmediate extends Instruction
 {
 
     private int registerNumber;
-    private MemoryLocation memoryLocation;
+    private int constant;
 
-    public Store(int registerNumber, MemoryLocation memoryLocation) {
-        super(InstructionKeyword.ST);
+    public LoadImmediate(int registerNumber, int constant) {
+        super(InstructionKeyword.LDI);
         this.registerNumber = registerNumber;
-        this.memoryLocation = memoryLocation;
+        this.constant = constant;
     }
 
     @Override
     public void execute(Memory memory, Register[] registers, SimulatorThread thread) {
-        memory.setVariable(memoryLocation, registers[registerNumber].getValue());
+
+        registers[registerNumber].setValue(this.constant);
     }
 
     @Override
     public String toString()
     {
-        return String.format("%s %s $R%s", this.getKeyword(), memoryLocation, registerNumber);
+        return String.format("%s $R%d %d", this.getKeyword(), registerNumber, constant);
     }
 }

@@ -3,6 +3,7 @@ package com.colinparrott.parallelsimulator.engine.instructions;
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.hardware.Register;
+import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 
 public class Load extends Instruction
 {
@@ -17,7 +18,7 @@ public class Load extends Instruction
     }
 
     @Override
-    public void execute(Memory memory, Register[] registers) {
+    public void execute(Memory memory, Register[] registers, SimulatorThread thread) {
 
         registers[registerNumber].setValue(memory.getValue(this.memoryLocation));
     }

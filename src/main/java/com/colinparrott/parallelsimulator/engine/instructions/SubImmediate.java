@@ -4,15 +4,15 @@ import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.Register;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 
-public class AddImmediate extends Instruction
+public class SubImmediate extends Instruction
 {
 
     private int destRegisterNumber;
     private int sourceRegisterNumber;
     private int constant;
 
-    public AddImmediate(int destRegisterNumber, int sourceRegisterNumber, int constant) {
-        super(InstructionKeyword.ADDI);
+    public SubImmediate(int destRegisterNumber, int sourceRegisterNumber, int constant) {
+        super(InstructionKeyword.SUBI);
         this.destRegisterNumber = destRegisterNumber;
         this.sourceRegisterNumber = sourceRegisterNumber;
         this.constant = constant;
@@ -20,7 +20,7 @@ public class AddImmediate extends Instruction
 
     @Override
     public void execute(Memory memory, Register[] registers, SimulatorThread thread) {
-        int result = registers[sourceRegisterNumber].getValue() + constant;
+        int result = registers[sourceRegisterNumber].getValue() - constant;
         registers[destRegisterNumber].setValue(result);
     }
 

@@ -2,6 +2,7 @@ package com.colinparrott.parallelsimulator.engine.instructions;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.Register;
+import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 
 public abstract class Instruction
 {
@@ -12,7 +13,7 @@ public abstract class Instruction
         this.keyword = keyword;
     }
 
-    public abstract void execute(Memory memory, Register[] registers);
+    public abstract void execute(Memory memory, Register[] registers, SimulatorThread thread);
 
     InstructionKeyword getKeyword()
     {

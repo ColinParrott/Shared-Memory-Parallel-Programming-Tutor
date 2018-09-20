@@ -57,7 +57,7 @@ public class SimulatorThread
         // If pointer is not pointing beyond the last instruction execute and increment pointer
         if(instructionPointer < instructionsList.size())
         {
-            instructionsList.get(instructionPointer).execute(memory, registers);
+            instructionsList.get(instructionPointer).execute(memory, registers, this);
             instructionPointer++;
             return true;
         }
