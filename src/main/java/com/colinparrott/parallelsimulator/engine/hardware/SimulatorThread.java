@@ -17,6 +17,7 @@ public class SimulatorThread
     private int instructionPointer = 0;
     private  Register[] registers;
     private Memory memory;
+    private boolean inAtomicSection = false;
 
     public SimulatorThread(Memory m, int id)
     {
@@ -59,6 +60,14 @@ public class SimulatorThread
         {
             instructionsList.get(instructionPointer).execute(memory, registers, this);
             instructionPointer++;
+
+            // If in atomic section execute all instructions
+            while(inAtomicSection)
+            {
+                instructionsList.get(instructionPointer).execute(memory, registers, this);
+                instructionPointer++;
+            }
+
             return true;
         }
 
@@ -113,4 +122,13 @@ public class SimulatorThread
     }
 
 
+    public boolean isInAtomicSection()
+    {
+        return inAtomicSection;
+    }
+
+    public void setInAtomicSection(boolean inAtomicSection)
+    {
+        this.inAtomicSection = inAtomicSection;
+    }
 }

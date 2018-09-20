@@ -4,30 +4,22 @@ import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.Register;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 
-public class Label extends Instruction
+public class EndAtomic extends Instruction
 {
-    private String label;
-
-    public Label(String name)
+    public EndAtomic()
     {
-        super(InstructionKeyword.LABEL);
-        this.label = name;
+        super(InstructionKeyword.ENDATOMIC);
     }
 
     @Override
     public void execute(Memory memory, Register[] registers, SimulatorThread thread)
     {
-        // label so no need to modify anything
-    }
-
-    public String getLabel()
-    {
-        return label;
+        thread.setInAtomicSection(false);
     }
 
     @Override
     public String toString()
     {
-        return String.format("%s %s", this.getKeyword(), this.label);
+        return String.format("%s", this.getKeyword());
     }
 }

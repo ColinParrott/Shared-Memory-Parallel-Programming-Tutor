@@ -338,5 +338,22 @@ public class BasicInstructionTests
 
     }
 
+    @Test
+    public void atomicTwoLoads()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new Atomic());
+        instructions.add(new LoadImmediate(0, 7));
+        instructions.add(new LoadImmediate(0, 1));
+        instructions.add(new LoadImmediate(0, 32));
+        instructions.add(new EndAtomic());
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+        t.executeInstruction();
+
+        Assert.assertEquals(32, t.getRegisters()[0].getValue());
+    }
+
 
 }
