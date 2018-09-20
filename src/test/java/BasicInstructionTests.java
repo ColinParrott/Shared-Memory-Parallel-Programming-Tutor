@@ -1,4 +1,5 @@
 import com.colinparrott.parallelsimulator.engine.hardware.Machine;
+import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 import com.colinparrott.parallelsimulator.engine.instructions.*;
 import org.junit.Assert;
@@ -8,7 +9,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class InstructionTests
+public class BasicInstructionTests
 {
     private Machine machine;
 
@@ -28,6 +29,30 @@ public class InstructionTests
         t.executeInstruction();
 
         Assert.assertEquals(5, t.getRegisters()[0].getValue());
+    }
+
+    @Test
+    public void singleLoad()
+    {
+        machine.getMemory().setVariable(MemoryLocation.x, 20);
+        Instruction i = new Load(8, MemoryLocation.x);
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(new ArrayList<Instruction>(Arrays.asList(i)));
+        t.executeInstruction();
+
+        Assert.assertEquals(20, t.getRegisters()[8].getValue());
+    }
+
+    @Test
+    public void singleStore()
+    {
+        Instruction i = new Store(8, MemoryLocation.a);
+        SimulatorThread t = machine.createThread(0);
+        t.getRegisters()[8].setValue(4);
+        t.queueInstructions(new ArrayList<Instruction>(Arrays.asList(i)));
+        t.executeInstruction();
+
+        Assert.assertEquals(4, machine.getMemory().getValue(MemoryLocation.a));
     }
 
     @Test
@@ -157,6 +182,24 @@ public class InstructionTests
         t.executeInstruction();
 
         Assert.assertEquals(6, t.getRegisters()[8].getValue());
+    }
+
+    @Test
+    public void labelAdvancesPointer()
+    {
+        Instruction i = new Label("abc");
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(new ArrayList<Instruction>(Arrays.asList(i)));
+        t.executeInstruction();
+
+        Assert.assertEquals(1, t.getInstructionPointer());
+    }
+
+    @Test
+    public void branchIfEqual()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        // TODO: COMPLETE
     }
 
 }
