@@ -7,12 +7,12 @@ import com.rits.cloning.Cloner;
  * High-level class for manipulating the machine
  */
 
-abstract class Simulator
+public abstract class Simulator
 {
     static Machine machine;
     static MachineStateHolder stateHistory;
 
-    Simulator()
+    protected Simulator()
     {
         machine = new Machine();
         stateHistory = new MachineStateHolder();

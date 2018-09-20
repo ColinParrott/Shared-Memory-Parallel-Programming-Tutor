@@ -8,7 +8,6 @@ public class Label extends Instruction
 {
     private String label;
 
-
     public Label(String name)
     {
         super(InstructionKeyword.LABEL);
@@ -18,11 +17,16 @@ public class Label extends Instruction
     @Override
     public void execute(Memory memory, Register[] registers, SimulatorThread thread)
     {
-
+        // label so no need to modify anything
     }
 
     public String getLabel()
     {
         return label;
+    }
+
+    public String toString()
+    {
+        return String.format("%s %s", this.getKeyword(), this.label);
     }
 }

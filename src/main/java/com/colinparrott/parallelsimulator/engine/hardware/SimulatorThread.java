@@ -102,6 +102,11 @@ public class SimulatorThread
         return instructionPointer;
     }
 
+    public void setInstructionPointer(int pos)
+    {
+        instructionPointer = pos;
+    }
+
     public ArrayList<Instruction> getInstructionsList()
     {
         return instructionsList;
