@@ -22,7 +22,7 @@ public abstract class Simulator
      * Move the execution forward a step
      * @param threadId ID of thread to execute
      */
-    void stepForward(int threadId)
+    public void stepForward(int threadId)
     {
         machine.executeInstruction(threadId);
         stateHistory.addState(machine);
@@ -31,7 +31,7 @@ public abstract class Simulator
     /**
      * Move back a step and restore previous state
      */
-    void stepBackward()
+    public void stepBackward()
     {
         // If we've got more than one state left, set the current machine to the previous state
         if (stateHistory.machineStates.size() > 1)
@@ -41,5 +41,21 @@ public abstract class Simulator
             machine = cloner.deepClone(stateHistory.rollbackState());
         }
 
+    }
+
+    /**
+     * Visible for testing
+     * @return Current machine state
+     */
+    public static Machine getMachine() {
+        return machine;
+    }
+
+    /**
+     * Visible for testing
+     * @return Machine state history
+     */
+    public static MachineStateHolder getStateHistory() {
+        return stateHistory;
     }
 }
