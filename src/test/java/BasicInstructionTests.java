@@ -40,7 +40,7 @@ public class BasicInstructionTests
         t.queueInstructions(new ArrayList<Instruction>(Arrays.asList(i)));
         t.executeInstruction();
 
-        Assert.assertEquals(20, t.getRegisters()[8].getValue());
+        Assert.assertEquals(21, t.getRegisters()[8].getValue());
     }
 
     @Test
