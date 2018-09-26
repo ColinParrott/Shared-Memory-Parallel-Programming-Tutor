@@ -15,7 +15,7 @@ public class MachineStateHolder
     private static Cloner cloner = new Cloner();
 
 
-    void addState(Machine machine)
+    public void addState(Machine machine)
     {
         machineStates.push(cloner.deepClone(machine));
     }

@@ -62,7 +62,7 @@ public class SimulatorThread
             // If not in atomic section (or await) execute like normal
             if(!inAtomicSection)
             {
-                System.out.println("Executing: " + instructionsList.get(instructionPointer).toString());
+//                System.out.println("Executing: " + instructionsList.get(instructionPointer).toString());
                 instructionsList.get(instructionPointer).execute(memory, registers, this);
                 instructionPointer++;
             }
@@ -71,7 +71,7 @@ public class SimulatorThread
             // If in atomic section execute all instructions
             while(inAtomicSection)
             {
-                System.out.println("Atomic Executing: " + instructionsList.get(instructionPointer).toString());
+//                System.out.println("Atomic Executing: " + instructionsList.get(instructionPointer).toString());
                 Instruction i = instructionsList.get(instructionPointer);
                 i.execute(memory, registers, this);
 
