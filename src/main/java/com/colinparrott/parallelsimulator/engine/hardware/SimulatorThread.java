@@ -1,5 +1,6 @@
 package com.colinparrott.parallelsimulator.engine.hardware;
 
+import com.colinparrott.parallelsimulator.engine.instructions.Await;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 
 import java.util.ArrayList;
@@ -58,14 +59,30 @@ public class SimulatorThread
         // If pointer is not pointing beyond the last instruction execute and increment pointer
         if(instructionPointer < instructionsList.size())
         {
-            instructionsList.get(instructionPointer).execute(memory, registers, this);
-            instructionPointer++;
+            // If not in atomic section (or await) execute like normal
+            if(!inAtomicSection)
+            {
+                System.out.println("Executing: " + instructionsList.get(instructionPointer).toString());
+                instructionsList.get(instructionPointer).execute(memory, registers, this);
+                instructionPointer++;
+            }
+
 
             // If in atomic section execute all instructions
             while(inAtomicSection)
             {
-                instructionsList.get(instructionPointer).execute(memory, registers, this);
-                instructionPointer++;
+                System.out.println("Atomic Executing: " + instructionsList.get(instructionPointer).toString());
+                Instruction i = instructionsList.get(instructionPointer);
+                i.execute(memory, registers, this);
+
+                // Increment instruction pointer only if not await instruction
+                // Await instruction increments pointer itself if its condition is true (and resets if false) so we
+                // don't want to override that here
+                if(!(i instanceof Await))
+                {
+                    instructionPointer++;
+                }
+
             }
 
             return true;
