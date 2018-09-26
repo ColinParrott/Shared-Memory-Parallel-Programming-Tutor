@@ -1,6 +1,7 @@
 package com.colinparrott.parallelsimulator.engine.hardware;
 
 import com.colinparrott.parallelsimulator.engine.instructions.Await;
+import com.colinparrott.parallelsimulator.engine.instructions.EndAtomic;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 
 import java.util.ArrayList;
@@ -75,10 +76,10 @@ public class SimulatorThread
                 Instruction i = instructionsList.get(instructionPointer);
                 i.execute(memory, registers, this);
 
-                // Increment instruction pointer only if not await instruction
+                // Increment instruction pointer only if not await instruction or end of atomic (it's done next step)
                 // Await instruction increments pointer itself if its condition is true (and resets if false) so we
                 // don't want to override that here
-                if(!(i instanceof Await))
+                if(!(i instanceof Await) && !(i instanceof EndAtomic))
                 {
                     instructionPointer++;
                 }

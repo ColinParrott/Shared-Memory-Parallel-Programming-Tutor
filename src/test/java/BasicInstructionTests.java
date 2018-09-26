@@ -355,6 +355,63 @@ public class BasicInstructionTests
         Assert.assertEquals(32, t.getRegisters()[0].getValue());
     }
 
+    @Test
+    public void consecutiveAtomics()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new Atomic());
+        instructions.add(new LoadImmediate(0, 7));
+        instructions.add(new LoadImmediate(0, 1));
+        instructions.add(new LoadImmediate(0, 32));
+        instructions.add(new EndAtomic());
+
+
+        instructions.add(new Atomic());
+        instructions.add(new LoadImmediate(1, 1));
+        instructions.add(new LoadImmediate(1, 4));
+        instructions.add(new LoadImmediate(1, 20));
+        instructions.add(new EndAtomic());
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+        t.executeInstruction();
+        t.executeInstruction();
+
+        Assert.assertEquals(32, t.getRegisters()[0].getValue());
+        Assert.assertEquals(20, t.getRegisters()[1].getValue());
+    }
+
+    @Test
+    public void consecutiveAtomicsStuffInBetween()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new Atomic());
+        instructions.add(new LoadImmediate(0, 7));
+        instructions.add(new LoadImmediate(0, 1));
+        instructions.add(new LoadImmediate(0, 32));
+        instructions.add(new EndAtomic());
+
+        instructions.add(new LoadImmediate(3, 10));
+        instructions.add(new AddImmediate(3, 0, 10));
+
+        instructions.add(new Atomic());
+        instructions.add(new LoadImmediate(1, 1));
+        instructions.add(new LoadImmediate(1, 4));
+        instructions.add(new LoadImmediate(1, 20));
+        instructions.add(new EndAtomic());
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+        t.executeInstruction(); // First atomic
+        t.executeInstruction(); // LDI $R3 10
+        t.executeInstruction(); // ADDI $R3 $R0 10
+        t.executeInstruction(); // Second atomic
+
+        Assert.assertEquals(32, t.getRegisters()[0].getValue());
+        Assert.assertEquals(42, t.getRegisters()[3].getValue());
+        Assert.assertEquals(20, t.getRegisters()[1].getValue());
+    }
+
 
 
 
