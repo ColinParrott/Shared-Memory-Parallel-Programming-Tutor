@@ -13,10 +13,39 @@ public class CLISimulator extends Simulator
 
     public void start()
     {
-        // runIncrementExample();
-        // runIncrementExampleAtomic();
-        runAwaitExample();
+        System.out.println("Enter a program number to run:\n");
+        System.out.println("1) Single variable increment ( x++ // x++)");
+        System.out.println("2) Single variable increment using atomic");
+        System.out.println("3) Simple await example");
+        System.out.println();
 
+        int selection = 0;
+
+        Scanner scanner = new Scanner(System.in);
+
+        do
+        {
+            String s = scanner.nextLine();
+            boolean validNum = true;
+
+            try
+            {
+                selection = Integer.valueOf(s);
+            }
+            catch (NumberFormatException e)
+            {
+                validNum = false;
+            }
+
+            if(!validNum || (selection != 1 && selection != 2 && selection != 3))
+                System.out.println("Please enter either 1, 2 or 3.\n");
+
+        }while(selection != 1 && selection != 2 && selection != 3);
+
+        if(selection == 1) runIncrementExample();
+        else if(selection == 2) runIncrementExampleAtomic();
+        else if(selection == 3) runAwaitExample();
+        else System.out.println("Don't know how we got here!");
     }
 
     private void runIncrementExampleAtomic()
