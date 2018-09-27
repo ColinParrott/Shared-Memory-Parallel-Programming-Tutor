@@ -12,7 +12,7 @@ public class Memory
     private HashMap<MemoryLocation, Integer> variables;
 
 
-    Memory()
+    public Memory()
     {
         variables = new HashMap<>();
         for (MemoryLocation location : MemoryLocation.values())
@@ -70,4 +70,7 @@ public class Memory
         return s.toString();
     }
 
+    public HashMap<MemoryLocation, Integer> getVariables() {
+        return variables;
+    }
 }

@@ -1,6 +1,8 @@
 package com.colinparrott.parallelsimulator.engine.simulator;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Machine;
+import com.colinparrott.parallelsimulator.engine.hardware.Memory;
+import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.rits.cloning.Cloner;
 
 /**
@@ -41,6 +43,18 @@ public abstract class Simulator
             machine = cloner.deepClone(stateHistory.rollbackState());
         }
 
+    }
+
+    /**
+     * Set initial memory state
+     * @param m Memory state to set to
+     */
+    public void setInitialMemory(Memory m)
+    {
+        for(MemoryLocation location : m.getVariables().keySet())
+        {
+            machine.getMemory().setVariable(location, m.getValue(location));
+        }
     }
 
     /**

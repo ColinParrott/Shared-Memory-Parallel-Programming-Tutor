@@ -1,5 +1,6 @@
 package com.colinparrott.parallelsimulator.engine.simulator;
 
+import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 
 import java.util.ArrayList;
@@ -14,9 +15,12 @@ public class Program
     // List of pairs containing threads and their respective instructions
     private HashMap<Integer, ArrayList<Instruction>> instructionLists;
 
-    public Program()
+    private Memory initialMemory;
+
+    public Program(Memory initialMemory)
     {
         instructionLists = new HashMap<>();
+        this.initialMemory = initialMemory;
     }
 
     /**
@@ -58,4 +62,7 @@ public class Program
         return ids;
     }
 
+    public Memory getInitialMemory() {
+        return initialMemory;
+    }
 }
