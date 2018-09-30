@@ -77,7 +77,7 @@ public class CLISimulator extends Simulator
 
         ArrayList<Instruction> instructsThreadTwo = new ArrayList<>();
         instructsThreadTwo.add(new Atomic());
-        instructsThreadTwo.add(new Await(MemoryLocation.x, MemoryLocation.z, AwaitComparator.EQ)); // x == 1
+        instructsThreadTwo.add(new Await(MemoryLocation.x, AwaitComparator.EQ,  MemoryLocation.z)); // x == 1
         instructsThreadTwo.add(new Load(0, MemoryLocation.a));
         instructsThreadTwo.add(new Store(0, MemoryLocation.x));
         instructsThreadTwo.add(new EndAtomic());

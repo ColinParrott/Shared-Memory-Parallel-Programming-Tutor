@@ -10,15 +10,28 @@ public class Await extends Instruction
     private MemoryLocation firstVariable;
     private MemoryLocation secondVariable;
     private AwaitComparator comparator;
+    private int constant;
+    private boolean compareToConstant;
     private int restorePos = -1;
 
     // AWAIT <variable_1> <comparator> <variable_2>
-    public Await(MemoryLocation firstVariable, MemoryLocation secondVariable, AwaitComparator comparator)
+    public Await(MemoryLocation firstVariable, AwaitComparator comparator, MemoryLocation secondVariable)
     {
         super(InstructionKeyword.AWAIT);
         this.firstVariable = firstVariable;
         this.secondVariable = secondVariable;
         this.comparator = comparator;
+        this.compareToConstant = false;
+    }
+
+    // AWAIT <variable_1> <comparator> <constant>
+    public Await(MemoryLocation firstVariable, AwaitComparator comparator, int constant)
+    {
+        super(InstructionKeyword.AWAIT);
+        this.firstVariable = firstVariable;
+        this.comparator = comparator;
+        this.constant = constant;
+        this.compareToConstant = true;
     }
 
     @Override
@@ -29,7 +42,7 @@ public class Await extends Instruction
             restorePos = thread.getInstructionPointer() - 2;
 
         int firstValue = memory.getValue(firstVariable);
-        int secondValue = memory.getValue(secondVariable);
+        int secondValue = (compareToConstant) ? constant : memory.getValue(secondVariable);
 
         switch (comparator)
         {

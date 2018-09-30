@@ -28,7 +28,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 7));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.EQ));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.EQ, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
         instructions.add(new LoadImmediate(4, 29));
@@ -47,6 +47,29 @@ public class AwaitTests
     }
 
     @Test
+    public void awaitConditionConstantEqualTrueFirstTry()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 7));
+        instructions.add(new Store(0, MemoryLocation.x));
+        instructions.add(new Atomic());
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.EQ, 7));
+        instructions.add(new LoadImmediate(2, 100));
+        instructions.add(new EndAtomic());
+        instructions.add(new LoadImmediate(4, 29));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+        t.executeInstruction(); // LI $R0 7
+        t.executeInstruction(); // ST $R0 x
+        t.executeInstruction(); // ATOMIC (and therefore await)
+
+        Assert.assertNotEquals(29, t.getRegisters()[4].getValue());
+        Assert.assertEquals(100, t.getRegisters()[2].getValue());
+
+    }
+
+    @Test
     public void awaitConditionEqualFalseFirstTry()
     {
         ArrayList<Instruction> instructions = new ArrayList<>();
@@ -55,7 +78,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 10));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.EQ));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.EQ, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -81,7 +104,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 10));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.NE));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.NE, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -106,7 +129,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 7));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.NE));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.NE, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -132,7 +155,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 6));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.GT));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.GT, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -157,7 +180,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 11));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.GT));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.GT, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -183,7 +206,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 5));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.GE));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.GE, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -208,7 +231,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 11));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.GE));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.GE, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -234,7 +257,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 5));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.LT));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.LT, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -259,7 +282,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 7));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.LT));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.LT, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -285,7 +308,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 9));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.LE));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.LE, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -310,7 +333,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 7));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.LE));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.LE, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -336,7 +359,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 10));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.EQ));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.EQ, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -369,7 +392,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 10));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.EQ));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.EQ, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
 
@@ -406,7 +429,7 @@ public class AwaitTests
         instructions.add(new LoadImmediate(0, 10));
         instructions.add(new Store(0, MemoryLocation.y));
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.EQ));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.EQ, MemoryLocation.y));
         instructions.add(new LoadImmediate(2, 100));
         instructions.add(new EndAtomic());
         instructions.add(new LoadImmediate(5, 23));

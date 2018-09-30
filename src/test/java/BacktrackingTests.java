@@ -77,7 +77,7 @@ public class BacktrackingTests
         instructions.add(new Store(9, MemoryLocation.y));
 
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.EQ));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.EQ, MemoryLocation.y));
         instructions.add(new LoadImmediate(0, 1));
         instructions.add(new EndAtomic());
 
@@ -108,7 +108,7 @@ public class BacktrackingTests
         instructions.add(new Store(9, MemoryLocation.y));
 
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.EQ));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.EQ, MemoryLocation.y));
         instructions.add(new LoadImmediate(0, 1));
         instructions.add(new EndAtomic());
 
@@ -147,14 +147,14 @@ public class BacktrackingTests
 
         // Load 1 into register 0 and 2 into register 1 if x == y
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.x, MemoryLocation.y, AwaitComparator.EQ));
+        instructions.add(new Await(MemoryLocation.x, AwaitComparator.EQ, MemoryLocation.y));
         instructions.add(new LoadImmediate(0, 1));
         instructions.add(new LoadImmediate(1, 2));
         instructions.add(new EndAtomic());
 
         // Load 10 into register 0 and 20 into register 1 if a == b
         instructions.add(new Atomic());
-        instructions.add(new Await(MemoryLocation.a, MemoryLocation.b, AwaitComparator.EQ));
+        instructions.add(new Await(MemoryLocation.a, AwaitComparator.EQ, MemoryLocation.b));
         instructions.add(new LoadImmediate(0, 10));
         instructions.add(new LoadImmediate(1, 20));
         instructions.add(new EndAtomic());
