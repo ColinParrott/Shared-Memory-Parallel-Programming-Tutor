@@ -21,8 +21,8 @@ public class BacktrackingTests
     public void initialise()
     {
         sim = new Simulator(){};
-        machine = Simulator.getMachine();
-        stateHistory = Simulator.getStateHistory();
+        machine = sim.getMachine();
+        stateHistory = sim.getStateHistory();
 
     }
 
@@ -38,7 +38,7 @@ public class BacktrackingTests
         sim.stepForward(0);
         sim.stepBackward();
 
-        Assert.assertEquals(5, Simulator.getMachine().getThread(0).getRegisters()[0].getValue());
+        Assert.assertEquals(5, sim.getMachine().getThread(0).getRegisters()[0].getValue());
     }
 
     @Test
@@ -58,13 +58,13 @@ public class BacktrackingTests
 
         sim.stepForward(0);
 
-        Assert.assertEquals(1, Simulator.getMachine().getThread(0).getRegisters()[0].getValue());
-        Assert.assertEquals(3, Simulator.getMachine().getThread(0).getRegisters()[1].getValue());
+        Assert.assertEquals(1, sim.getMachine().getThread(0).getRegisters()[0].getValue());
+        Assert.assertEquals(3, sim.getMachine().getThread(0).getRegisters()[1].getValue());
 
         sim.stepBackward();
 
-        Assert.assertEquals(0, Simulator.getMachine().getThread(0).getRegisters()[0].getValue());
-        Assert.assertEquals(0, Simulator.getMachine().getThread(0).getRegisters()[1].getValue());
+        Assert.assertEquals(0, sim.getMachine().getThread(0).getRegisters()[0].getValue());
+        Assert.assertEquals(0, sim.getMachine().getThread(0).getRegisters()[1].getValue());
     }
 
     @Test
@@ -93,9 +93,9 @@ public class BacktrackingTests
         sim.stepForward(0); // ST $R9 y
         sim.stepForward(0); // ATOMIC AWAIT
 
-        Assert.assertEquals(1, Simulator.getMachine().getThread(0).getRegisters()[0].getValue());
+        Assert.assertEquals(1, sim.getMachine().getThread(0).getRegisters()[0].getValue());
         sim.stepBackward();
-        Assert.assertEquals(0, Simulator.getMachine().getThread(0).getRegisters()[1].getValue());
+        Assert.assertEquals(0, sim.getMachine().getThread(0).getRegisters()[1].getValue());
     }
 
     @Test
@@ -124,9 +124,9 @@ public class BacktrackingTests
         sim.stepForward(0); // ST $R9 y
         sim.stepForward(0); // ATOMIC AWAIT
 
-        Assert.assertEquals(0, Simulator.getMachine().getThread(0).getRegisters()[0].getValue());
+        Assert.assertEquals(0, sim.getMachine().getThread(0).getRegisters()[0].getValue());
         sim.stepBackward();
-        Assert.assertEquals(0, Simulator.getMachine().getThread(0).getRegisters()[1].getValue());
+        Assert.assertEquals(0, sim.getMachine().getThread(0).getRegisters()[1].getValue());
     }
 
     @Test
@@ -179,8 +179,8 @@ public class BacktrackingTests
         sim.stepForward(0); // 2nd ATOMIC AWAIT (a & b)
 
         sim.stepBackward();
-        Assert.assertEquals(1, Simulator.getMachine().getThread(0).getRegisters()[0].getValue());
-        Assert.assertEquals(2, Simulator.getMachine().getThread(0).getRegisters()[1].getValue());
+        Assert.assertEquals(1, sim.getMachine().getThread(0).getRegisters()[0].getValue());
+        Assert.assertEquals(2, sim.getMachine().getThread(0).getRegisters()[1].getValue());
 
     }
 

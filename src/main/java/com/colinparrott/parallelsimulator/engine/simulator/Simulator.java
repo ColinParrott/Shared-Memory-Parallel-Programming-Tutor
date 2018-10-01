@@ -11,8 +11,8 @@ import com.rits.cloning.Cloner;
 
 public abstract class Simulator
 {
-    static Machine machine;
-    static MachineStateHolder stateHistory;
+    Machine machine;
+    MachineStateHolder stateHistory;
 
     protected Simulator()
     {
@@ -61,7 +61,7 @@ public abstract class Simulator
      * Visible for testing
      * @return Current machine state
      */
-    public static Machine getMachine() {
+    public Machine getMachine() {
         return machine;
     }
 
@@ -69,7 +69,7 @@ public abstract class Simulator
      * Visible for testing
      * @return Machine state history
      */
-    public static MachineStateHolder getStateHistory() {
+    public MachineStateHolder getStateHistory() {
         return stateHistory;
     }
 }
