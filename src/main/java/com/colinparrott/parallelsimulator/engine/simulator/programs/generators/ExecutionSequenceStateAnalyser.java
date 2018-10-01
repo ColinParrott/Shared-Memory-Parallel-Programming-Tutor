@@ -35,7 +35,8 @@ public class ExecutionSequenceStateAnalyser
         for (int thread : threadSequence)
         {
             sim.stepForward(thread);
-            memoryStates.add(cloner.shallowClone(sim.getMachine().getMemory()));
+//            System.out.println(sim.getMachine().getMemory());
+            memoryStates.add(cloner.deepClone(sim.getMachine().getMemory()));
         }
 
         return memoryStates;
