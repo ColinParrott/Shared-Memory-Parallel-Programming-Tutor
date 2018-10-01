@@ -2,6 +2,8 @@ package com.colinparrott.parallelsimulator.engine.simulator;
 
 import com.colinparrott.parallelsimulator.engine.hardware.*;
 import com.colinparrott.parallelsimulator.engine.instructions.*;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.ProgramList;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -13,6 +15,8 @@ public class CLISimulator extends Simulator
 
     public void start()
     {
+        ProgramList programList = new ProgramList();
+
         System.out.println("Enter a program number to run:\n");
         System.out.println("1) Single variable increment ( x++ // x++)");
         System.out.println("2) Single variable increment using atomic");
@@ -42,75 +46,31 @@ public class CLISimulator extends Simulator
 
         }while(selection != 1 && selection != 2 && selection != 3);
 
-        if(selection == 1) runIncrementExample();
-        else if(selection == 2) runIncrementExampleAtomic();
-        else if(selection == 3) runAwaitExample();
-        else System.out.println("Don't know how we got here!");
-    }
-
-    private void runIncrementExampleAtomic()
-    {
-        ArrayList<Instruction> instructions = new ArrayList<>();
-        instructions.add(new Atomic());
-        instructions.add(new Load(0, MemoryLocation.x));
-        instructions.add(new AddImmediate(0, 0, 1));
-        instructions.add(new Store(0, MemoryLocation.x));
-        instructions.add(new EndAtomic());
-
-        Memory initMemory = new Memory();
-        Program p = new Program(initMemory);
-        p.setInstructionsForThread(0, instructions);
-        p.setInstructionsForThread(1, instructions);
-
-        System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\nx=0;\n<x++;> // <x++;>\n}\n");
-        executeProgram(p, new MemoryLocation[]{MemoryLocation.x});
-    }
-
-    private void runAwaitExample()
-    {
-        ArrayList<Instruction> instructsThreadOne = new ArrayList<>();
-        instructsThreadOne.add(new LoadImmediate(0, 25));
-        instructsThreadOne.add(new Store(0, MemoryLocation.a));
-        instructsThreadOne.add(new LoadImmediate(0, 1));
-        instructsThreadOne.add(new Store(0, MemoryLocation.x));
-
-
-        ArrayList<Instruction> instructsThreadTwo = new ArrayList<>();
-        instructsThreadTwo.add(new Atomic());
-        instructsThreadTwo.add(new Await(MemoryLocation.x, AwaitComparator.EQ,  MemoryLocation.z)); // x == 1
-        instructsThreadTwo.add(new Load(0, MemoryLocation.a));
-        instructsThreadTwo.add(new Store(0, MemoryLocation.x));
-        instructsThreadTwo.add(new EndAtomic());
-
-        Memory initMemory = new Memory();
-        initMemory.setVariable(MemoryLocation.z, 1);
-        Program p = new Program(initMemory);
-        p.setInstructionsForThread(0, instructsThreadOne);
-        p.setInstructionsForThread(1, instructsThreadTwo);
-
-        System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\na=0; x=0; z=1;\nco\n {a=25; x=1;}\n //\n <await (x==z) x=a;>\noc\n}\n");
-        executeProgram(p, new MemoryLocation[]{MemoryLocation.a, MemoryLocation.x, MemoryLocation.z});
-    }
-
-    private void runIncrementExample()
-    {
-
-        ArrayList<Instruction> instructions = new ArrayList<>();
-        instructions.add(new Load(0, MemoryLocation.x));
-        instructions.add(new AddImmediate(0, 0, 1));
-        instructions.add(new Store(0, MemoryLocation.x));
-
-        Memory initMemory = new Memory();
-        Program p = new Program(initMemory);
-        p.setInstructionsForThread(0, instructions);
-        p.setInstructionsForThread(1, instructions);
-
-        System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\nx=0;\nx++; // x++;\n}\n");
-        executeProgram(p, new MemoryLocation[]{MemoryLocation.x});
+        Program p;
+        switch (selection)
+        {
+            case 1:
+                p = programList.loadXPlusPlusTwoThreads();
+                System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\nx=0;\nx++; // x++;\n}\n");
+                executeProgram(p, MemoryLocation.x);
+                break;
+            case 2:
+                p = programList.loadXPlusPlusAtomicTwoThreads();
+                System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\nx=0;\n<x++;> // <x++;>\n}\n");
+                executeProgram(p, MemoryLocation.x);
+                break;
+            case 3:
+                p = programList.loadAwaitFlag();
+                System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\na=0; x=0; z=1;\nco\n {a=25; x=1;}\n //\n <await (x==1) x=a;>\noc\n}\n");;
+                executeProgram(p, MemoryLocation.x, MemoryLocation.a);
+                break;
+            default:
+                System.out.println("Don't know how we got here!");
+        }
 
     }
 
-    private void executeProgram(Program p, MemoryLocation[] relevantVariables)
+    private void executeProgram(Program p, MemoryLocation... relevantVariables)
     {
         SimulatorThread[] threads = new SimulatorThread[p.getUsedThreadIDs().length];
 

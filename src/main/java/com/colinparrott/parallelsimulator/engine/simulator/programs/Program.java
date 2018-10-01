@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.simulator;
+package com.colinparrott.parallelsimulator.engine.simulator.programs;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
@@ -21,6 +21,12 @@ public class Program
     {
         instructionLists = new HashMap<>();
         this.initialMemory = initialMemory;
+    }
+
+    public Program()
+    {
+        this.instructionLists = new HashMap<>();
+        this.initialMemory = new Memory();
     }
 
     /**
