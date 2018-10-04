@@ -1,13 +1,15 @@
+package gen;
+
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.ProgramList;
-import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.EqualThreadSteps;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.asksteps.EqualThreadSteps;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.ExecutionSequenceStateAnalyser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
-public class GeneratorTests
+public class AskStepsEqualThreadStepsTests
 {
     private static ProgramList programList;
 
@@ -44,19 +46,22 @@ public class GeneratorTests
 
     }
 
-//    @Test
-//    public void EqualStepsThreadAllPermutationsTest()
-//    {
-//        ArrayList<ArrayList<Integer>> sequences =  EqualThreadSteps.generateAllPossibleSequences(programList.loadXPlusPlusTwoThreads(), 4);
-//        for(ArrayList<Integer> list : sequences)
-//        {
-//            for(int i : list)
-//            {
+    @Test
+    public void EqualStepsThreadAllPermutationsTest()
+    {
+
+        ArrayList<ArrayList<Integer>> sequences =  EqualThreadSteps.generateAllPossibleSequences(programList.loadXPlusPlusTwoThreads(), 5);
+        for(ArrayList<Integer> list : sequences)
+        {
+           // ExecutionSequenceStateAnalyser.calculateMemoryStates(programList.loadXPlusPlusTwoThreads(), list);
+            for(int i : list)
+            {
+
 //                System.out.print(i  + " ");
-//            }
+            }
 //            System.out.println();
-//        }
-//
-//        System.out.println(sequences.size());
-//    }
+        }
+
+        System.out.println(sequences.size());
+    }
 }

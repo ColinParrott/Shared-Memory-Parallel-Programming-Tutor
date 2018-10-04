@@ -5,7 +5,7 @@ import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
 /**
  * Simulator used for analysing generations
  */
-class GenerationSim extends Simulator
+public class GenerationSim extends Simulator
 {
 
 }

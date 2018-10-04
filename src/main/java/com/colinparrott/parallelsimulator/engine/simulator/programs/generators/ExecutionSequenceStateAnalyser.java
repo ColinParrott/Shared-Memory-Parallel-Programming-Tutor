@@ -13,7 +13,38 @@ import java.util.ArrayList;
  */
 public class ExecutionSequenceStateAnalyser
 {
+    @SuppressWarnings("Duplicates")
     public static ArrayList<Memory> calculateMemoryStates(Program p, int[] threadSequence)
+    {
+        Cloner cloner = new Cloner();
+        // Stores values of variables only if they're non-zero
+        ArrayList<Memory> memoryStates = new ArrayList<>();
+
+        GenerationSim sim = new GenerationSim();
+        Machine machine = sim.getMachine();
+        SimulatorThread[] threads = new SimulatorThread[p.getUsedThreadIDs().length];
+
+        for (int i = 0; i < p.getUsedThreadIDs().length; i++)
+        {
+            threads[i] = machine.createThread(i);
+            threads[i].queueInstructions(p.getInstructionsForThread(i));
+        }
+
+        sim.setInitialMemory(p.getInitialMemory());
+
+
+        for (int thread : threadSequence)
+        {
+            sim.stepForward(thread);
+//            System.out.println(sim.getMachine().getMemory());
+            memoryStates.add(cloner.deepClone(sim.getMachine().getMemory()));
+        }
+
+        return memoryStates;
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static ArrayList<Memory> calculateMemoryStates(Program p, ArrayList<Integer> threadSequence)
     {
         Cloner cloner = new Cloner();
         // Stores values of variables only if they're non-zero
