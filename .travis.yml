@@ -10,19 +10,19 @@ before_install:
 sudo: true
 
 before_deploy:
-# Set up git user name and tag this commit
-- git config --local user.name "ColinParrott"
-- git config --local user.email "s1546623@sms.ed.ac.uk"
-- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+- gradlew jar
 
 deploy:
   provider: releases
   api_key: $yuh
-  file: "pp-tutor.jar"
+  file: "build/libs/tutor-test-1.0-SNAPSHOT.jar"
   skip_cleanup: true
   overwrite: true
+  on:
+    tags: true
 # cache the build tool's caches
 cache:
   directories:
   - $HOME/.m2
   - $HOME/.gradle
+
