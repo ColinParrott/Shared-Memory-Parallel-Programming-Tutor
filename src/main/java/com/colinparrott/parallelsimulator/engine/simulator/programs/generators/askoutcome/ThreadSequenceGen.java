@@ -30,7 +30,8 @@ public class ThreadSequenceGen
 
     /**
      * Generates a thread sequence with max steps globally (not per thread)
-     * @param p Program to generate sequence from
+     *
+     * @param p        Program to generate sequence from
      * @param numSteps Max number of steps to take
      * @return Array of ordered thread IDs representing the sequence
      */
@@ -40,7 +41,7 @@ public class ThreadSequenceGen
         int[] usedThreads = p.getUsedThreadIDs();
 
         Random r = new Random();
-        for(int i = 0; i < numSteps; i++)
+        for (int i = 0; i < numSteps; i++)
         {
             seq[i] = usedThreads[r.nextInt(usedThreads.length)];
         }
@@ -50,7 +51,8 @@ public class ThreadSequenceGen
 
     /**
      * Similar to generateThreadSequenceMaxSteps but ensures a thread isn't added to sequence when it has no instructions left
-     * @param p Program to generate sequence from
+     *
+     * @param p        Program to generate sequence from
      * @param numSteps Max number of steps to take
      * @return Array of ordered thread IDs representing the sequence
      */
@@ -71,21 +73,21 @@ public class ThreadSequenceGen
         Integer[] usedThreads = new Integer[p.getUsedThreadIDs().length];
 
         // Convert int[] to Integer[] essentially
-        for(int i = 0; i < usedThreads.length; i++)
+        for (int i = 0; i < usedThreads.length; i++)
         {
             usedThreads[i] = p.getUsedThreadIDs()[i];
         }
 
         // HashSet of all thread ids with possible instructions left
-        Set<Integer> aliveThreads = new HashSet<Integer>(Arrays.asList(usedThreads));
+        Set<Integer> aliveThreads = new HashSet<>(Arrays.asList(usedThreads));
 
         Random r = new Random();
 
         // Loop through up to numSteps (max)
-        for(int i = 0; i < numSteps; i++)
+        for (int i = 0; i < numSteps; i++)
         {
             //
-            if(aliveThreads.size() > 0)
+            if (aliveThreads.size() > 0)
             {
                 // Choose random thread from set of alive threads, simulate step and add to seq
                 int randThread = (int) aliveThreads.toArray()[r.nextInt(aliveThreads.size())];
@@ -93,7 +95,7 @@ public class ThreadSequenceGen
                 seq.add(randThread);
 
                 // If no instructions left remove thread from alive set
-                if(machine.getThread(randThread).getInstructionPointer() >= machine.getThread(randThread).getInstructionsList().size())
+                if (machine.getThread(randThread).getInstructionPointer() >= machine.getThread(randThread).getInstructionsList().size())
                 {
                     aliveThreads.remove(randThread);
                 }
