@@ -86,7 +86,6 @@ public class ThreadSequenceGen
         // Loop through up to numSteps (max)
         for (int i = 0; i < numSteps; i++)
         {
-            //
             if (aliveThreads.size() > 0)
             {
                 // Choose random thread from set of alive threads, simulate step and add to seq
