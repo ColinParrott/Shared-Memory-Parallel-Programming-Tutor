@@ -9,6 +9,18 @@ before_install:
 # see https://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure
 sudo: true
 
+before_deploy:
+# Set up git user name and tag this commit
+- git config --local user.name "ColinParrott"
+- git config --local user.email "s1546623@sms.ed.ac.uk"
+- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+
+deploy:
+  provider: releases
+  api_key: $yuh
+  file: "pp-tutor.jar"
+  skip_cleanup: true
+  overwrite: true
 # cache the build tool's caches
 cache:
   directories:
