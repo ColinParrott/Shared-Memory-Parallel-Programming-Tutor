@@ -1,5 +1,8 @@
 package com.colinparrott.parallelsimulator.engine.simulator.programs.generators;
 
+import com.colinparrott.parallelsimulator.engine.hardware.Memory;
+import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
@@ -41,6 +44,25 @@ public class GenUtils
         }
 
         return result;
+    }
+
+    /**
+     * Get the list of variables who changed value between two memory states
+     * @param initial Initial memory state to compare to
+     * @param end Newer memory state
+     * @return List of variables
+     */
+    public static ArrayList<MemoryLocation> changedVariables(Memory initial, Memory end)
+    {
+        ArrayList<MemoryLocation> changed = new ArrayList<>();
+
+        for(MemoryLocation l : MemoryLocation.values())
+        {
+            if(initial.getValue(l) != end.getValue(l))
+                changed.add(l);
+        }
+
+        return changed;
     }
 
     /**
