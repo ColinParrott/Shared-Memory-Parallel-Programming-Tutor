@@ -2,8 +2,8 @@ package gen;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.ProgramList;
-import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.asksteps.EqualThreadSteps;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.ExecutionSequenceStateAnalyser;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.asksteps.EqualThreadSteps;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -51,10 +51,10 @@ public class AskStepsEqualThreadStepsTests
     {
 
         ArrayList<ArrayList<Integer>> sequences =  EqualThreadSteps.generateAllPossibleSequences(programList.loadXPlusPlusTwoThreads(), 5);
-        for(ArrayList<Integer> list : sequences)
+//        for(ArrayList<Integer> list : sequences)
         {
            // ExecutionSequenceStateAnalyser.calculateMemoryStates(programList.loadXPlusPlusTwoThreads(), list);
-            for(int i : list)
+//            for(int i : list)
             {
 
 //                System.out.print(i  + " ");

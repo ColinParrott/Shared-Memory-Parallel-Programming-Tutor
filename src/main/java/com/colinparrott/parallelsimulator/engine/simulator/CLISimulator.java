@@ -1,7 +1,12 @@
 package com.colinparrott.parallelsimulator.engine.simulator;
 
-import com.colinparrott.parallelsimulator.engine.hardware.*;
-import com.colinparrott.parallelsimulator.engine.instructions.*;
+import com.colinparrott.parallelsimulator.engine.hardware.Memory;
+import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
+import com.colinparrott.parallelsimulator.engine.hardware.Register;
+import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
+import com.colinparrott.parallelsimulator.engine.instructions.Atomic;
+import com.colinparrott.parallelsimulator.engine.instructions.EndAtomic;
+import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.ProgramList;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.ExecutionSequenceStateAnalyser;

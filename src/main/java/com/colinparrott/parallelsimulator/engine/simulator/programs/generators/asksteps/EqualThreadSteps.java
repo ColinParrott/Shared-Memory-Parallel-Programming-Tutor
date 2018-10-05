@@ -3,7 +3,9 @@ package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Execution generation where each thread gets k-execution chances each in some random order

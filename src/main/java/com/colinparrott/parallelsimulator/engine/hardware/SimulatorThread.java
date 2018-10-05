@@ -5,7 +5,6 @@ import com.colinparrott.parallelsimulator.engine.instructions.EndAtomic;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 
 import java.util.ArrayList;
-import java.util.Queue;
 
 
 public class SimulatorThread
