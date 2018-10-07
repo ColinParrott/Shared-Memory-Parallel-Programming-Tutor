@@ -76,7 +76,7 @@ public class CLISimulator extends Simulator
             case 3:
                 p = programList.loadAwaitFlag();
                 System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\na=0; x=0; z=1;\nco\n {a=25; x=1;}\n //\n <await (x==1) x=a;>\noc\n}\n");
-                executeProgram(p, MemoryLocation.x, MemoryLocation.a);
+                executeProgram(p, MemoryLocation.a, MemoryLocation.x);
                 break;
             case 4:
                 p = programList.loadXPlusPlusTwoThreads();
@@ -196,7 +196,7 @@ public class CLISimulator extends Simulator
         setInitialMemory(p.getInitialMemory());
 
         stateHistory.addState(machine);
-        printState(relevantVariables, new int[]{0, 1});
+        printState(relevantVariables, p.getUsedThreadIDs());
 
         Scanner scanner = new Scanner(System.in);
         while (threadsHaveInstructionsLeft())
@@ -214,7 +214,7 @@ public class CLISimulator extends Simulator
             {
                 stepBackward();
                 System.out.println("Stepped backwards, new state:\n");
-                printState(relevantVariables, new int[]{0, 1});
+                printState(relevantVariables, p.getUsedThreadIDs());
             } else if (input == '0' || input == '1' || input == '2' || input == '3')
             {
 
@@ -225,7 +225,7 @@ public class CLISimulator extends Simulator
                     if (machine.getThread(threadId).getNextInstruction() != null)
                     {
                         stepForward(threadId);
-                        printState(relevantVariables, new int[]{0, 1});
+                        printState(relevantVariables, p.getUsedThreadIDs());
                     } else
                     {
                         System.out.println("Thread " + threadId + " has no instructions left!\n");
