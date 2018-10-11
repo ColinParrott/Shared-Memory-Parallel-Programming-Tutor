@@ -15,7 +15,7 @@ public abstract class Instruction
 
     public abstract void execute(Memory memory, Register[] registers, SimulatorThread thread);
 
-    InstructionKeyword getKeyword()
+    public InstructionKeyword getKeyword()
     {
         return keyword;
     }

@@ -2,8 +2,12 @@ package com.colinparrott.parallelsimulator.engine.simulator.programs.generators;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
+import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
 
@@ -44,6 +48,60 @@ public class GenUtils
         }
 
         return result;
+    }
+
+    public static HashMap<Integer, Integer> instructionPerThreadCount(Program p, InstructionKeyword keyword)
+    {
+        HashMap<Integer, Integer> counts = new HashMap<>();
+
+        for (int id : p.getUsedThreadIDs())
+        {
+            // Init hashmap
+            counts.put(id, 0);
+            ;
+
+            for (Instruction instruction : p.getInstructionsForThread(id))
+            {
+                if (instruction.getKeyword() == keyword)
+                {
+                    int oldCount = counts.get(id);
+                    counts.put(id, oldCount + 1);
+                }
+            }
+        }
+
+        return counts;
+    }
+
+    public static HashMap<Integer, HashMap<InstructionKeyword, Integer>> instructionsPerThreadCount(Program p, InstructionKeyword... keywords)
+    {
+        HashMap<Integer, HashMap<InstructionKeyword, Integer>> counts = new HashMap<>();
+
+        for (int id : p.getUsedThreadIDs())
+        {
+            // Init inner hashmap
+            counts.put(id, new HashMap<>());
+
+            for (InstructionKeyword keyword : keywords)
+            {
+                counts.get(id).put(keyword, 0);
+            }
+
+
+            for (Instruction instruction : p.getInstructionsForThread(id))
+            {
+                for (InstructionKeyword k : keywords)
+                {
+                    if (instruction.getKeyword() == k)
+                    {
+                        int oldCount = counts.get(id).get(k);
+                        counts.get(id).put(k, oldCount + 1);
+                    }
+                }
+            }
+        }
+
+        return counts;
     }
 
     /**

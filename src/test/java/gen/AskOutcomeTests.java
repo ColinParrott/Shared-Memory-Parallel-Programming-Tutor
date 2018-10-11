@@ -34,4 +34,17 @@ public class AskOutcomeTests
         }
     }
 
+    @Test
+    public void ProbabilisticStoresSeq()
+    {
+        int[] r = ThreadSequenceGen.generateThreadSequence(programList.loadBEqualsAPlusA(), 100, GenMethod.PROBABILISTIC_MOST_STORES);
+        ArrayList<Memory> memories = ExecutionSequenceStateAnalyser.calculateMemoryStates(programList.loadBEqualsAPlusA(), r);
+
+        for (int i = 1; i < memories.size(); i++)
+        {
+            System.out.print(r[i - 1] + "\n" + memories.get(i) + "\n");
+        }
+    }
+
+
 }

@@ -58,6 +58,25 @@ public class Memory
         variables.clear();
     }
 
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o == this) return true;
+
+        if (!(o instanceof Memory)) return false;
+
+        Memory second = (Memory) o;
+
+        for (MemoryLocation l : MemoryLocation.values())
+        {
+            if (this.getValue(l) != second.getValue(l))
+                return false;
+        }
+
+        return true;
+    }
+
     @Override
     public String toString()
     {

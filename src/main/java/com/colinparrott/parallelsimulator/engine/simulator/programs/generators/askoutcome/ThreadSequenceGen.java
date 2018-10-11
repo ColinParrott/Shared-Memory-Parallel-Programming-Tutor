@@ -2,8 +2,12 @@ package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.
 
 import com.colinparrott.parallelsimulator.engine.hardware.Machine;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
+import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenUtils;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenerationSim;
+import javafx.util.Pair;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
@@ -23,9 +27,145 @@ public class ThreadSequenceGen
                 return generateThreadSequenceMaxSteps(p, steps);
             case RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS:
                 return generateThreadSequenceIgnoreFinishedThreads(p, steps);
+            case PROBABILISTIC_MOST_STORES:
+                return generateProbabilisticMostStores(p, steps);
             default:
                 throw new NotImplementedException();
         }
+    }
+
+    private static int[] generateProbabilisticMostStores(Program p, int numSteps)
+    {
+        ArrayList<Integer> seq = new ArrayList<>();
+
+        Random r = new Random();
+
+        HashMap<Integer, Integer> threadStoresCount = GenUtils.instructionPerThreadCount(p, InstructionKeyword.ST);
+
+//        printMap(threadStoresCount, "Store counts", "Thread");
+
+        for (int i = 0; i < numSteps; i++)
+        {
+            ArrayList<Pair<Integer, Float>> threadProb = calcProbs(threadStoresCount);
+            printPairList(threadProb, "Probabilities", "Thread", "Prob");
+            float rand = r.nextFloat();
+            int thread = selectThread(threadProb, rand);
+
+            if (thread == -1) break;
+
+            seq.add(thread);
+            System.out.println("Chosen: " + thread);
+
+            threadStoresCount.put(thread, countNumberStoresLeft(p, seq, thread));
+        }
+
+        return seq.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    private static <S, T> void printPairList(ArrayList<Pair<S, T>> list, String title, String left, String right)
+    {
+        System.out.println("---- " + title + " ----");
+
+        for (Pair p : list)
+        {
+            System.out.println(String.format(left + " %s: %s (%s)", p.getKey().toString(), p.getValue().toString(), right));
+        }
+        System.out.println("---- " + title + " ----\n");
+    }
+
+
+    private static <S, T> void printMap(Map<S, T> map, String title, String key)
+    {
+        System.out.println("---- " + title + " ----");
+        for (S t : map.keySet())
+        {
+            System.out.println(String.format(key + " %s: %s", t.toString(), map.get(t).toString()));
+        }
+        System.out.println("---- " + title + " ----\n");
+    }
+
+    private static int selectThread(ArrayList<Pair<Integer, Float>> threadProbs, float rand)
+    {
+        ArrayList<Pair<Integer, Float>> probBounds = new ArrayList<>();
+
+        if (threadProbs.size() > 0)
+            probBounds = getProbBounds(threadProbs);
+
+        System.out.println("Rand: " + rand);
+        for (Pair p : probBounds)
+        {
+            if (rand >= (float) p.getValue())
+                return (Integer) p.getKey();
+        }
+
+        return -1;
+    }
+
+    private static ArrayList<Pair<Integer, Float>> getProbBounds(ArrayList<Pair<Integer, Float>> threadProbs)
+    {
+        ArrayList<Pair<Integer, Float>> bounds = new ArrayList<>();
+        float currentBound = 1f;
+
+        for (Pair p : threadProbs)
+        {
+            currentBound -= (float) p.getValue();
+            bounds.add(new Pair<>((Integer) p.getKey(), currentBound));
+        }
+
+        bounds.sort(Comparator.comparing(Pair::getValue));
+        Collections.reverse(bounds);
+        printPairList(bounds, "Prob bounds", "Thread", "bound");
+
+        return bounds;
+    }
+
+    private static ArrayList<Pair<Integer, Float>> calcProbs(HashMap<Integer, Integer> instructCounts)
+    {
+        int total = 0;
+        ArrayList<Pair<Integer, Float>> result = new ArrayList<>();
+
+        for (int v : instructCounts.values())
+        {
+            if (v > 0)
+                total += v;
+        }
+
+
+        for (int k : instructCounts.keySet())
+        {
+            if (instructCounts.get(k) > 0)
+            {
+                float prob = (float) instructCounts.get(k) / (Math.max(1, total));
+                result.add(new Pair<>(k, prob));
+            }
+
+        }
+
+        result.sort(Comparator.comparing(Pair::getKey));
+        return result;
+
+    }
+
+    private static int countNumberStoresLeft(Program p, ArrayList<Integer> seq, int threadID)
+    {
+//        System.out.println("--- NUM STORES LEFT ---");
+        GenerationSim sim = new GenerationSim();
+        sim.simSequence(p, seq.stream().mapToInt(Integer::intValue).toArray());
+
+        SimulatorThread thread = sim.getMachine().getThread(threadID);
+        ArrayList<Instruction> instructions = thread.getInstructionsList();
+
+        int count = 0;
+        for (int i = thread.getInstructionPointer(); i < instructions.size(); i++)
+        {
+//            System.out.println(instructions.get(i));
+            if (instructions.get(i).getKeyword() == InstructionKeyword.ST)
+                count++;
+        }
+
+//        System.out.println("Thread " + threadID + " stores: " + count);
+
+        return count;
     }
 
     /**
