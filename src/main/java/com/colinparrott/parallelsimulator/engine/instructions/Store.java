@@ -27,4 +27,14 @@ public class Store extends Instruction
     {
         return String.format("%s %s $R%s", this.getKeyword(), memoryLocation, registerNumber);
     }
+
+    public int getRegisterNumber()
+    {
+        return registerNumber;
+    }
+
+    public MemoryLocation getMemoryLocation()
+    {
+        return memoryLocation;
+    }
 }

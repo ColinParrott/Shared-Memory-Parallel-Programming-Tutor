@@ -4,9 +4,7 @@ import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.hardware.Register;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
-import com.colinparrott.parallelsimulator.engine.instructions.Atomic;
-import com.colinparrott.parallelsimulator.engine.instructions.EndAtomic;
-import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.engine.instructions.*;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.ProgramList;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.ExecutionSequenceStateAnalyser;
@@ -14,10 +12,7 @@ import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.G
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.GenMethod;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.ThreadSequenceGen;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class CLISimulator extends Simulator
 {
@@ -66,17 +61,17 @@ public class CLISimulator extends Simulator
             case 1:
                 p = programList.loadXPlusPlusTwoThreads();
                 System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\nx=0;\nx++; // x++;\n}\n");
-                executeProgram(p, MemoryLocation.x);
+                executeProgram(p);
                 break;
             case 2:
                 p = programList.loadXPlusPlusAtomicTwoThreads();
                 System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\nx=0;\n<x++;> // <x++;>\n}\n");
-                executeProgram(p, MemoryLocation.x);
+                executeProgram(p);
                 break;
             case 3:
                 p = programList.loadAwaitFlag();
                 System.out.println("Loaded program (" + p.getUsedThreadIDs().length + " threads): \n{\na=0; x=0; z=1;\nco\n {a=25; x=1;}\n //\n <await (x==1) x=a;>\noc\n}\n");
-                executeProgram(p, MemoryLocation.a, MemoryLocation.x);
+                executeProgram(p);
                 break;
             case 4:
                 p = programList.loadXPlusPlusTwoThreads();
@@ -183,7 +178,7 @@ public class CLISimulator extends Simulator
 
     }
 
-    private void executeProgram(Program p, MemoryLocation... relevantVariables)
+    private void executeProgram(Program p)
     {
         SimulatorThread[] threads = new SimulatorThread[p.getUsedThreadIDs().length];
 
@@ -192,6 +187,8 @@ public class CLISimulator extends Simulator
             threads[i] = machine.createThread(i);
             threads[i].queueInstructions(p.getInstructionsForThread(i));
         }
+
+        MemoryLocation[] relevantVariables = getRelevantVariables(p);
 
         setInitialMemory(p.getInitialMemory());
 
@@ -242,6 +239,30 @@ public class CLISimulator extends Simulator
         System.out.println("\nAll instructions executed.");
         System.out.println("Press enter to exit...");
         new Scanner(System.in).nextLine();
+    }
+
+    private MemoryLocation[] getRelevantVariables(Program p)
+    {
+        HashSet<MemoryLocation> variables = new HashSet<>();
+
+        for (int i : p.getUsedThreadIDs())
+        {
+            for (Instruction instruction : p.getInstructionsForThread(i))
+            {
+                if (instruction.getKeyword() == InstructionKeyword.ST)
+                {
+                    Store s = (Store) instruction;
+                    variables.add(s.getMemoryLocation());
+                }
+                else if (instruction.getKeyword() == InstructionKeyword.LD)
+                {
+                    Load l = (Load) instruction;
+                    variables.add(l.getMemoryLocation());
+                }
+            }
+        }
+
+        return variables.toArray(new MemoryLocation[0]);
     }
 
     /**

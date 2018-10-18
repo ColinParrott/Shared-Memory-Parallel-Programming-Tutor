@@ -3,6 +3,7 @@ package com.colinparrott.parallelsimulator.engine.hardware;
 import com.colinparrott.parallelsimulator.engine.instructions.Await;
 import com.colinparrott.parallelsimulator.engine.instructions.EndAtomic;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.engine.instructions.Label;
 
 import java.util.ArrayList;
 
@@ -84,6 +85,9 @@ public class SimulatorThread
                 }
 
             }
+
+            if (instructionPointer < instructionsList.size() && instructionsList.get(instructionPointer) instanceof Label)
+                instructionPointer++;
 
             return true;
         }

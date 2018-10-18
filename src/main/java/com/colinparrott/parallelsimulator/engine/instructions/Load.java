@@ -28,4 +28,14 @@ public class Load extends Instruction
     {
         return String.format("%s $R%s %s", this.getKeyword(), registerNumber, memoryLocation);
     }
+
+    public int getRegisterNumber()
+    {
+        return registerNumber;
+    }
+
+    public MemoryLocation getMemoryLocation()
+    {
+        return memoryLocation;
+    }
 }

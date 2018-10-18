@@ -227,17 +227,18 @@ public class BasicInstructionTests
         instructions.add(new LoadImmediate(1, 5));
         instructions.add(new BranchIfEqual(0, 1, "makenegative"));
         instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Jump("end"));
         instructions.add(new Label("makenegative"));
         instructions.add(new LoadImmediate(2, -1));
+        instructions.add(new Label("end"));
 
         SimulatorThread t = machine.createThread(0);
         t.queueInstructions(instructions);
 
         // Make sure negative load is not skipped
-        for(int i = 0; i < 5; i++)
-        {
+        while (t.getNextInstruction() != null)
             t.executeInstruction();
-        }
+
 
         Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
 
@@ -275,14 +276,16 @@ public class BasicInstructionTests
         instructions.add(new LoadImmediate(1, 5));
         instructions.add(new BranchGreaterThan(0, 1, "makenegative"));
         instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Jump("end"));
         instructions.add(new Label("makenegative"));
         instructions.add(new LoadImmediate(2, -1));
+        instructions.add(new Label("end"));
 
         SimulatorThread t = machine.createThread(0);
         t.queueInstructions(instructions);
 
         // Execute all instructions (assuming one is missed due to branch)
-        for(int i = 0; i < 5; i++)
+        while (t.getNextInstruction() != null)
         {
             t.executeInstruction();
         }
@@ -322,14 +325,16 @@ public class BasicInstructionTests
         instructions.add(new LoadImmediate(1, 7));
         instructions.add(new BranchNotEqual(0, 1, "makenegative"));
         instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Jump("end"));
         instructions.add(new Label("makenegative"));
         instructions.add(new LoadImmediate(2, -1));
+        instructions.add(new Label("end"));
 
         SimulatorThread t = machine.createThread(0);
         t.queueInstructions(instructions);
 
         // Execute all instructions (assuming one is missed due to branch)
-        for(int i = 0; i < 5; i++)
+        while (t.getNextInstruction() != null)
         {
             t.executeInstruction();
         }
