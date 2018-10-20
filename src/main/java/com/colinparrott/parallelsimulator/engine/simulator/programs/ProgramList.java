@@ -88,6 +88,33 @@ public class ProgramList
 
     }
 
+    public Program loadBEqualsAPlusAAtomic()
+    {
+        ArrayList<Instruction> instructsThreadOne = new ArrayList<>();
+        ArrayList<Instruction> instructsThreadTwo = new ArrayList<>();
+        ArrayList<Instruction> instructsThreadThree = new ArrayList<>();
+
+        instructsThreadOne.add(new LoadImmediate(0, 1));
+        instructsThreadOne.add(new Store(0, MemoryLocation.a));
+
+        instructsThreadTwo.add(new LoadImmediate(0, 2));
+        instructsThreadTwo.add(new Store(0, MemoryLocation.a));
+
+        instructsThreadThree.add(new Atomic());
+        instructsThreadThree.add(new Load(1, MemoryLocation.a));
+        instructsThreadThree.add(new Load(2, MemoryLocation.a));
+        instructsThreadThree.add(new Add(3, 1, 2));
+        instructsThreadThree.add(new Store(3, MemoryLocation.b));
+        instructsThreadThree.add(new EndAtomic());
+
+        Program p = new Program();
+        p.setInstructionsForThread(0, instructsThreadOne);
+        p.setInstructionsForThread(1, instructsThreadTwo);
+        p.setInstructionsForThread(2, instructsThreadThree);
+        return p;
+
+    }
+
     public Program loadXEqualsFourAwait()
     {
         ArrayList<Instruction> instructsThreadOne = new ArrayList<>();

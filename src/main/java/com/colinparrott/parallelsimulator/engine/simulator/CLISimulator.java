@@ -11,6 +11,8 @@ import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.E
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenUtils;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.GenMethod;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.ThreadSequenceGen;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.Scorer;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -20,6 +22,123 @@ public class CLISimulator extends Simulator
     private static final char[] validCommands = {'0', '1', '2', '3', '4', '5', 'b'};
 
     public void start()
+    {
+
+        System.out.println("Select a generation method\n");
+        System.out.println("1) Random seq (max 10 steps)");
+
+        switch (getValidInt(1, 3))
+        {
+            case 1:
+                useGenMethod(GenMethod.RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS);
+                break;
+        }
+
+//        useGenMethod(GenMethod.RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS);
+
+//        originalCLI();
+
+    }
+
+    private void useGenMethod(GenMethod method)
+    {
+        System.out.println("Choose a program\n");
+        Program p = getProgram();
+
+        System.out.println("Choose a scoring metric\n");
+        System.out.println("1) Rarest Sequence in 10000 sims");
+
+        switch (getValidInt(1, 1))
+        {
+            case 1:
+                int[][] sequences = new int[10000][];
+                for (int i = 0; i < sequences.length; i++)
+                {
+                    int[] seq = ThreadSequenceGen.generateThreadSequence(p, 10, method);
+                    sequences[i] = seq;
+                }
+
+                System.out.println("done");
+
+                Pair<int[], Memory> result = Scorer.getMostUniqueSeq(p, sequences);
+                System.out.print("Chosen sequence:");
+                for (int j = 0; j < result.getKey().length; j++) System.out.print(" " + result.getKey()[j]);
+                System.out.println();
+                System.out.println("--- MEMORY ---");
+
+                for (MemoryLocation v : result.getValue().getVariables().keySet())
+                {
+                    System.out.print(v + ":" + result.getValue().getValue(v) + " ");
+                }
+        }
+
+
+    }
+
+    private Program getProgram()
+    {
+        Program p;
+        ProgramList programList = new ProgramList();
+
+        System.out.println("1) x++");
+        System.out.println("2) x++ (atomic)");
+        System.out.println("3) Await flag");
+        System.out.println("4) b=a+a");
+        System.out.println("5) <b=a+a>");
+        System.out.println();
+
+        int selection = getValidInt(1, 5);
+
+
+        switch (selection)
+        {
+            case 1:
+                p = programList.loadXPlusPlusTwoThreads();
+                return p;
+            case 2:
+                p = programList.loadXPlusPlusAtomicTwoThreads();
+                return p;
+            case 3:
+                p = programList.loadAwaitFlag();
+                return p;
+            case 4:
+                p = programList.loadBEqualsAPlusA();
+                return p;
+            case 5:
+                p = programList.loadBEqualsAPlusAAtomic();
+                return p;
+            default:
+                System.out.println("Don't know how we got here!");
+                return null;
+        }
+    }
+
+    private int getValidInt(int min, int max)
+    {
+        Scanner scanner = new Scanner(System.in);
+        int input = min - 1;
+
+        do
+        {
+
+            try
+            {
+                input = Integer.valueOf(scanner.nextLine());
+            }
+            catch (Exception e)
+            {
+                input = min - 1;
+
+            }
+
+            if (input < min || input > max)
+                System.out.println("Enter a number between " + min + " and " + max);
+        } while (input < min || input > max);
+
+        return input;
+    }
+
+    private void originalCLI()
     {
         ProgramList programList = new ProgramList();
 
@@ -88,7 +207,6 @@ public class CLISimulator extends Simulator
             default:
                 System.out.println("Don't know how we got here!");
         }
-
     }
 
     private void executeGame(Program p, int steps, GenMethod method)

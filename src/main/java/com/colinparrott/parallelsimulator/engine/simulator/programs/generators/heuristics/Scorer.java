@@ -4,8 +4,13 @@ import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.ExecutionSequenceStateAnalyser;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenerationSim;
+import javafx.util.Pair;
 
-import java.util.ArrayList;
+import java.util.*;
+
+import static java.util.Map.Entry.comparingByValue;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Class used for scoring how good a sequence is for a particular program
@@ -24,6 +29,57 @@ public class Scorer
                 System.out.println("Shouldn't reach here!");
                 return -1;
         }
+    }
+
+    /**
+     * From a list of sequences, simulates them all and returns the sequence which produces the least common final
+     * memory state(random if more than one)
+     *
+     * @param p               Program to simulate
+     * @param listOfSequences List of sequences to sim
+     * @return Execution sequence (list of thread ids)
+     */
+    public static Pair<int[], Memory> getMostUniqueSeq(Program p, int[][] listOfSequences)
+    {
+        HashMap<Memory, Integer> counts = new HashMap<>();
+        HashMap<Memory, ArrayList<int[]>> memoryToSeq = new HashMap<>();
+
+        for (int[] seq : listOfSequences)
+        {
+            GenerationSim sim = new GenerationSim();
+            sim.simSequence(p, seq);
+            Memory outcome = sim.getMachine().getMemory();
+
+            // Update counts
+            counts.put(outcome, counts.containsKey(outcome) ? counts.get(outcome) + 1 : 0);
+
+            // Add seq to memory outcomes map
+            if (memoryToSeq.containsKey(outcome))
+            {
+                memoryToSeq.get(outcome).add(seq);
+            }
+            else
+            {
+                memoryToSeq.put(outcome, new ArrayList<>());
+                memoryToSeq.get(outcome).add(seq);
+            }
+        }
+
+        LinkedHashMap<Memory, Integer> sorted =
+                counts
+                        .entrySet()
+                        .stream()
+                        .sorted(comparingByValue())
+                        .collect(
+                                toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
+                                        LinkedHashMap::new));
+
+        Memory lowestCountMemory = sorted.keySet().toArray(new Memory[0])[0];
+        ArrayList<int[]> rarestSequences = memoryToSeq.get(lowestCountMemory);
+
+        Random r = new Random();
+
+        return new Pair<>(rarestSequences.get(r.nextInt(rarestSequences.size())), lowestCountMemory);
     }
 
     private static int variableChangeCount(int[] seq, Program p)

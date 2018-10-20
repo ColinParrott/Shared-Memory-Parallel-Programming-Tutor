@@ -2,6 +2,7 @@ package com.colinparrott.parallelsimulator.engine.hardware;
 
 import java.util.HashMap;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * Represents RAM in the simulator where variables are stored
@@ -75,6 +76,12 @@ public class Memory
         }
 
         return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(variables);
     }
 
     @Override

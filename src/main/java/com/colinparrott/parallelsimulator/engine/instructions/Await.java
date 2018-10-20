@@ -104,7 +104,10 @@ public class Await extends Instruction
     @Override
     public String toString()
     {
-        return String.format("%s %s %s %s", this.getKeyword(), firstVariable, comparator, secondVariable);
+        if (!compareToConstant)
+            return String.format("%s %s %s %s", this.getKeyword(), firstVariable, comparator, secondVariable);
+        else
+            return String.format("%s %s %s %s", this.getKeyword(), firstVariable, comparator, constant);
     }
 
 }

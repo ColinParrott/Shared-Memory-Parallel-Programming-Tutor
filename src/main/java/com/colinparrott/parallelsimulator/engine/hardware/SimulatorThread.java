@@ -57,6 +57,7 @@ public class SimulatorThread
      */
     public boolean executeInstruction()
     {
+
         // If pointer is not pointing beyond the last instruction execute and increment pointer
         if(instructionPointer < instructionsList.size())
         {
@@ -86,7 +87,7 @@ public class SimulatorThread
 
             }
 
-            if (instructionPointer < instructionsList.size() && instructionsList.get(instructionPointer) instanceof Label)
+            if (instructionPointer < instructionsList.size() && instructionPointer >= 0 && instructionsList.get(instructionPointer) instanceof Label)
                 instructionPointer++;
 
             return true;
