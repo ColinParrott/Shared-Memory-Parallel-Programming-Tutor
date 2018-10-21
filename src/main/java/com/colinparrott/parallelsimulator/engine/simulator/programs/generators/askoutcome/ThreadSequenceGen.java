@@ -27,14 +27,27 @@ public class ThreadSequenceGen
                 return generateThreadSequenceMaxSteps(p, steps);
             case RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS:
                 return generateThreadSequenceIgnoreFinishedThreads(p, steps);
-            case PROBABILISTIC_MOST_STORES:
+            case PROBABILISTIC_MOST_STORES_DYNAMIC:
+                return generateProbabilisticMostStoresWithSim(p, steps);
+            case PROBABILISTIC_MOST_STORES_STATIC:
                 return generateProbabilisticMostStores(p, steps);
+            case PROBABILISTIC_MOST_STORES_STATIC_SHUFFLE:
+                return generateProbabilisticMostStoresShuffle(p, steps);
+            case PROBABILISTIC_MOST_STORES_AND_BRANCHES_STATIC:
+                return generateProbabilisticMostStoresBranches(p, steps);
             default:
                 throw new NotImplementedException();
         }
     }
 
-    private static int[] generateProbabilisticMostStores(Program p, int numSteps)
+    /**
+     * Generates sequence using probabilistic measures using sim to count stores left dynamically
+     *
+     * @param p        Program to generate sequence for
+     * @param numSteps Max number of steps to gen
+     * @return Int sequence of thread ids
+     */
+    private static int[] generateProbabilisticMostStoresWithSim(Program p, int numSteps)
     {
         ArrayList<Integer> seq = new ArrayList<>();
 
@@ -47,19 +60,129 @@ public class ThreadSequenceGen
         for (int i = 0; i < numSteps; i++)
         {
             ArrayList<Pair<Integer, Float>> threadProb = calcProbs(threadStoresCount);
-            printPairList(threadProb, "Probabilities", "Thread", "Prob");
+//            printPairList(threadProb, "Probabilities", "Thread", "Prob");
             float rand = r.nextFloat();
             int thread = selectThread(threadProb, rand);
 
             if (thread == -1) break;
 
             seq.add(thread);
-            System.out.println("Chosen: " + thread);
+//            System.out.println("Chosen: " + thread);
 
             threadStoresCount.put(thread, countNumberStoresLeft(p, seq, thread));
         }
 
         return seq.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    /**
+     * Generate sequence using probabilistic measures statically counting stores
+     *
+     * @param p        Program to generate sequence for
+     * @param numSteps Max number of steps to gen
+     * @return Int sequence of thread ids
+     */
+    private static int[] generateProbabilisticMostStores(Program p, int numSteps)
+    {
+        ArrayList<Integer> seq = new ArrayList<>();
+
+        Random r = new Random();
+        HashMap<Integer, Integer> threadStoresCount = GenUtils.instructionPerThreadCount(p, InstructionKeyword.ST);
+
+        for (int i = 0; i < numSteps; i++)
+        {
+
+            // Checks if all store counts are at 0
+            boolean countsAllZero = true;
+            for (int count : threadStoresCount.values())
+            {
+                if (count != 0)
+                {
+                    countsAllZero = false;
+                    break;
+                }
+            }
+
+            // If all counts are non-zero choose a thread weighted by store count, otherwise
+            // uniformly choose a thread
+            int thread;
+            if (!countsAllZero)
+            {
+                ArrayList<Pair<Integer, Float>> threadProb = calcProbs(threadStoresCount);
+                float rand = r.nextFloat();
+                thread = selectThread(threadProb, rand);
+            }
+            else
+            {
+                int rand = r.nextInt(threadStoresCount.size() - 1);
+                thread = threadStoresCount.keySet().stream().mapToInt(Integer::intValue).toArray()[rand];
+            }
+
+
+            seq.add(thread);
+            threadStoresCount.put(thread, (threadStoresCount.get(thread) > 0) ? threadStoresCount.get(thread) - 1 : 0);
+        }
+
+
+        return seq.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    private static int[] generateProbabilisticMostStoresBranches(Program p, int numSteps)
+    {
+        ArrayList<Integer> seq = new ArrayList<>();
+
+        Random r = new Random();
+        HashMap<Integer, Integer> threadStoresCount = GenUtils.instructionPerThreadCount(p, InstructionKeyword.ST, InstructionKeyword.BEQ, InstructionKeyword.BGT, InstructionKeyword.BLT, InstructionKeyword.BNE);
+
+        for (int i = 0; i < numSteps; i++)
+        {
+
+            // Checks if all store counts are at 0
+            boolean countsAllZero = true;
+            for (int count : threadStoresCount.values())
+            {
+                if (count != 0)
+                {
+                    countsAllZero = false;
+                    break;
+                }
+            }
+
+            // If all counts are non-zero choose a thread weighted by store count, otherwise
+            // uniformly choose a thread
+            int thread;
+            if (!countsAllZero)
+            {
+                ArrayList<Pair<Integer, Float>> threadProb = calcProbs(threadStoresCount);
+                float rand = r.nextFloat();
+                thread = selectThread(threadProb, rand);
+            }
+            else
+            {
+                int rand = r.nextInt(threadStoresCount.size() - 1);
+                thread = threadStoresCount.keySet().stream().mapToInt(Integer::intValue).toArray()[rand];
+            }
+
+
+            seq.add(thread);
+            threadStoresCount.put(thread, (threadStoresCount.get(thread) > 0) ? threadStoresCount.get(thread) - 1 : 0);
+        }
+
+
+        return seq.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    /**
+     * Generate sequence using probabilistic measures statically counting stores (shuffles end result)
+     *
+     * @param p        Program to generate sequence for
+     * @param numSteps Max number of steps to gen
+     * @return Int sequence of thread ids
+     */
+    private static int[] generateProbabilisticMostStoresShuffle(Program p, int numSteps)
+    {
+        int[] seq = generateProbabilisticMostStores(p, numSteps);
+        return GenUtils.shuffle(seq);
     }
 
 
@@ -177,7 +300,7 @@ public class ThreadSequenceGen
         if (threadProbs.size() > 0)
             probBounds = getProbBounds(threadProbs);
 
-        System.out.println("Rand: " + rand);
+//        System.out.println("Rand: " + rand);
         for (Pair p : probBounds)
         {
             if (rand >= (float) p.getValue())
@@ -200,7 +323,7 @@ public class ThreadSequenceGen
 
         bounds.sort(Comparator.comparing(Pair::getValue));
         Collections.reverse(bounds);
-        printPairList(bounds, "Prob bounds", "Thread", "bound");
+        // printPairList(bounds, "Prob bounds", "Thread", "bound");
 
         return bounds;
     }

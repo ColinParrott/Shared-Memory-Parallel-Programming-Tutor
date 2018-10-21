@@ -26,24 +26,24 @@ public class AskOutcomeTests
         int[] r = ThreadSequenceGen.generateThreadSequence(programList.loadXPlusPlusTwoThreads(), 6, GenMethod.RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS);
         ArrayList<Memory> memories = ExecutionSequenceStateAnalyser.calculateMemoryStates(programList.loadXPlusPlusTwoThreads(), r);
 
-        int j = 0;
-        for(int i : r)
-        {
-            System.out.print(i + "\n" + memories.get(j) + "\n");
-            j++;
-        }
+//        int j = 0;
+//        for(int i : r)
+//        {
+//            System.out.print(i + "\n" + memories.get(j) + "\n");
+//            j++;
+//        }
     }
 
     @Test
     public void ProbabilisticStoresSeq()
     {
-        int[] r = ThreadSequenceGen.generateThreadSequence(programList.loadBEqualsAPlusA(), 100, GenMethod.PROBABILISTIC_MOST_STORES);
+        int[] r = ThreadSequenceGen.generateThreadSequence(programList.loadBEqualsAPlusA(), 100, GenMethod.PROBABILISTIC_MOST_STORES_DYNAMIC);
         ArrayList<Memory> memories = ExecutionSequenceStateAnalyser.calculateMemoryStates(programList.loadBEqualsAPlusA(), r);
 
-        for (int i = 1; i < memories.size(); i++)
-        {
-            System.out.print(r[i - 1] + "\n" + memories.get(i) + "\n");
-        }
+//        for (int i = 1; i < memories.size(); i++)
+//        {
+//            System.out.print(r[i - 1] + "\n" + memories.get(i) + "\n");
+//        }
     }
 
 

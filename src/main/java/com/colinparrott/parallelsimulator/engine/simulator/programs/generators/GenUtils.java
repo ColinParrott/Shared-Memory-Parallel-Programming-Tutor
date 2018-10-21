@@ -6,10 +6,7 @@ import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class GenUtils
 {
@@ -73,6 +70,29 @@ public class GenUtils
         return counts;
     }
 
+    public static HashMap<Integer, Integer> instructionPerThreadCount(Program p, InstructionKeyword... keywords)
+    {
+        HashMap<Integer, Integer> counts = new HashMap<>();
+
+        for (int id : p.getUsedThreadIDs())
+        {
+            // Init hashmap
+            counts.put(id, 0);
+
+            for (Instruction instruction : p.getInstructionsForThread(id))
+            {
+                if (Arrays.asList(keywords).contains(instruction.getKeyword()))
+                {
+                    int oldCount = counts.get(id);
+                    counts.put(id, oldCount + 1);
+                }
+            }
+        }
+
+        return counts;
+
+    }
+
     public static HashMap<Integer, HashMap<InstructionKeyword, Integer>> instructionsPerThreadCount(Program p, InstructionKeyword... keywords)
     {
         HashMap<Integer, HashMap<InstructionKeyword, Integer>> counts = new HashMap<>();
@@ -121,6 +141,31 @@ public class GenUtils
         }
 
         return changed;
+    }
+
+    /**
+     * Shuffles array using Fisher-Yates algorithm: https://www.dotnetperls.com/shuffle-java
+     *
+     * @param array array to shuffle
+     */
+    public static int[] shuffle(int[] array)
+    {
+        int n = array.length;
+        Random random = new Random();
+        // Loop over array.
+        for (int i = 0; i < array.length; i++)
+        {
+            // Get a random index of the array past the current index.
+            // ... The argument is an exclusive bound.
+            //     It will not go past the array's end.
+            int randomValue = i + random.nextInt(n - i);
+            // Swap the random element with the present element.
+            int randomElement = array[randomValue];
+            array[randomValue] = array[i];
+            array[i] = randomElement;
+        }
+
+        return array;
     }
 
     /**

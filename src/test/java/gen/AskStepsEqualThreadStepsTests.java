@@ -26,7 +26,7 @@ public class AskStepsEqualThreadStepsTests
 
         for(int i : seq)
         {
-            System.out.println(i);
+//            System.out.println(i);
         }
 
 
@@ -40,7 +40,7 @@ public class AskStepsEqualThreadStepsTests
 
         for(Memory m : memories)
         {
-            System.out.println(m.toString());
+//            System.out.println(m.toString());
         }
 
 
@@ -62,6 +62,6 @@ public class AskStepsEqualThreadStepsTests
 //            System.out.println();
         }
 
-        System.out.println(sequences.size());
+//        System.out.println(sequences.size());
     }
 }

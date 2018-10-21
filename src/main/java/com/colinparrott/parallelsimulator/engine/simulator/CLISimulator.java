@@ -24,13 +24,25 @@ public class CLISimulator extends Simulator
     public void start()
     {
 
-        System.out.println("Select a generation method\n");
-        System.out.println("1) Random seq (max 10 steps)");
+        System.out.println("Select a generation method (max 10 steps)\n");
+        System.out.println("1) Random sequences");
+        System.out.println("2) Favour threads with more stores");
+        System.out.println("3) Favour threads with more stores (shuffle result)");
+        System.out.println("4) Favour threads with more stores and branches");
 
-        switch (getValidInt(1, 3))
+        switch (getValidInt(1, 4))
         {
             case 1:
                 useGenMethod(GenMethod.RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS);
+                break;
+            case 2:
+                useGenMethod(GenMethod.PROBABILISTIC_MOST_STORES_STATIC);
+                break;
+            case 3:
+                useGenMethod(GenMethod.PROBABILISTIC_MOST_STORES_STATIC_SHUFFLE);
+                break;
+            case 4:
+                useGenMethod(GenMethod.PROBABILISTIC_MOST_STORES_AND_BRANCHES_STATIC);
                 break;
         }
 
@@ -42,36 +54,60 @@ public class CLISimulator extends Simulator
 
     private void useGenMethod(GenMethod method)
     {
+        final int numRuns = 5000;
         System.out.println("Choose a program\n");
         Program p = getProgram();
 
         System.out.println("Choose a scoring metric\n");
-        System.out.println("1) Rarest Sequence in 10000 sims");
+        System.out.println("1) Rarest outcome in " + numRuns + " sims");
 
         switch (getValidInt(1, 1))
         {
             case 1:
-                int[][] sequences = new int[10000][];
+                int[][] sequences = new int[numRuns][];
                 for (int i = 0; i < sequences.length; i++)
                 {
-                    int[] seq = ThreadSequenceGen.generateThreadSequence(p, 10, method);
+                    int[] seq = ThreadSequenceGen.generateThreadSequence(p, 15, method);
                     sequences[i] = seq;
                 }
 
-                System.out.println("done");
+//                System.out.println("done");
 
                 Pair<int[], Memory> result = Scorer.getMostUniqueSeq(p, sequences);
                 System.out.print("Chosen sequence:");
                 for (int j = 0; j < result.getKey().length; j++) System.out.print(" " + result.getKey()[j]);
                 System.out.println();
-                System.out.println("--- MEMORY ---");
 
-                for (MemoryLocation v : result.getValue().getVariables().keySet())
+                System.out.println("--- INIT MEMORY ---");
+
+                for (MemoryLocation v : getRelevantVariables(p))
+                {
+                    System.out.print(v + ":" + p.getInitialMemory().getValue(v) + " ");
+                }
+
+                System.out.println();
+
+                System.out.println("--- FINAL MEMORY ---");
+
+                for (MemoryLocation v : getRelevantVariables(p))
                 {
                     System.out.print(v + ":" + result.getValue().getValue(v) + " ");
                 }
         }
 
+        System.out.println("\n\nEnter 'r' to restart or 'q' to exit...");
+
+        char action = getValidChar("rq");
+
+        if (action == 'r')
+        {
+            start();
+            System.out.println('\n');
+        }
+        else
+        {
+            System.exit(0);
+        }
 
     }
 
@@ -80,14 +116,15 @@ public class CLISimulator extends Simulator
         Program p;
         ProgramList programList = new ProgramList();
 
-        System.out.println("1) x++");
-        System.out.println("2) x++ (atomic)");
+        System.out.println("1) x++ // x++ ");
+        System.out.println("2) <x++> // <x++>");
         System.out.println("3) Await flag");
-        System.out.println("4) b=a+a");
-        System.out.println("5) <b=a+a>");
-        System.out.println();
+        System.out.println("4) a=1 // a=2 // b=a+a");
+        System.out.println("5) a=1 // a=2 // <b=a+a>");
+        System.out.println("6) if(a<b) a++ else b++ (4 threads)");
+        System.out.println("7) if(a<b) <a++> else <b++> (4 threads)");
 
-        int selection = getValidInt(1, 5);
+        int selection = getValidInt(1, 7);
 
 
         switch (selection)
@@ -107,10 +144,31 @@ public class CLISimulator extends Simulator
             case 5:
                 p = programList.loadBEqualsAPlusAAtomic();
                 return p;
+            case 6:
+                p = programList.loadALessThanBFourThreads();
+                return p;
+            case 7:
+                p = programList.loadALessThanBFourThreadsAtomic();
+                return p;
             default:
                 System.out.println("Don't know how we got here!");
                 return null;
         }
+    }
+
+    private char getValidChar(String validChars)
+    {
+        Scanner scanner = new Scanner(System.in);
+        String s;
+
+        do
+        {
+            s = scanner.nextLine();
+
+            if (s.length() != 1 && !validChars.contains(s)) System.out.println("Please enter 'r' or 'q'.");
+        } while (s.length() != 1 && !validChars.contains(s));
+
+        return s.charAt(0);
     }
 
     private int getValidInt(int min, int max)

@@ -1,8 +1,9 @@
 package com.colinparrott.parallelsimulator.engine.hardware;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.HashMap;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 /**
  * Represents RAM in the simulator where variables are stored
@@ -81,7 +82,9 @@ public class Memory
     @Override
     public int hashCode()
     {
-        return Objects.hash(variables);
+        HashCodeBuilder builder = new HashCodeBuilder();
+        builder.append(variables.values().toArray());
+        return builder.hashCode();
     }
 
     @Override
