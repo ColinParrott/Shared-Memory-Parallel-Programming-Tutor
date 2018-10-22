@@ -9,8 +9,10 @@ import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.ProgramList;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.ExecutionSequenceStateAnalyser;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenUtils;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenerationSim;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.GenMethod;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.ThreadSequenceGen;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.ScoreMethod;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.Scorer;
 import javafx.util.Pair;
 
@@ -24,11 +26,12 @@ public class CLISimulator extends Simulator
     public void start()
     {
 
-        System.out.println("Select a generation method (max 10 steps)\n");
+        System.out.println("Select a generation method (max 15 steps)\n");
         System.out.println("1) Random sequences");
         System.out.println("2) Favour threads with more stores");
         System.out.println("3) Favour threads with more stores (shuffle result)");
         System.out.println("4) Favour threads with more stores and branches");
+        System.out.println();
 
         switch (getValidInt(1, 4))
         {
@@ -55,13 +58,20 @@ public class CLISimulator extends Simulator
     private void useGenMethod(GenMethod method)
     {
         final int numRuns = 5000;
-        System.out.println("Choose a program\n");
+        System.out.println("\nChoose a program\n");
         Program p = getProgram();
 
         System.out.println("Choose a scoring metric\n");
         System.out.println("1) Rarest outcome in " + numRuns + " sims");
+        System.out.println("2) Variable change count");
+        System.out.println("3) Variable change count start and end");
+        System.out.println();
+        int input = getValidInt(1, 3);
 
-        switch (getValidInt(1, 1))
+
+        TreeMap<Integer, ArrayList<int[]>> scoreAndSeqs = new TreeMap<>();
+
+        switch (input)
         {
             case 1:
                 int[][] sequences = new int[numRuns][];
@@ -70,9 +80,6 @@ public class CLISimulator extends Simulator
                     int[] seq = ThreadSequenceGen.generateThreadSequence(p, 15, method);
                     sequences[i] = seq;
                 }
-
-//                System.out.println("done");
-
                 Pair<int[], Memory> result = Scorer.getMostUniqueSeq(p, sequences);
                 System.out.print("Chosen sequence:");
                 for (int j = 0; j < result.getKey().length; j++) System.out.print(" " + result.getKey()[j]);
@@ -93,6 +100,88 @@ public class CLISimulator extends Simulator
                 {
                     System.out.print(v + ":" + result.getValue().getValue(v) + " ");
                 }
+                break;
+
+            case 2:
+
+                for (int i = 0; i < numRuns; i++)
+                {
+                    int[] seq = ThreadSequenceGen.generateThreadSequence(p, 15, method);
+                    int score = Scorer.calculateScore(seq, p, ScoreMethod.VARIABLE_CHANGE_COUNT);
+
+                    if (!scoreAndSeqs.containsKey(score)) scoreAndSeqs.put(score, new ArrayList<>());
+                    ArrayList<int[]> old = scoreAndSeqs.get(score);
+                    old.add(seq);
+                    scoreAndSeqs.put(score, old);
+                }
+
+
+                int[] chosenSeq = scoreAndSeqs.get(scoreAndSeqs.lastKey()).get(new Random().nextInt(scoreAndSeqs.get(scoreAndSeqs.lastKey()).size() - 1));
+                System.out.print("Chosen sequence:");
+                for (int j = 0; j < chosenSeq.length; j++) System.out.print(" " + chosenSeq[j]);
+                System.out.println();
+
+                System.out.println("--- INIT MEMORY ---");
+
+                for (MemoryLocation v : getRelevantVariables(p))
+                {
+                    System.out.print(v + ":" + p.getInitialMemory().getValue(v) + " ");
+                }
+
+                System.out.println();
+
+                GenerationSim sim = new GenerationSim();
+                sim.simSequence(p, chosenSeq);
+
+
+                System.out.println("--- FINAL MEMORY ---");
+
+                for (MemoryLocation v : getRelevantVariables(p))
+                {
+                    System.out.print(v + ":" + sim.getMachine().getMemory().getValue(v) + " ");
+                }
+
+                break;
+
+            case 3:
+
+                for (int i = 0; i < numRuns; i++)
+                {
+                    int[] seq = ThreadSequenceGen.generateThreadSequence(p, 15, method);
+                    int score = Scorer.calculateScore(seq, p, ScoreMethod.VARIABLE_CHANGE_START_AND_END);
+
+                    if (!scoreAndSeqs.containsKey(score)) scoreAndSeqs.put(score, new ArrayList<>());
+                    ArrayList<int[]> old = scoreAndSeqs.get(score);
+                    old.add(seq);
+                    scoreAndSeqs.put(score, old);
+                }
+
+
+                int[] chosenSeq2 = scoreAndSeqs.get(scoreAndSeqs.lastKey()).get(new Random().nextInt(scoreAndSeqs.get(scoreAndSeqs.lastKey()).size() - 1));
+                System.out.print("Chosen sequence:");
+                for (int j = 0; j < chosenSeq2.length; j++) System.out.print(" " + chosenSeq2[j]);
+                System.out.println();
+
+                System.out.println("--- INIT MEMORY ---");
+
+                for (MemoryLocation v : getRelevantVariables(p))
+                {
+                    System.out.print(v + ":" + p.getInitialMemory().getValue(v) + " ");
+                }
+
+                System.out.println();
+
+                GenerationSim sim2 = new GenerationSim();
+                sim2.simSequence(p, chosenSeq2);
+
+
+                System.out.println("--- FINAL MEMORY ---");
+
+                for (MemoryLocation v : getRelevantVariables(p))
+                {
+                    System.out.print(v + ":" + sim2.getMachine().getMemory().getValue(v) + " ");
+                }
+                break;
         }
 
         System.out.println("\n\nEnter 'r' to restart or 'q' to exit...");
@@ -123,6 +212,7 @@ public class CLISimulator extends Simulator
         System.out.println("5) a=1 // a=2 // <b=a+a>");
         System.out.println("6) if(a<b) a++ else b++ (4 threads)");
         System.out.println("7) if(a<b) <a++> else <b++> (4 threads)");
+        System.out.println();
 
         int selection = getValidInt(1, 7);
 
