@@ -74,9 +74,18 @@ public class BatchScorer
                                         LinkedHashMap::new));
 
         Memory lowestCountMemory = sorted.keySet().toArray(new Memory[0])[0];
-        ArrayList<int[]> rarestSequences = memoryToSeq.get(lowestCountMemory);
 
-        return rarestSequences.size();
+
+        if(sorted.values().toArray(new Integer[0])[0] == 1)
+        {
+            ArrayList<int[]> rarestSequences = memoryToSeq.get(lowestCountMemory);
+            return rarestSequences.size();
+        }
+        else
+        {
+            return 0;
+        }
+
     }
 
 

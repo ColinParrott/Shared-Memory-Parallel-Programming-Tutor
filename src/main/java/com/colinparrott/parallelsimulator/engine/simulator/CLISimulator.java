@@ -44,7 +44,7 @@ public class CLISimulator extends Simulator
     {
         Program[] programs = new Program[]{programList.loadXPlusPlusTwoThreads(), programList.loadXPlusPlusAtomicTwoThreads(), programList.loadAwaitFlag(), programList.loadBEqualsAPlusA(), programList.loadBEqualsAPlusAAtomic(), programList.loadWhileLoop()};
         GenMethod[] genMethods = new GenMethod[]{GenMethod.RANDOM_MAX_GLOBAL_STEPS, GenMethod.PROBABILISTIC_MOST_STORES_STATIC, GenMethod.PROBABILISTIC_MOST_STORES_STATIC_SHUFFLE, GenMethod.PROBABILISTIC_MOST_STORES_AND_BRANCHES_STATIC};
-        ScoreMethod[] scoreMethods = new ScoreMethod[]{ScoreMethod.VARIABLE_CHANGE_COUNT, ScoreMethod.VARIABLE_CHANGE_START_AND_END, ScoreMethod.COUNT_UNIQUE_OUTCOMES};
+        ScoreMethod[] scoreMethods = new ScoreMethod[]{/*ScoreMethod.VARIABLE_CHANGE_COUNT, ScoreMethod.VARIABLE_CHANGE_START_AND_END, */ScoreMethod.COUNT_UNIQUE_OUTCOMES};
 
         final int numRuns = 5000;
         final int maxSteps = 15;
