@@ -6,5 +6,7 @@ public enum ScoreMethod
     VARIABLE_CHANGE_COUNT,
 
     // Counts the number of variables with different values compared only from the initial memory state and the end
-    VARIABLE_CHANGE_START_AND_END
+    VARIABLE_CHANGE_START_AND_END,
+
+    COUNT_UNIQUE_OUTCOMES
 }

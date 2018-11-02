@@ -16,11 +16,26 @@ public class Program
     private HashMap<Integer, ArrayList<Instruction>> instructionLists;
 
     private Memory initialMemory;
+    private String name = "N/A";
+
+    public Program(Memory initialMemory, String name)
+    {
+        instructionLists = new HashMap<>();
+        this.initialMemory = initialMemory;
+        this.name = name;
+    }
 
     public Program(Memory initialMemory)
     {
         instructionLists = new HashMap<>();
         this.initialMemory = initialMemory;
+    }
+
+    public Program(String name)
+    {
+        this.instructionLists = new HashMap<>();
+        this.initialMemory = new Memory();
+        this.name = name;
     }
 
     public Program()
@@ -70,5 +85,10 @@ public class Program
 
     public Memory getInitialMemory() {
         return initialMemory;
+    }
+
+    public String getName()
+    {
+        return name;
     }
 }

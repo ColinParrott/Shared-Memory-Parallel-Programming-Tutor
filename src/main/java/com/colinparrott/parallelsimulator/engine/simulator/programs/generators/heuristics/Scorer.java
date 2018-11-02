@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class Scorer
 {
-    public static int calculateScore(int[] seq, Program p, ScoreMethod method)
+    public int calculateScore(int[] seq, Program p, ScoreMethod method)
     {
         switch (method)
         {
@@ -82,7 +82,17 @@ public class Scorer
         return new Pair<>(rarestSequences.get(r.nextInt(rarestSequences.size())), lowestCountMemory);
     }
 
-    private static int variableChangeCount(int[] seq, Program p)
+    /**
+     * From a list of sequences, simulates them all and returns the sequence which produces the least common final
+     * memory state(random if more than one)
+     *
+     * @param p               Program to simulate
+     * @param listOfSequences List of sequences to sim
+     * @return Execution sequence (list of thread ids)
+     */
+
+
+    private int variableChangeCount(int[] seq, Program p)
     {
         ArrayList<Memory> memories = ExecutionSequenceStateAnalyser.calculateMemoryStates(p, seq);
 
@@ -102,7 +112,7 @@ public class Scorer
         return count;
     }
 
-    private static int variableChangeCountCompareStartAndEnd(int[] seq, Program p)
+    private int variableChangeCountCompareStartAndEnd(int[] seq, Program p)
     {
         ArrayList<Memory> memories = ExecutionSequenceStateAnalyser.calculateMemoryStates(p, seq);
 

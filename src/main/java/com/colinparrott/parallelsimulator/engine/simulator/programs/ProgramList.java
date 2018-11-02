@@ -18,7 +18,7 @@ public class ProgramList
         instructions.add(new AddImmediate(0, 0, 1));
         instructions.add(new Store(0, MemoryLocation.x));
 
-        Program p = new Program();
+        Program p = new Program("x++");
         p.setInstructionsForThread(0, instructions);
         p.setInstructionsForThread(1, instructions);
 
@@ -34,7 +34,7 @@ public class ProgramList
         instructions.add(new Store(0, MemoryLocation.x));
         instructions.add(new EndAtomic());
 
-        Program p = new Program();
+        Program p = new Program("<x++>");
         p.setInstructionsForThread(0, instructions);
         p.setInstructionsForThread(1, instructions);
 
@@ -57,7 +57,7 @@ public class ProgramList
         instructsThreadTwo.add(new Store(0, MemoryLocation.x));
         instructsThreadTwo.add(new EndAtomic());
 
-        Program p = new Program();
+        Program p = new Program("Await flag");
         p.setInstructionsForThread(0, instructsThreadOne);
         p.setInstructionsForThread(1, instructsThreadTwo);
         return p;
@@ -80,7 +80,7 @@ public class ProgramList
         instructsThreadThree.add(new Add(3, 1, 2));
         instructsThreadThree.add(new Store(3, MemoryLocation.b));
 
-        Program p = new Program();
+        Program p = new Program("a=1 // a=2 // b=a+a");
         p.setInstructionsForThread(0, instructsThreadOne);
         p.setInstructionsForThread(1, instructsThreadTwo);
         p.setInstructionsForThread(2, instructsThreadThree);
@@ -107,7 +107,7 @@ public class ProgramList
         instructsThreadThree.add(new Store(3, MemoryLocation.b));
         instructsThreadThree.add(new EndAtomic());
 
-        Program p = new Program();
+        Program p = new Program("a=1 // a=2 // <b=a+a>");
         p.setInstructionsForThread(0, instructsThreadOne);
         p.setInstructionsForThread(1, instructsThreadTwo);
         p.setInstructionsForThread(2, instructsThreadThree);
@@ -209,5 +209,38 @@ public class ProgramList
         }
 
         return p;
+    }
+
+    public Program loadWhileLoop()
+    {
+        ArrayList<Instruction> instructionsThreadOne = new ArrayList<>();
+        instructionsThreadOne.add(new LoadImmediate(1, 4));
+        instructionsThreadOne.add(new Label("loop"));
+        instructionsThreadOne.add(new Load(0, MemoryLocation.i));
+        instructionsThreadOne.add(new BranchGreaterThan(0, 1, "exit"));
+        instructionsThreadOne.add(new AddImmediate(0, 0, 1));
+        instructionsThreadOne.add(new Store(0, MemoryLocation.i));
+        instructionsThreadOne.add(new Jump("loop"));
+        instructionsThreadOne.add(new Label("exit"));
+
+        ArrayList<Instruction> instructionsThreadTwo = new ArrayList<>();
+        instructionsThreadTwo.add(new LoadImmediate(1, 4));
+        instructionsThreadOne.add(new Label("loop"));
+        instructionsThreadOne.add(new Load(0, MemoryLocation.i));
+        instructionsThreadOne.add(new BranchGreaterThan(0, 1, "exit"));
+        instructionsThreadOne.add(new AddImmediate(0, 0, -1));
+        instructionsThreadOne.add(new Store(0, MemoryLocation.i));
+        instructionsThreadOne.add(new Jump("loop"));
+        instructionsThreadOne.add(new Label("exit"));
+
+        Memory m = new Memory();
+        m.setVariable(MemoryLocation.i, 4);
+        Program p = new Program(m, "while(i <= 4){i++ // i--};");
+
+        p.setInstructionsForThread(0, instructionsThreadOne);
+        p.setInstructionsForThread(1, instructionsThreadTwo);
+
+        return p;
+
     }
 }

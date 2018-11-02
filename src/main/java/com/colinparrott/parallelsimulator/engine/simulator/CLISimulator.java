@@ -2,289 +2,133 @@ package com.colinparrott.parallelsimulator.engine.simulator;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
-import com.colinparrott.parallelsimulator.engine.hardware.Register;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
-import com.colinparrott.parallelsimulator.engine.instructions.*;
+import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
+import com.colinparrott.parallelsimulator.engine.instructions.Load;
+import com.colinparrott.parallelsimulator.engine.instructions.Store;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.CLIUtils;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.ProgramList;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.ExecutionSequenceStateAnalyser;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenUtils;
-import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenerationSim;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.GenMethod;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.ThreadSequenceGen;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.BatchScorer;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.ScoreMethod;
-import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.Scorer;
-import javafx.util.Pair;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CLISimulator extends Simulator
 {
 
     private static final char[] validCommands = {'0', '1', '2', '3', '4', '5', 'b'};
+    private String[] args;
+    private static ProgramList programList;
+
+    public CLISimulator(String[] args)
+    {
+        this.args = args;
+        programList = new ProgramList();
+    }
 
     public void start()
     {
+        Program[] programs = new Program[]{programList.loadXPlusPlusTwoThreads(), programList.loadXPlusPlusAtomicTwoThreads(), programList.loadAwaitFlag(), programList.loadBEqualsAPlusA(), programList.loadBEqualsAPlusAAtomic(), programList.loadWhileLoop()};
+        GenMethod[] genMethods = new GenMethod[]{GenMethod.RANDOM_MAX_GLOBAL_STEPS, GenMethod.PROBABILISTIC_MOST_STORES_STATIC, GenMethod.PROBABILISTIC_MOST_STORES_STATIC_SHUFFLE, GenMethod.PROBABILISTIC_MOST_STORES_AND_BRANCHES_STATIC};
+        ScoreMethod[] scoreMethods = new ScoreMethod[]{ScoreMethod.VARIABLE_CHANGE_COUNT, ScoreMethod.VARIABLE_CHANGE_START_AND_END, ScoreMethod.COUNT_UNIQUE_OUTCOMES};
 
-        System.out.println("Select a generation method (max 15 steps)\n");
-        System.out.println("1) Random sequences");
-        System.out.println("2) Favour threads with more stores");
-        System.out.println("3) Favour threads with more stores (shuffle result)");
-        System.out.println("4) Favour threads with more stores and branches");
-        System.out.println();
-
-        switch (getValidInt(1, 4))
-        {
-            case 1:
-                useGenMethod(GenMethod.RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS);
-                break;
-            case 2:
-                useGenMethod(GenMethod.PROBABILISTIC_MOST_STORES_STATIC);
-                break;
-            case 3:
-                useGenMethod(GenMethod.PROBABILISTIC_MOST_STORES_STATIC_SHUFFLE);
-                break;
-            case 4:
-                useGenMethod(GenMethod.PROBABILISTIC_MOST_STORES_AND_BRANCHES_STATIC);
-                break;
-        }
-
-//        useGenMethod(GenMethod.RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS);
-
-//        originalCLI();
-
-    }
-
-    private void useGenMethod(GenMethod method)
-    {
         final int numRuns = 5000;
-        System.out.println("\nChoose a program\n");
-        Program p = getProgram();
+        final int maxSteps = 15;
 
-        System.out.println("Choose a scoring metric\n");
-        System.out.println("1) Rarest outcome in " + numRuns + " sims");
-        System.out.println("2) Variable change count");
-        System.out.println("3) Variable change count start and end");
-        System.out.println();
-        int input = getValidInt(1, 3);
+        HashMap<String, HashMap<String, HashMap<String, Float>>> programScores = new HashMap<>();
+
+        ExecutorService es = Executors.newCachedThreadPool();
 
 
-        TreeMap<Integer, ArrayList<int[]>> scoreAndSeqs = new TreeMap<>();
-
-        switch (input)
-        {
-            case 1:
-                int[][] sequences = new int[numRuns][];
-                for (int i = 0; i < sequences.length; i++)
-                {
-                    int[] seq = ThreadSequenceGen.generateThreadSequence(p, 15, method);
-                    sequences[i] = seq;
-                }
-                Pair<int[], Memory> result = Scorer.getMostUniqueSeq(p, sequences);
-                System.out.print("Chosen sequence:");
-                for (int j = 0; j < result.getKey().length; j++) System.out.print(" " + result.getKey()[j]);
-                System.out.println();
-
-                System.out.println("--- INIT MEMORY ---");
-
-                for (MemoryLocation v : getRelevantVariables(p))
-                {
-                    System.out.print(v + ":" + p.getInitialMemory().getValue(v) + " ");
-                }
-
-                System.out.println();
-
-                System.out.println("--- FINAL MEMORY ---");
-
-                for (MemoryLocation v : getRelevantVariables(p))
-                {
-                    System.out.print(v + ":" + result.getValue().getValue(v) + " ");
-                }
-                break;
-
-            case 2:
-
-                for (int i = 0; i < numRuns; i++)
-                {
-                    int[] seq = ThreadSequenceGen.generateThreadSequence(p, 15, method);
-                    int score = Scorer.calculateScore(seq, p, ScoreMethod.VARIABLE_CHANGE_COUNT);
-
-                    if (!scoreAndSeqs.containsKey(score)) scoreAndSeqs.put(score, new ArrayList<>());
-                    ArrayList<int[]> old = scoreAndSeqs.get(score);
-                    old.add(seq);
-                    scoreAndSeqs.put(score, old);
-                }
-
-
-                int[] chosenSeq = scoreAndSeqs.get(scoreAndSeqs.lastKey()).get(new Random().nextInt(scoreAndSeqs.get(scoreAndSeqs.lastKey()).size() - 1));
-                System.out.print("Chosen sequence:");
-                for (int j = 0; j < chosenSeq.length; j++) System.out.print(" " + chosenSeq[j]);
-                System.out.println();
-
-                System.out.println("--- INIT MEMORY ---");
-
-                for (MemoryLocation v : getRelevantVariables(p))
-                {
-                    System.out.print(v + ":" + p.getInitialMemory().getValue(v) + " ");
-                }
-
-                System.out.println();
-
-                GenerationSim sim = new GenerationSim();
-                sim.simSequence(p, chosenSeq);
-
-
-                System.out.println("--- FINAL MEMORY ---");
-
-                for (MemoryLocation v : getRelevantVariables(p))
-                {
-                    System.out.print(v + ":" + sim.getMachine().getMemory().getValue(v) + " ");
-                }
-
-                break;
-
-            case 3:
-
-                for (int i = 0; i < numRuns; i++)
-                {
-                    int[] seq = ThreadSequenceGen.generateThreadSequence(p, 15, method);
-                    int score = Scorer.calculateScore(seq, p, ScoreMethod.VARIABLE_CHANGE_START_AND_END);
-
-                    if (!scoreAndSeqs.containsKey(score)) scoreAndSeqs.put(score, new ArrayList<>());
-                    ArrayList<int[]> old = scoreAndSeqs.get(score);
-                    old.add(seq);
-                    scoreAndSeqs.put(score, old);
-                }
-
-
-                int[] chosenSeq2 = scoreAndSeqs.get(scoreAndSeqs.lastKey()).get(new Random().nextInt(scoreAndSeqs.get(scoreAndSeqs.lastKey()).size() - 1));
-                System.out.print("Chosen sequence:");
-                for (int j = 0; j < chosenSeq2.length; j++) System.out.print(" " + chosenSeq2[j]);
-                System.out.println();
-
-                System.out.println("--- INIT MEMORY ---");
-
-                for (MemoryLocation v : getRelevantVariables(p))
-                {
-                    System.out.print(v + ":" + p.getInitialMemory().getValue(v) + " ");
-                }
-
-                System.out.println();
-
-                GenerationSim sim2 = new GenerationSim();
-                sim2.simSequence(p, chosenSeq2);
-
-
-                System.out.println("--- FINAL MEMORY ---");
-
-                for (MemoryLocation v : getRelevantVariables(p))
-                {
-                    System.out.print(v + ":" + sim2.getMachine().getMemory().getValue(v) + " ");
-                }
-                break;
-        }
-
-        System.out.println("\n\nEnter 'r' to restart or 'q' to exit...");
-
-        char action = getValidChar("rq");
-
-        if (action == 'r')
-        {
-            start();
-            System.out.println('\n');
-        }
-        else
-        {
-            System.exit(0);
-        }
-
-    }
-
-    private Program getProgram()
-    {
-        Program p;
-        ProgramList programList = new ProgramList();
-
-        System.out.println("1) x++ // x++ ");
-        System.out.println("2) <x++> // <x++>");
-        System.out.println("3) Await flag");
-        System.out.println("4) a=1 // a=2 // b=a+a");
-        System.out.println("5) a=1 // a=2 // <b=a+a>");
-        System.out.println("6) if(a<b) a++ else b++ (4 threads)");
-        System.out.println("7) if(a<b) <a++> else <b++> (4 threads)");
-        System.out.println();
-
-        int selection = getValidInt(1, 7);
-
-
-        switch (selection)
-        {
-            case 1:
-                p = programList.loadXPlusPlusTwoThreads();
-                return p;
-            case 2:
-                p = programList.loadXPlusPlusAtomicTwoThreads();
-                return p;
-            case 3:
-                p = programList.loadAwaitFlag();
-                return p;
-            case 4:
-                p = programList.loadBEqualsAPlusA();
-                return p;
-            case 5:
-                p = programList.loadBEqualsAPlusAAtomic();
-                return p;
-            case 6:
-                p = programList.loadALessThanBFourThreads();
-                return p;
-            case 7:
-                p = programList.loadALessThanBFourThreadsAtomic();
-                return p;
-            default:
-                System.out.println("Don't know how we got here!");
-                return null;
-        }
-    }
-
-    private char getValidChar(String validChars)
-    {
-        Scanner scanner = new Scanner(System.in);
-        String s;
-
-        do
-        {
-            s = scanner.nextLine();
-
-            if (s.length() != 1 && !validChars.contains(s)) System.out.println("Please enter 'r' or 'q'.");
-        } while (s.length() != 1 && !validChars.contains(s));
-
-        return s.charAt(0);
-    }
-
-    private int getValidInt(int min, int max)
-    {
-        Scanner scanner = new Scanner(System.in);
-        int input = min - 1;
-
-        do
+        for (Program p : programs)
         {
 
-            try
+            if (!programScores.containsKey(p.getName()))
+                programScores.put(p.getName(), new HashMap<>());
+
+            for (ScoreMethod scoreMethod : scoreMethods)
             {
-                input = Integer.valueOf(scanner.nextLine());
-            }
-            catch (Exception e)
-            {
-                input = min - 1;
+                if (!programScores.get(p.getName()).containsKey(scoreMethod.toString()))
+                    programScores.get(p.getName()).put(scoreMethod.toString(), new HashMap<>());
+
+                for (GenMethod genMethod : genMethods)
+                {
+                    es.execute(() -> {
+                        int[][] sequences = new int[numRuns][];
+                        for (int i = 0; i < sequences.length; i++)
+                        {
+                            sequences[i] = ThreadSequenceGen.generateThreadSequence(p, maxSteps, genMethod);
+                        }
+
+                        float score = new BatchScorer().calculateScore(sequences, p, scoreMethod) / (float) numRuns;
+                        programScores.get(p.getName()).get(scoreMethod.toString()).put(genMethod.toString(), score);
+                        System.out.printf("Program: %s\nGeneration: %s\nScorer: %s\nScore: %.2f\n\n", p.getName(), genMethod.toString(), scoreMethod.toString(), score);
+                    });
+                }
 
             }
 
-            if (input < min || input > max)
-                System.out.println("Enter a number between " + min + " and " + max);
-        } while (input < min || input > max);
+        }
+        es.shutdown();
 
-        return input;
+        try
+        {
+            es.awaitTermination(5, TimeUnit.MINUTES);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+//        for (String p : programScores.keySet())
+//        {
+//            System.out.println(p);
+//            System.out.println();
+//            for(String scorer : programScores.get(p).keySet())
+//            {
+//                System.out.println(scorer);
+//                System.out.println();
+//
+//                for(String gen : programScores.get(p).get(scorer).keySet())
+//                {
+//                    System.out.println(gen + ": " + programScores.get(p).get(scorer).get(gen));
+//                }
+//                System.out.println();
+//            }
+//            System.out.println("\n");
+//        }
+
+        JsonObject jsonObject = new Gson().toJsonTree(programScores).getAsJsonObject();
+
+        BufferedWriter writer = null;
+        try
+        {
+            writer = new BufferedWriter(new FileWriter("results.json"));
+            writer.write(jsonObject.toString());
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+
     }
+
 
     private void originalCLI()
     {
@@ -312,7 +156,8 @@ public class CLISimulator extends Simulator
             try
             {
                 selection = Integer.valueOf(s);
-            } catch (NumberFormatException e)
+            }
+            catch (NumberFormatException e)
             {
                 validNum = false;
             }
@@ -320,7 +165,8 @@ public class CLISimulator extends Simulator
             if (!validNum || (selection != 1 && selection != 2 && selection != 3 && selection != 4 && selection != 5 && selection != 6))
                 System.out.println("Please a number between 1-6.\n");
 
-        } while (selection != 1 && selection != 2 && selection != 3 && selection != 4 && selection != 5 && selection != 6);
+        }
+        while (selection != 1 && selection != 2 && selection != 3 && selection != 4 && selection != 5 && selection != 6);
 
         Program p;
         switch (selection)
@@ -372,10 +218,10 @@ public class CLISimulator extends Simulator
         MemoryLocation chosenVar = changed.get(r.nextInt(changed.size()));
         int answer = end.getValue(chosenVar);
 
-        for(int i : p.getUsedThreadIDs())
+        for (int i : p.getUsedThreadIDs())
         {
             System.out.println("-- THREAD " + i + " --");
-            for(Instruction ins : p.getInstructionsForThread(i))
+            for (Instruction ins : p.getInstructionsForThread(i))
             {
                 System.out.println(ins);
             }
@@ -386,12 +232,11 @@ public class CLISimulator extends Simulator
 
         System.out.println();
         System.out.print("Sequence: ");
-        for(int j : seq)
+        for (int j : seq)
         {
             System.out.print(j + " ");
         }
         System.out.println();
-
 
 
         Scanner scanner = new Scanner(System.in);
@@ -405,7 +250,8 @@ public class CLISimulator extends Simulator
             try
             {
                 selection = Integer.valueOf(s);
-            } catch (NumberFormatException e)
+            }
+            catch (NumberFormatException e)
             {
                 validNum = false;
             }
@@ -459,7 +305,7 @@ public class CLISimulator extends Simulator
         setInitialMemory(p.getInitialMemory());
 
         stateHistory.addState(machine);
-        printState(relevantVariables, p.getUsedThreadIDs());
+        CLIUtils.printState(machine, relevantVariables, p.getUsedThreadIDs());
 
         Scanner scanner = new Scanner(System.in);
         while (threadsHaveInstructionsLeft())
@@ -469,7 +315,7 @@ public class CLISimulator extends Simulator
             {
                 System.out.println("Enter number of thread to advance or 'b' to go back a step:");
                 input = scanner.next().charAt(0);
-            } while (!isValidCommand(input));
+            } while (!CLIUtils.isValidCommand(input, validCommands));
 
             System.out.println();
 
@@ -477,8 +323,9 @@ public class CLISimulator extends Simulator
             {
                 stepBackward();
                 System.out.println("Stepped backwards, new state:\n");
-                printState(relevantVariables, p.getUsedThreadIDs());
-            } else if (input == '0' || input == '1' || input == '2' || input == '3')
+                CLIUtils.printState(machine, relevantVariables, p.getUsedThreadIDs());
+            }
+            else if (input == '0' || input == '1' || input == '2' || input == '3')
             {
 
                 int threadId = Integer.valueOf(String.valueOf(input));
@@ -488,12 +335,14 @@ public class CLISimulator extends Simulator
                     if (machine.getThread(threadId).getNextInstruction() != null)
                     {
                         stepForward(threadId);
-                        printState(relevantVariables, p.getUsedThreadIDs());
-                    } else
+                        CLIUtils.printState(machine, relevantVariables, p.getUsedThreadIDs());
+                    }
+                    else
                     {
                         System.out.println("Thread " + threadId + " has no instructions left!\n");
                     }
-                } else
+                }
+                else
                 {
                     System.out.println("Thread not in use!");
                 }
@@ -545,81 +394,6 @@ public class CLISimulator extends Simulator
         }
 
         return false;
-    }
-
-    /**
-     * Helper function that checks if char is in list of valid command characters
-     *
-     * @param check Character to check
-     * @return True if valid, false otherwise
-     */
-    private boolean isValidCommand(char check)
-    {
-        for (char c : validCommands)
-        {
-            if (c == check)
-                return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Prints the state of the memory and each thread
-     *
-     * @param variables Variables in memory to show
-     * @param threadIds Threads to show
-     */
-    private void printState(MemoryLocation[] variables, int[] threadIds)
-    {
-        System.out.println("--- MEMORY ---");
-        for (MemoryLocation v : variables)
-        {
-            System.out.println(v + ": " + machine.getMemory().getValue(v));
-        }
-
-        for (int id : threadIds)
-        {
-            System.out.println("--- THREAD " + id + " ---");
-            SimulatorThread thread = machine.getThread(id);
-
-            for (Register r : thread.getRegisters())
-            {
-                System.out.print(String.format("$R%d: %d\t", r.getRegisterNum(), r.getValue()));
-            }
-
-            System.out.println();
-
-            Instruction next = thread.getNextInstruction();
-
-            if (!(next instanceof Atomic))
-                System.out.println("Next Instruction: " + thread.getNextInstruction());
-            else
-            {
-                ArrayList<Instruction> batch = new ArrayList<>();
-                for (int i = thread.getInstructionPointer(); i < thread.getInstructionsList().size(); i++)
-                {
-                    Instruction instruction = thread.getInstructionsList().get(i);
-                    batch.add(instruction);
-                    if (instruction instanceof EndAtomic) break;
-                }
-
-                StringBuilder s = new StringBuilder();
-                s.append("Next Instruction: ");
-
-                for (Instruction i : batch)
-                {
-                    s.append(i.toString());
-                    s.append("\t");
-                }
-
-                System.out.println(s.toString());
-            }
-
-        }
-        System.out.println();
-
-
     }
 
 }
