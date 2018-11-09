@@ -8,5 +8,7 @@ public enum ScoreMethod
     // Counts the number of variables with different values compared only from the initial memory state and the end
     VARIABLE_CHANGE_START_AND_END,
 
-    COUNT_UNIQUE_OUTCOMES
+    COUNT_UNIQUE_OUTCOMES,
+
+    COMPARE_TO_HUMAN
 }

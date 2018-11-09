@@ -1,14 +1,14 @@
 import json
 import os
-from pprint import pprint
 
 import matplotlib.pyplot as plt
 
 results_json = json.load(open('results.json', encoding='utf-8'))  # type: dict
 save_dir = "graphs/"
-pprint(results_json)
+print(json.dumps(results_json, indent=4))
 
 heuristic_names = {'RANDOM_MAX_GLOBAL_STEPS': 'RANDOM',
+                   'RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS': 'RANDOM_IGNORE_COMPLETE',
                    'PROBABILISTIC_MOST_STORES_STATIC_SHUFFLE': 'PROB_STORES_SHUFFLE',
                    'PROBABILISTIC_MOST_STORES_STATIC': 'PROB_STORES',
                    'PROBABILISTIC_MOST_STORES_AND_BRANCHES_STATIC': 'PROB_STORES_BRANCHES'}

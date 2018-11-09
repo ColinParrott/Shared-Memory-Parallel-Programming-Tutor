@@ -35,4 +35,9 @@ public class Jump extends Instruction
         // Set thread pointer to label
         thread.setInstructionPointer(labelPos);
     }
+
+    public String getLabel()
+    {
+        return label;
+    }
 }

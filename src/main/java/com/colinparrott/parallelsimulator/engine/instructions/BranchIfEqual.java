@@ -49,4 +49,9 @@ public class BranchIfEqual extends Instruction
     {
         return String.format("%s $R%d $R%d %s", this.getKeyword(), firstRegisterNumber, secondRegisterNumber, label);
     }
+
+    public String getLabel()
+    {
+        return label;
+    }
 }

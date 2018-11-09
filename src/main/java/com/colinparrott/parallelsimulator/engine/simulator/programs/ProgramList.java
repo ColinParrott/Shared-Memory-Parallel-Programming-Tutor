@@ -225,13 +225,13 @@ public class ProgramList
 
         ArrayList<Instruction> instructionsThreadTwo = new ArrayList<>();
         instructionsThreadTwo.add(new LoadImmediate(1, 4));
-        instructionsThreadOne.add(new Label("loop"));
-        instructionsThreadOne.add(new Load(0, MemoryLocation.i));
-        instructionsThreadOne.add(new BranchGreaterThan(0, 1, "exit"));
-        instructionsThreadOne.add(new AddImmediate(0, 0, -1));
-        instructionsThreadOne.add(new Store(0, MemoryLocation.i));
-        instructionsThreadOne.add(new Jump("loop"));
-        instructionsThreadOne.add(new Label("exit"));
+        instructionsThreadTwo.add(new Label("loop"));
+        instructionsThreadTwo.add(new Load(0, MemoryLocation.i));
+        instructionsThreadTwo.add(new BranchGreaterThan(0, 1, "exit"));
+        instructionsThreadTwo.add(new AddImmediate(0, 0, -1));
+        instructionsThreadTwo.add(new Store(0, MemoryLocation.i));
+        instructionsThreadTwo.add(new Jump("loop"));
+        instructionsThreadTwo.add(new Label("exit"));
 
         Memory m = new Memory();
         m.setVariable(MemoryLocation.i, 4);

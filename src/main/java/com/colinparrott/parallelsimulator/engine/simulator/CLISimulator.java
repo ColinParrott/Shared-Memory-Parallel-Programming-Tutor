@@ -42,9 +42,9 @@ public class CLISimulator extends Simulator
 
     public void start()
     {
-        Program[] programs = new Program[]{programList.loadXPlusPlusTwoThreads(), programList.loadXPlusPlusAtomicTwoThreads(), programList.loadAwaitFlag(), programList.loadBEqualsAPlusA(), programList.loadBEqualsAPlusAAtomic(), programList.loadWhileLoop()};
-        GenMethod[] genMethods = new GenMethod[]{GenMethod.RANDOM_MAX_GLOBAL_STEPS, GenMethod.PROBABILISTIC_MOST_STORES_STATIC, GenMethod.PROBABILISTIC_MOST_STORES_STATIC_SHUFFLE, GenMethod.PROBABILISTIC_MOST_STORES_AND_BRANCHES_STATIC};
-        ScoreMethod[] scoreMethods = new ScoreMethod[]{/*ScoreMethod.VARIABLE_CHANGE_COUNT, ScoreMethod.VARIABLE_CHANGE_START_AND_END, */ScoreMethod.COUNT_UNIQUE_OUTCOMES};
+        Program[] programs = new Program[]{programList.loadXPlusPlusTwoThreads(), programList.loadXPlusPlusAtomicTwoThreads(), programList.loadAwaitFlag(), programList.loadBEqualsAPlusA(), programList.loadBEqualsAPlusAAtomic()};
+        GenMethod[] genMethods = new GenMethod[]{GenMethod.RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS, GenMethod.PROBABILISTIC_MOST_STORES_STATIC, GenMethod.PROBABILISTIC_MOST_STORES_STATIC_SHUFFLE, GenMethod.PROBABILISTIC_MOST_STORES_AND_BRANCHES_STATIC};
+        ScoreMethod[] scoreMethods = new ScoreMethod[]{/*ScoreMethod.VARIABLE_CHANGE_COUNT, ScoreMethod.VARIABLE_CHANGE_START_AND_END, ScoreMethod.COUNT_UNIQUE_OUTCOMES, */ScoreMethod.COMPARE_TO_HUMAN};
 
         final int numRuns = 5000;
         final int maxSteps = 15;
@@ -74,7 +74,12 @@ public class CLISimulator extends Simulator
                             sequences[i] = ThreadSequenceGen.generateThreadSequence(p, maxSteps, genMethod);
                         }
 
-                        float score = new BatchScorer().calculateScore(sequences, p, scoreMethod) / (float) numRuns;
+                        float score;
+                        if (scoreMethod != ScoreMethod.COMPARE_TO_HUMAN)
+                            score = new BatchScorer().calculateScore(sequences, p, scoreMethod) / (float) numRuns;
+                        else
+                            score = new BatchScorer().calculateHumanScore(sequences, p) / (float) numRuns;
+
                         programScores.get(p.getName()).get(scoreMethod.toString()).put(genMethod.toString(), score);
                         System.out.printf("Program: %s\nGeneration: %s\nScorer: %s\nScore: %.2f\n\n", p.getName(), genMethod.toString(), scoreMethod.toString(), score);
                     });
