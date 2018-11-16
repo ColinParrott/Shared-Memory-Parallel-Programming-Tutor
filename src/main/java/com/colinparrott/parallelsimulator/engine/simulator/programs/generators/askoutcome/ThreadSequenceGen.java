@@ -195,6 +195,7 @@ public class ThreadSequenceGen
      */
     private static int[] generateThreadSequenceMaxSteps(Program p, int numSteps)
     {
+
         int[] seq = new int[numSteps];
         int[] usedThreads = p.getUsedThreadIDs();
 
