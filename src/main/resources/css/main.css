@@ -1,0 +1,23 @@
+.root {
+    -fx-background-color: #00796B;
+}
+
+JFXTabPane {
+    -fx-background-color: #009688;
+}
+
+Tab {
+    -fx-background-color: #B2DFDB;
+}
+
+JFXButton {
+    -fx-background-color: #B2DFDB;
+}
+
+Table {
+    -fx-background-color: #009688;
+}
+
+.table-column {
+    -fx-alignment: CENTER;
+}

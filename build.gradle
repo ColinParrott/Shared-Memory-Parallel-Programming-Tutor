@@ -24,6 +24,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     compile 'com.jcabi:jcabi-aspects:0.22.6'
+    compile 'com.jfoenix:jfoenix:8.0.7' // Java 8
     implementation 'com.google.code.gson:gson:2.8.5'
 }
 
