@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Machine
 {
-    private static final int MAX_THREADS = 4;
+    public static final int MAX_THREADS = 4;
 
     private List<SimulatorThread> threads = new ArrayList<>(MAX_THREADS);
     private Memory memory;

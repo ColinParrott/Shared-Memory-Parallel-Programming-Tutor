@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.colinparrott.parallelsimulator.engine.simulator.gui.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.TextFlow?>
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" stylesheets="@../css/main.css"
+            xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.colinparrott.parallelsimulator.engine.simulator.gui.GUIController">
+    <children>
+        <JFXTabPane fx:id="threadTabPane" prefHeight="467.0" prefWidth="469.0" AnchorPane.leftAnchor="30.0"
+                    AnchorPane.topAnchor="50.0">
+            <tabs>
+                <Tab text="Thread 0">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="317.0">
+                            <children>
+                                <ListView fx:id="threadOneList" prefHeight="431.0" prefWidth="469.0"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Thread 1">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="317.0">
+                            <children>
+                                <ListView fx:id="threadTwoList" prefHeight="431.0" prefWidth="469.0"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Thread 2">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="317.0">
+                            <children>
+                                <ListView fx:id="threadThreeList" prefHeight="431.0" prefWidth="469.0"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Thread 3">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="317.0">
+                            <children>
+                                <ListView fx:id="threadFourList" prefHeight="431.0" prefWidth="469.0"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Code">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                    </content>
+                </Tab>
+            </tabs>
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+        </JFXTabPane>
+        <JFXButton buttonType="RAISED" layoutX="216.0" layoutY="539.0" mnemonicParsing="false" prefHeight="40.0"
+                   prefWidth="98.0" text="Play"/>
+        <JFXButton fx:id="btnBackward" buttonType="RAISED" layoutX="30.0" layoutY="539.0" mnemonicParsing="false"
+                   prefHeight="40.0" prefWidth="98.0" text="Step Backward"/>
+        <JFXButton fx:id="btnForward" buttonType="RAISED" layoutX="401.0" layoutY="539.0" mnemonicParsing="false"
+                   prefHeight="40.0" prefWidth="98.0" text="Step Forward"/>
+        <JFXSlider layoutX="258.0" layoutY="570.0" max="10.0" min="1.0" orientation="VERTICAL" rotate="90.0"
+                   value="1.0"/>
+        <TableView fx:id="tableRegisters" layoutX="499.0" layoutY="50.0" prefHeight="267.0" prefWidth="165.0">
+            <columns>
+                <TableColumn fx:id="tableMem211" editable="false" prefWidth="279.0" text="Register">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="locationName"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="tableRegisterValue" prefWidth="320.0" text="Value">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="value"/>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <MemoryValue locationName="R0" value="0"/>
+                    <MemoryValue locationName="R1" value="0"/>
+                    <MemoryValue locationName="R2" value="0"/>
+                    <MemoryValue locationName="R3" value="0"/>
+                    <MemoryValue locationName="R4" value="0"/>
+                    <MemoryValue locationName="R5" value="0"/>
+                    <MemoryValue locationName="R6" value="0"/>
+                    <MemoryValue locationName="R7" value="0"/>
+                    <MemoryValue locationName="R8" value="0"/>
+                    <MemoryValue locationName="R9" value="0"/>
+                </FXCollections>
+            </items>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+        <Label layoutX="237.0" layoutY="605.0" text="Speed (1x)" textFill="WHITE"/>
+        <TableView fx:id="tableView21" layoutX="755.0" layoutY="50.0" prefHeight="341.0" prefWidth="219.0"
+                   AnchorPane.rightAnchor="306.0" AnchorPane.topAnchor="50.0">
+            <columns>
+                <TableColumn fx:id="tableMem21" editable="false" prefWidth="279.0" text="Memory Location">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="locationName"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="tableValue21" prefWidth="320.0" text="Value">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="value"/>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <MemoryValue locationName="a" value="0"/>
+                    <MemoryValue locationName="b" value="0"/>
+                    <MemoryValue locationName="c" value="0"/>
+                    <MemoryValue locationName="d" value="0"/>
+                    <MemoryValue locationName="e" value="0"/>
+                    <MemoryValue locationName="f" value="0"/>
+                    <MemoryValue locationName="g" value="0"/>
+                    <MemoryValue locationName="h" value="0"/>
+                    <MemoryValue locationName="i" value="0"/>
+                    <MemoryValue locationName="j" value="0"/>
+                    <MemoryValue locationName="k" value="0"/>
+                    <MemoryValue locationName="l" value="0"/>
+                    <MemoryValue locationName="m" value="0"/>
+                </FXCollections>
+            </items>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+        <JFXButton buttonType="RAISED" layoutX="897.0" layoutY="559.0" mnemonicParsing="false" prefHeight="74.0"
+                   prefWidth="155.0" text="Load Program"/>
+        <JFXButton buttonType="RAISED" layoutX="974.0" layoutY="559.0" mnemonicParsing="false" prefHeight="74.0"
+                   prefWidth="155.0" text="Generate New Sequence" visible="false"/>
+        <JFXButton buttonType="RAISED" layoutX="216.0" layoutY="670.0" mnemonicParsing="false" prefHeight="40.0"
+                   prefWidth="98.0" text="Reset"/>
+        <TextFlow fx:id="textFlow" layoutX="640.0" layoutY="452.0" prefHeight="81.0" prefWidth="589.0"
+                  textAlignment="CENTER"/>
+        <TableView fx:id="tableView211" layoutX="1020.0" layoutY="50.0" prefHeight="341.0" prefWidth="219.0">
+            <columns>
+                <TableColumn fx:id="tableMem212" editable="false" prefWidth="279.0" text="Memory Location">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="locationName"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="tableValue211" prefWidth="320.0" text="Value">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="value"/>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <MemoryValue locationName="n" value="0"/>
+                    <MemoryValue locationName="o" value="0"/>
+                    <MemoryValue locationName="p" value="0"/>
+                    <MemoryValue locationName="q" value="0"/>
+                    <MemoryValue locationName="r" value="0"/>
+                    <MemoryValue locationName="s" value="0"/>
+                    <MemoryValue locationName="t" value="0"/>
+                    <MemoryValue locationName="u" value="0"/>
+                    <MemoryValue locationName="v" value="0"/>
+                    <MemoryValue locationName="w" value="0"/>
+                    <MemoryValue locationName="x" value="0"/>
+                    <MemoryValue locationName="y" value="0"/>
+                    <MemoryValue locationName="z" value="0"/>
+                </FXCollections>
+            </items>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+    </children>
+</AnchorPane>

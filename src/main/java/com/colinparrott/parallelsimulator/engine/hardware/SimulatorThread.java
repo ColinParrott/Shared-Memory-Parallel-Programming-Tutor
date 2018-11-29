@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class SimulatorThread
 {
-    private static final int REGISTERS_PER_THREAD = 10;
+    public static final int REGISTERS_PER_THREAD = 10;
 
     private int threadId;
 

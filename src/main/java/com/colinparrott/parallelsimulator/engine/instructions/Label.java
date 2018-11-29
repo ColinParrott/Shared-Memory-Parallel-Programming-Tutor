@@ -28,6 +28,7 @@ public class Label extends Instruction
     @Override
     public String toString()
     {
-        return String.format("%s %s", this.getKeyword(), this.label);
+//        return String.format("%s %s", this.getKeyword(), this.label);
+        return label + ":";
     }
 }

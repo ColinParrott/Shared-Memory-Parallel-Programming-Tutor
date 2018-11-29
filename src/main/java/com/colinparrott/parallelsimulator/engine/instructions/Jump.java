@@ -40,4 +40,10 @@ public class Jump extends Instruction
     {
         return label;
     }
+
+    @Override
+    public String toString()
+    {
+        return "JUMP " + label;
+    }
 }

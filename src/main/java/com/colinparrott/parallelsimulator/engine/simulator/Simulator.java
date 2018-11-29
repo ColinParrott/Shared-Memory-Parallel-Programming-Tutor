@@ -3,6 +3,8 @@ package com.colinparrott.parallelsimulator.engine.simulator;
 import com.colinparrott.parallelsimulator.engine.hardware.Machine;
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
+import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.rits.cloning.Cloner;
 
 /**
@@ -13,6 +15,7 @@ public abstract class Simulator
 {
     Machine machine;
     MachineStateHolder stateHistory;
+    Program currentProgram;
 
     protected Simulator()
     {
@@ -21,13 +24,37 @@ public abstract class Simulator
     }
 
     /**
+     * Initialise simulator with program
+     *
+     * @param p Program to load
+     */
+    public void loadProgram(Program p)
+    {
+        setInitialMemory(p.getInitialMemory());
+        SimulatorThread[] threads = new SimulatorThread[p.getUsedThreadIDs().length];
+
+        for (int i = 0; i < p.getUsedThreadIDs().length; i++)
+        {
+            threads[i] = machine.createThread(i);
+            threads[i].queueInstructions(p.getInstructionsForThread(i));
+        }
+
+        this.currentProgram = p;
+        stateHistory.addState(machine);
+    }
+
+    /**
      * Move the execution forward a step
      * @param threadId ID of thread to execute
      */
     public void stepForward(int threadId)
     {
-        machine.executeInstruction(threadId);
-        stateHistory.addState(machine);
+        if (machine.getThread(threadId).getInstructionPointer() < machine.getThread(threadId).getInstructionsList().size())
+        {
+            machine.executeInstruction(threadId);
+            stateHistory.addState(machine);
+        }
+
     }
 
     /**
@@ -71,5 +98,11 @@ public abstract class Simulator
      */
     public MachineStateHolder getStateHistory() {
         return stateHistory;
+    }
+
+
+    public Program getCurrentProgram()
+    {
+        return currentProgram;
     }
 }

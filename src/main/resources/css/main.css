@@ -1,13 +1,23 @@
 .root {
-    -fx-background-color: #00796B;
+    -fx-background-color: #466081;
 }
 
 JFXTabPane {
     -fx-background-color: #009688;
 }
 
-Tab {
-    -fx-background-color: #B2DFDB;
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+
+.tab-header-background {
+    -fx-background-color: #245da3;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: #0093ff;
+    -fx-text-fill: white;
 }
 
 JFXButton {
