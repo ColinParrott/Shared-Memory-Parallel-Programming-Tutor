@@ -5,6 +5,7 @@ import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.instructions.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Class that holds list of preset programs
@@ -242,5 +243,28 @@ public class ProgramList
 
         return p;
 
+    }
+
+    public Program loadThreadLoadingValues()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        ArrayList<Instruction> instructions2 = new ArrayList<>();
+        Random r = new Random();
+        for (int i = 0; i < 5; i++)
+        {
+            int r1 = r.nextInt(10);
+            int r2 = r.nextInt(10);
+            instructions.add(new LoadImmediate(r1, r.nextInt(50)));
+            instructions.add(new Store(r2, MemoryLocation.values()[r.nextInt(MemoryLocation.values().length)]));
+            instructions2.add(new LoadImmediate(r2, r.nextInt(50)));
+            instructions2.add(new Store(r2, MemoryLocation.values()[r.nextInt(MemoryLocation.values().length)]));
+        }
+
+        Memory m = new Memory();
+        Program p = new Program(m, "Loading values");
+
+        p.setInstructionsForThread(0, instructions);
+        p.setInstructionsForThread(1, instructions2);
+        return p;
     }
 }

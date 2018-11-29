@@ -3,18 +3,18 @@ package com.colinparrott.parallelsimulator.engine.simulator.gui;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class MemoryValue
+public class LabelValue
 {
 
     private final SimpleStringProperty locationName;
     private final SimpleIntegerProperty value;
 
-    public MemoryValue()
+    public LabelValue()
     {
         this("", 0);
     }
 
-    public MemoryValue(String fName, int lName)
+    public LabelValue(String fName, int lName)
     {
         this.locationName = new SimpleStringProperty(fName);
         this.value = new SimpleIntegerProperty(lName);

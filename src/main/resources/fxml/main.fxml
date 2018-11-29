@@ -84,16 +84,16 @@
             </columns>
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <MemoryValue locationName="R0" value="0"/>
-                    <MemoryValue locationName="R1" value="0"/>
-                    <MemoryValue locationName="R2" value="0"/>
-                    <MemoryValue locationName="R3" value="0"/>
-                    <MemoryValue locationName="R4" value="0"/>
-                    <MemoryValue locationName="R5" value="0"/>
-                    <MemoryValue locationName="R6" value="0"/>
-                    <MemoryValue locationName="R7" value="0"/>
-                    <MemoryValue locationName="R8" value="0"/>
-                    <MemoryValue locationName="R9" value="0"/>
+                    <LabelValue locationName="R0" value="0"/>
+                    <LabelValue locationName="R1" value="0"/>
+                    <LabelValue locationName="R2" value="0"/>
+                    <LabelValue locationName="R3" value="0"/>
+                    <LabelValue locationName="R4" value="0"/>
+                    <LabelValue locationName="R5" value="0"/>
+                    <LabelValue locationName="R6" value="0"/>
+                    <LabelValue locationName="R7" value="0"/>
+                    <LabelValue locationName="R8" value="0"/>
+                    <LabelValue locationName="R9" value="0"/>
                 </FXCollections>
             </items>
             <columnResizePolicy>
@@ -101,7 +101,7 @@
             </columnResizePolicy>
         </TableView>
         <Label layoutX="237.0" layoutY="605.0" text="Speed (1x)" textFill="WHITE"/>
-        <TableView fx:id="tableView21" layoutX="755.0" layoutY="50.0" prefHeight="341.0" prefWidth="219.0"
+        <TableView fx:id="tableMemory" layoutX="755.0" layoutY="50.0" prefHeight="341.0" prefWidth="219.0"
                    AnchorPane.rightAnchor="306.0" AnchorPane.topAnchor="50.0">
             <columns>
                 <TableColumn fx:id="tableMem21" editable="false" prefWidth="279.0" text="Memory Location">
@@ -117,19 +117,19 @@
             </columns>
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <MemoryValue locationName="a" value="0"/>
-                    <MemoryValue locationName="b" value="0"/>
-                    <MemoryValue locationName="c" value="0"/>
-                    <MemoryValue locationName="d" value="0"/>
-                    <MemoryValue locationName="e" value="0"/>
-                    <MemoryValue locationName="f" value="0"/>
-                    <MemoryValue locationName="g" value="0"/>
-                    <MemoryValue locationName="h" value="0"/>
-                    <MemoryValue locationName="i" value="0"/>
-                    <MemoryValue locationName="j" value="0"/>
-                    <MemoryValue locationName="k" value="0"/>
-                    <MemoryValue locationName="l" value="0"/>
-                    <MemoryValue locationName="m" value="0"/>
+                    <LabelValue locationName="a" value="0"/>
+                    <LabelValue locationName="b" value="0"/>
+                    <LabelValue locationName="c" value="0"/>
+                    <LabelValue locationName="d" value="0"/>
+                    <LabelValue locationName="e" value="0"/>
+                    <LabelValue locationName="f" value="0"/>
+                    <LabelValue locationName="g" value="0"/>
+                    <LabelValue locationName="h" value="0"/>
+                    <LabelValue locationName="i" value="0"/>
+                    <LabelValue locationName="j" value="0"/>
+                    <LabelValue locationName="k" value="0"/>
+                    <LabelValue locationName="l" value="0"/>
+                    <LabelValue locationName="m" value="0"/>
                 </FXCollections>
             </items>
             <columnResizePolicy>
@@ -144,7 +144,7 @@
                    prefWidth="98.0" text="Reset"/>
         <TextFlow fx:id="textFlow" layoutX="640.0" layoutY="452.0" prefHeight="81.0" prefWidth="589.0"
                   textAlignment="CENTER"/>
-        <TableView fx:id="tableView211" layoutX="1020.0" layoutY="50.0" prefHeight="341.0" prefWidth="219.0">
+        <TableView fx:id="tableMemoryTwo" layoutX="1020.0" layoutY="50.0" prefHeight="341.0" prefWidth="219.0">
             <columns>
                 <TableColumn fx:id="tableMem212" editable="false" prefWidth="279.0" text="Memory Location">
                     <cellValueFactory>
@@ -159,19 +159,19 @@
             </columns>
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <MemoryValue locationName="n" value="0"/>
-                    <MemoryValue locationName="o" value="0"/>
-                    <MemoryValue locationName="p" value="0"/>
-                    <MemoryValue locationName="q" value="0"/>
-                    <MemoryValue locationName="r" value="0"/>
-                    <MemoryValue locationName="s" value="0"/>
-                    <MemoryValue locationName="t" value="0"/>
-                    <MemoryValue locationName="u" value="0"/>
-                    <MemoryValue locationName="v" value="0"/>
-                    <MemoryValue locationName="w" value="0"/>
-                    <MemoryValue locationName="x" value="0"/>
-                    <MemoryValue locationName="y" value="0"/>
-                    <MemoryValue locationName="z" value="0"/>
+                    <LabelValue locationName="n" value="0"/>
+                    <LabelValue locationName="o" value="0"/>
+                    <LabelValue locationName="p" value="0"/>
+                    <LabelValue locationName="q" value="0"/>
+                    <LabelValue locationName="r" value="0"/>
+                    <LabelValue locationName="s" value="0"/>
+                    <LabelValue locationName="t" value="0"/>
+                    <LabelValue locationName="u" value="0"/>
+                    <LabelValue locationName="v" value="0"/>
+                    <LabelValue locationName="w" value="0"/>
+                    <LabelValue locationName="x" value="0"/>
+                    <LabelValue locationName="y" value="0"/>
+                    <LabelValue locationName="z" value="0"/>
                 </FXCollections>
             </items>
             <columnResizePolicy>

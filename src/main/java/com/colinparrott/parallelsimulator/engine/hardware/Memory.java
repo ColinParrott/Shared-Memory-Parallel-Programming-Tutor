@@ -53,6 +53,37 @@ public class Memory
     }
 
     /**
+     * Get the value of a variable in memory
+     *
+     * @param var Name of the variable
+     * @return The value of the variable if present, throws exception if not
+     * @throws NoSuchElementException Exception should not happen unless there's a serious problem with the code
+     */
+    public int getValue(String var) throws NoSuchElementException
+    {
+        MemoryLocation variable = stringToLocation(var);
+        if (variables.containsKey(variable))
+        {
+            return variables.get(variable);
+        }
+        else
+        {
+            throw new NoSuchElementException();
+        }
+    }
+
+    private MemoryLocation stringToLocation(String variable)
+    {
+        for (MemoryLocation l : MemoryLocation.values())
+        {
+            if (variable.toLowerCase().equals(l.name().toLowerCase()))
+                return l;
+        }
+
+        return null;
+    }
+
+    /**
      * Clears all variables from memory (useful for resetting execution state)
      */
     public void clearAll()
