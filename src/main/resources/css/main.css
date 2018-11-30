@@ -30,6 +30,10 @@ JFXTabPane {
     -fx-background: -fx-control-inner-background-alt ;
 }
 
+.list-cell{
+    -fx-font-family: Monospaced;
+}
+
 JFXButton {
     -fx-background-color: #B2DFDB;
 }

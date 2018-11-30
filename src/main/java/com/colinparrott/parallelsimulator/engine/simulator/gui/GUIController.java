@@ -5,6 +5,7 @@ import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
+import com.colinparrott.parallelsimulator.engine.instructions.Label;
 import com.colinparrott.parallelsimulator.engine.instructions.Load;
 import com.colinparrott.parallelsimulator.engine.instructions.Store;
 import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
@@ -318,9 +319,29 @@ public class GUIController implements Initializable
 
             threadListViews[i] = chosen;
 
+            boolean foundLabel = false;
             for (Instruction instruction : p.getInstructionsForThread(i))
             {
-                chosen.getItems().add(instruction.toString().replace(" ", "\t"));
+                String mainString = instruction.toString().replace(" ", "\t");
+                if(instruction.getKeyword() != InstructionKeyword.LABEL)
+                {
+                    if(foundLabel)
+                    {
+                        chosen.getItems().add("\t" + mainString);
+                        System.out.println(mainString);
+                    }
+                    else
+                    {
+                        chosen.getItems().add(mainString);
+                    }
+                }
+                else
+                {
+                    chosen.getItems().add(mainString);
+                    foundLabel = true;
+                }
+
+
             }
 
             chosen.getItems().add(" ");

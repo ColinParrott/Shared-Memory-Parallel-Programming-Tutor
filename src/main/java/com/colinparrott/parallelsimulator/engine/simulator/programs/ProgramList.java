@@ -215,7 +215,7 @@ public class ProgramList
     public Program loadWhileLoop()
     {
         ArrayList<Instruction> instructionsThreadOne = new ArrayList<>();
-        instructionsThreadOne.add(new LoadImmediate(1, 4));
+        instructionsThreadOne.add(new Load(1, MemoryLocation.i));
         instructionsThreadOne.add(new Label("loop"));
         instructionsThreadOne.add(new Load(0, MemoryLocation.i));
         instructionsThreadOne.add(new BranchGreaterThan(0, 1, "exit"));
@@ -225,7 +225,7 @@ public class ProgramList
         instructionsThreadOne.add(new Label("exit"));
 
         ArrayList<Instruction> instructionsThreadTwo = new ArrayList<>();
-        instructionsThreadTwo.add(new LoadImmediate(1, 4));
+        instructionsThreadTwo.add(new Load(1, MemoryLocation.i));
         instructionsThreadTwo.add(new Label("loop"));
         instructionsThreadTwo.add(new Load(0, MemoryLocation.i));
         instructionsThreadTwo.add(new BranchGreaterThan(0, 1, "exit"));
