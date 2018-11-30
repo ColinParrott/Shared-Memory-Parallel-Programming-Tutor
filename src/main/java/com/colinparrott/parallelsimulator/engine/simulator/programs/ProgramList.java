@@ -255,7 +255,7 @@ public class ProgramList
             int r1 = r.nextInt(10);
             int r2 = r.nextInt(10);
             instructions.add(new LoadImmediate(r1, r.nextInt(50)));
-            instructions.add(new Store(r2, MemoryLocation.values()[r.nextInt(MemoryLocation.values().length)]));
+            instructions.add(new Store(r1, MemoryLocation.values()[r.nextInt(MemoryLocation.values().length)]));
             instructions2.add(new LoadImmediate(r2, r.nextInt(50)));
             instructions2.add(new Store(r2, MemoryLocation.values()[r.nextInt(MemoryLocation.values().length)]));
         }
