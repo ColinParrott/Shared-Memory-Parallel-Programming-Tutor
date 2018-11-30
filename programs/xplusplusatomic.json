@@ -1,0 +1,17 @@
+{
+  "name": "<x++>",
+  "author": "Colin Parrott",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory":
+  {
+    "a": 0
+  },
+  "highLevelCode": ["<x++;>"],
+  "threadCode": [
+    ["LD $R0 x", "ADDI $RO $RO 1", "ST x $R0"],
+    ["LD $R0 x", "ADDI $RO $RO 1", "ST x $R0"]
+  ]
+}

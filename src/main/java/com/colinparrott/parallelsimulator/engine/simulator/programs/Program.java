@@ -17,18 +17,37 @@ public class Program
 
     private Memory initialMemory;
     private String name = "N/A";
+    private String[] highLevelCodeLines;
+
+    public Program(Memory initialMemory, String name, String[] highLevelCodeLines)
+    {
+        instructionLists = new HashMap<>();
+        this.initialMemory = initialMemory;
+        this.name = name;
+        this.highLevelCodeLines = highLevelCodeLines;
+    }
 
     public Program(Memory initialMemory, String name)
     {
         instructionLists = new HashMap<>();
         this.initialMemory = initialMemory;
         this.name = name;
+        this.highLevelCodeLines = new String[]{""};
     }
 
     public Program(Memory initialMemory)
     {
         instructionLists = new HashMap<>();
         this.initialMemory = initialMemory;
+        this.highLevelCodeLines = new String[]{""};
+    }
+
+    public Program(String name, String[] highLevelCodeLines)
+    {
+        this.instructionLists = new HashMap<>();
+        this.initialMemory = new Memory();
+        this.name = name;
+        this.highLevelCodeLines = highLevelCodeLines;
     }
 
     public Program(String name)
@@ -36,12 +55,14 @@ public class Program
         this.instructionLists = new HashMap<>();
         this.initialMemory = new Memory();
         this.name = name;
+        this.highLevelCodeLines = new String[]{""};
     }
 
     public Program()
     {
         this.instructionLists = new HashMap<>();
         this.initialMemory = new Memory();
+        this.highLevelCodeLines = new String[]{""};
     }
 
     /**
@@ -90,5 +111,9 @@ public class Program
     public String getName()
     {
         return name;
+    }
+
+    public String[] getHighLevelCodeLines() {
+        return highLevelCodeLines;
     }
 }

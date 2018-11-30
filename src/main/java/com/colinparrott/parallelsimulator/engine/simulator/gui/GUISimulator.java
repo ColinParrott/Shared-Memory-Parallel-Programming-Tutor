@@ -36,7 +36,7 @@ public class GUISimulator extends Application
         stage.setScene(scene);
         stage.show();
 
-        Program p = new ProgramList().loadWhileLoop();
+        Program p = new ProgramList().loadXPlusPlusTwoThreads();
         guiController.create(p, new InternalSimulator());
 
     }

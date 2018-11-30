@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.colinparrott.parallelsimulator.engine.simulator.gui.GUIController">
     <children>
@@ -83,7 +83,11 @@
                 </Tab>
                 <Tab text="Code">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="317.0">
+                            <children>
+                                <ListView fx:id="codeList" prefHeight="431.0" prefWidth="469.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </children>
+                        </AnchorPane>
                     </content>
                 </Tab>
             </tabs>
@@ -146,10 +150,14 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <JFXButton buttonType="RAISED" layoutX="897.0" layoutY="559.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Load Program" AnchorPane.bottomAnchor="87.0" AnchorPane.rightAnchor="228.0" />
+        <JFXButton buttonType="RAISED" layoutX="897.0" layoutY="611.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Load Program" AnchorPane.bottomAnchor="35.0" AnchorPane.rightAnchor="228.0" />
         <JFXButton buttonType="RAISED" layoutX="974.0" layoutY="559.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Generate New Sequence" visible="false" />
         <JFXButton buttonType="RAISED" layoutX="213.0" layoutY="666.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" text="Reset" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="213.0" />
-        <TextFlow fx:id="textFlow" layoutX="640.0" layoutY="452.0" prefHeight="81.0" prefWidth="589.0" textAlignment="CENTER" AnchorPane.bottomAnchor="187.0" AnchorPane.rightAnchor="51.0" />
       <JFXNodesList layoutX="737.0" layoutY="560.0" prefHeight="0.0" prefWidth="0.0" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="806.0" layoutY="426.0" prefHeight="59.0" prefWidth="332.0" text="History" textFill="WHITE" AnchorPane.leftAnchor="806.0" AnchorPane.topAnchor="426.0">
+         <font>
+            <Font name="Monospaced Regular" size="48.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>

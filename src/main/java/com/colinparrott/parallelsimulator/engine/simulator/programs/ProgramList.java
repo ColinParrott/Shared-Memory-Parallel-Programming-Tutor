@@ -19,7 +19,7 @@ public class ProgramList
         instructions.add(new AddImmediate(0, 0, 1));
         instructions.add(new Store(0, MemoryLocation.x));
 
-        Program p = new Program("x++");
+        Program p = new Program("x++", new String[]{"x++; \\\\ x++;"});
         p.setInstructionsForThread(0, instructions);
         p.setInstructionsForThread(1, instructions);
 
@@ -35,7 +35,7 @@ public class ProgramList
         instructions.add(new Store(0, MemoryLocation.x));
         instructions.add(new EndAtomic());
 
-        Program p = new Program("<x++>");
+        Program p = new Program("<x++>", new String[]{"<x++;>"});
         p.setInstructionsForThread(0, instructions);
         p.setInstructionsForThread(1, instructions);
 
