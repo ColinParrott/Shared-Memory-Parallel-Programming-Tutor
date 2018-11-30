@@ -1,9 +1,12 @@
 package com.colinparrott.parallelsimulator.engine.simulator.gui;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Machine;
+import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
+import com.colinparrott.parallelsimulator.engine.instructions.Load;
+import com.colinparrott.parallelsimulator.engine.instructions.Store;
 import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
 import com.colinparrott.parallelsimulator.engine.simulator.gui.anim.TableViewAnimator;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
@@ -16,8 +19,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
+import javax.crypto.Mac;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 
 public class GUIController implements Initializable
@@ -55,12 +61,10 @@ public class GUIController implements Initializable
     @FXML
     private TableView<LabelValue> tableMemory;
 
-    @FXML
-    private TableView tableMemoryTwo;
-
     private Simulator simulator;
     private ListView[] threadListViews;
     private ArrayList<LabelValue[]> threadRegisters;
+    private TableViewAnimator tableViewAnimator;
 
 
     @Override
@@ -69,7 +73,7 @@ public class GUIController implements Initializable
         Text text = new Text("Sequence History: ");
         text.setFont(new Font(32));
         textFlow.getChildren().add(text);
-
+        tableViewAnimator = new TableViewAnimator();
 
         btnForward.setOnAction(event -> {
 
@@ -89,8 +93,9 @@ public class GUIController implements Initializable
                     highlightInstruction(id, pointer, nextInstruction.getKeyword());
 
 
-                updateRegisterView(id);
+                updateRegisterView(id, false);
                 updateMemoryView();
+                updateButtons(id);
             }
 
         });
@@ -107,11 +112,13 @@ public class GUIController implements Initializable
                 highlightInstruction(id, pointer, simulator.getMachine().getThread(id).getNextInstruction().getKeyword());
 
 
-                updateRegisterView(id);
+                updateRegisterView(id, false);
                 updateMemoryView();
+                updateButtons(id);
             }
 
         });
+        btnBackward.setDisable(true);
 
         threadRegisters = new ArrayList<>();
         for (int i = 0; i < Machine.MAX_THREADS; i++)
@@ -122,12 +129,48 @@ public class GUIController implements Initializable
         threadTabPane.getSelectionModel().selectedIndexProperty().addListener(this::onThreadTabChanged);
 
 
+
     }
 
     private void onThreadTabChanged(ObservableValue<? extends Number> observableValue, Number oldTab, Number newTab)
     {
         if (newTab.intValue() < simulator.getCurrentProgram().getUsedThreadIDs().length)
-            updateRegisterView(newTab.intValue());
+        {
+            if(tableRegisters.isDisabled()) tableRegisters.setDisable(false);
+
+            updateRegisterView(newTab.intValue(), true);
+            updateButtons(newTab.intValue());
+        }
+        else
+        {
+            btnBackward.setDisable(true);
+            btnForward.setDisable(true);
+            tableRegisters.setDisable(true);
+        }
+
+    }
+
+    private void updateButtons(int id)
+    {
+        SimulatorThread thread = simulator.getMachine().getThread(id);
+        if(thread.getInstructionPointer() >= thread.getInstructionsList().size())
+        {
+            btnForward.setDisable(true);
+        }
+        else if(btnForward.isDisabled())
+        {
+            btnForward.setDisable(false);
+        }
+
+
+        if(thread.getInstructionPointer() <= 0)
+        {
+            btnBackward.setDisable(true);
+        }
+        else
+        {
+            btnBackward.setDisable(false);
+        }
 
     }
 
@@ -141,32 +184,40 @@ public class GUIController implements Initializable
             v.setValue(newValue);
             if (oldValue != newValue)
             {
-                System.out.println("meme");
-                TableViewAnimator.highlightRowByValueMatch(tableMemory, ((LabelValue) o).getLocationName(), oldValue);
-            }
-
-
-        }
-
-        for (Object o : tableMemoryTwo.getItems())
-        {
-            LabelValue v = (LabelValue) o;
-            int oldValue = v.getValue();
-            int newValue = simulator.getMachine().getMemory().getValue(v.getLocationName());
-            v.setValue(newValue);
-            if (oldValue != newValue)
-            {
-                System.out.println("meme2");
-                TableViewAnimator.highlightRowByValueMatch(tableMemoryTwo, ((LabelValue) o).getLocationName(), oldValue);
+                tableViewAnimator.highlightRowByValueMatch(tableMemory, ((LabelValue) o).getLocationName());
             }
 
         }
+
 
         tableMemory.refresh();
-        tableMemoryTwo.refresh();
     }
 
-    private void updateRegisterView(int id)
+    private MemoryLocation[] getRelevantVariables(Program p)
+    {
+        HashSet<MemoryLocation> variables = new HashSet<>();
+
+        for (int i : p.getUsedThreadIDs())
+        {
+            for (Instruction instruction : p.getInstructionsForThread(i))
+            {
+                if (instruction.getKeyword() == InstructionKeyword.ST)
+                {
+                    Store s = (Store) instruction;
+                    variables.add(s.getMemoryLocation());
+                }
+                else if (instruction.getKeyword() == InstructionKeyword.LD)
+                {
+                    Load l = (Load) instruction;
+                    variables.add(l.getMemoryLocation());
+                }
+            }
+        }
+
+        return variables.toArray(new MemoryLocation[0]);
+    }
+
+    private void updateRegisterView(int id, boolean switchedThreads)
     {
         LabelValue[] vals = new LabelValue[threadRegisters.get(id).length];
         for (int j = 0; j < threadRegisters.get(id).length; j++)
@@ -183,10 +234,16 @@ public class GUIController implements Initializable
             int oldValue = v.getValue();
             int newValue = simulator.getMachine().getThread(id).getRegisters()[i].getValue();
             v.setValue(newValue);
-            if (oldValue != newValue)
-                TableViewAnimator.highlightRowByIndex(tableRegisters, i);
+            if(!switchedThreads)
+            {
+                if (oldValue != newValue)
+                    tableViewAnimator.highlightRowByIndex(tableRegisters, id, i);
+            }
             i++;
         }
+
+        if(switchedThreads)
+            tableViewAnimator.restoreRegisterHighlighting(tableRegisters, id);
 
         tableRegisters.refresh();
     }
@@ -196,13 +253,18 @@ public class GUIController implements Initializable
         this.simulator = simulator;
         initThreadLists(p);
 
+        int maxThreads = 0;
         for (int i : p.getUsedThreadIDs())
         {
             threadListViews[i].setMouseTransparent(true);
             threadListViews[i].setFocusTraversable(false);
-            threadListViews[i].scrollTo(0);
             threadListViews[i].getSelectionModel().select(0);
+            maxThreads = i;
         }
+        System.out.println(maxThreads);
+
+
+        threadTabPane.getTabs().remove(maxThreads + 1, Machine.MAX_THREADS);
 
         simulator.loadProgram(p);
 
@@ -210,6 +272,25 @@ public class GUIController implements Initializable
         {
             highlightInstruction(id, 0, simulator.getMachine().getThread(id).getNextInstruction().getKeyword());
         }
+
+        setInitialMemoryTable();
+    }
+
+    private void setInitialMemoryTable()
+    {
+        MemoryLocation[] relevantVariables = getRelevantVariables(simulator.getCurrentProgram());
+        LabelValue[] rows = new LabelValue[relevantVariables.length];
+
+        int i = 0;
+        for(MemoryLocation location : relevantVariables)
+        {
+            rows[i] = new LabelValue(location.name(), simulator.getMachine().getMemory().getValue(location));
+            i++;
+        }
+
+        tableMemory.getItems().clear();
+        tableMemory.getItems().addAll(rows);
+        tableMemory.refresh();
     }
 
     private void initThreadLists(Program p)
