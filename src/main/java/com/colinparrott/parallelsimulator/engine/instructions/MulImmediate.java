@@ -25,6 +25,12 @@ public class MulImmediate extends Instruction
     }
 
     @Override
+    public ParameterType[] getExpectedParams()
+    {
+        return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.INT_LITERAL};
+    }
+
+    @Override
     public String toString()
     {
         return String.format("%s $R%d $R%d %d", this.getKeyword(), destRegisterNumber, sourceRegisterNumber, constant);

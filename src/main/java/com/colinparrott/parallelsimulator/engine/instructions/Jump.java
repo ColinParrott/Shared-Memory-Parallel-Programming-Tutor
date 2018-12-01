@@ -36,6 +36,12 @@ public class Jump extends Instruction
         thread.setInstructionPointer(labelPos);
     }
 
+    @Override
+    public ParameterType[] getExpectedParams()
+    {
+        return new ParameterType[]{ParameterType.LABEL_STRING};
+    }
+
     public String getLabel()
     {
         return label;

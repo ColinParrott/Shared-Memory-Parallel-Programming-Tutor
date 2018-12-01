@@ -23,6 +23,12 @@ public class LoadImmediate extends Instruction
     }
 
     @Override
+    public ParameterType[] getExpectedParams()
+    {
+        return new ParameterType[]{ParameterType.REGISTER, ParameterType.INT_LITERAL};
+    }
+
+    @Override
     public String toString()
     {
         return String.format("%s $R%d %d", this.getKeyword(), registerNumber, constant);

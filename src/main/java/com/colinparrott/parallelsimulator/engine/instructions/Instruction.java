@@ -19,4 +19,6 @@ public abstract class Instruction
     {
         return keyword;
     }
+
+    public abstract ParameterType[] getExpectedParams();
 }

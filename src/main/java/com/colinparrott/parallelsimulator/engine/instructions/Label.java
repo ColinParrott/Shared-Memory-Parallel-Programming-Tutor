@@ -20,6 +20,12 @@ public class Label extends Instruction
         // label so no need to modify anything
     }
 
+    @Override
+    public ParameterType[] getExpectedParams()
+    {
+        return new ParameterType[0];
+    }
+
     public String getLabel()
     {
         return label;

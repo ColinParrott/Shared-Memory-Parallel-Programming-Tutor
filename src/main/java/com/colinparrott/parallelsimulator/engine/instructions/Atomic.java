@@ -25,6 +25,12 @@ public class Atomic extends Instruction
     }
 
     @Override
+    public ParameterType[] getExpectedParams()
+    {
+        return new ParameterType[0];
+    }
+
+    @Override
     public String toString()
     {
         return String.format("%s", this.getKeyword());

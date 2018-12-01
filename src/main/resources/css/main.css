@@ -30,9 +30,15 @@ JFXTabPane {
     -fx-background: -fx-control-inner-background-alt ;
 }
 
+.jfx-snackbar-toast {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+}
+
 .list-cell{
     -fx-font-family: Monospaced;
 }
+
 
 JFXButton {
     -fx-background-color: #B2DFDB;

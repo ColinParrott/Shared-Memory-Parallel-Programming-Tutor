@@ -25,6 +25,12 @@ public class Mul extends Instruction
     }
 
     @Override
+    public ParameterType[] getExpectedParams()
+    {
+        return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.REGISTER};
+    }
+
+    @Override
     public String toString()
     {
         return String.format("%s $R%d $R%d $R%d", this.getKeyword(), destRegisterNumber, firstRegisterNumber, secondRegisterNumber);

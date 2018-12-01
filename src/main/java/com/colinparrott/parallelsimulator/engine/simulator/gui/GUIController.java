@@ -10,21 +10,27 @@ import com.colinparrott.parallelsimulator.engine.instructions.Store;
 import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
 import com.colinparrott.parallelsimulator.engine.simulator.gui.anim.TableViewAnimator;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
+import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import javafx.scene.layout.AnchorPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
-public class GUIController implements Initializable {
+public class GUIController implements Initializable
+{
+    @FXML
+    private AnchorPane rootPane;
+
     @FXML
     private ListView<String> threadOneList;
 
@@ -58,20 +64,29 @@ public class GUIController implements Initializable {
     @FXML
     private TableView<LabelValue> tableMemory;
 
+    private JFXSnackbar snackbar;
+
     private Simulator simulator;
-    private ListView[] threadListViews;
+    private ListView<String>[] threadListViews;
     private ArrayList<LabelValue[]> threadRegisters;
     private TableViewAnimator tableViewAnimator;
+    private static final Logger logger = LoggerFactory.getLogger(GUIController.class);
 
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources)
+    {
         tableViewAnimator = new TableViewAnimator();
+        snackbar = new JFXSnackbar(rootPane);
 
         btnForward.setOnAction(event -> {
 
-            if (threadTabPane.getSelectionModel().getSelectedIndex() < simulator.getCurrentProgram().getUsedThreadIDs().length) {
+            if (threadTabPane.getSelectionModel().getSelectedIndex() < simulator.getCurrentProgram().getUsedThreadIDs().length)
+            {
                 int id = threadTabPane.getSelectionModel().getSelectedIndex();
+
+                // For checking if await failed
+                int oldPointer = simulator.getMachine().getThread(id).getInstructionPointer();
 
                 simulator.stepForward(id);
                 int pointer = simulator.getMachine().getThread(id).getInstructionPointer();
@@ -88,12 +103,15 @@ public class GUIController implements Initializable {
                 updateRegisterView(id, false);
                 updateMemoryView();
                 updateButtons(id);
+                checkAwaitFlash(id, oldPointer);
+                checkThreadsFinished();
             }
 
         });
 
         btnBackward.setOnAction(event -> {
-            if (threadTabPane.getSelectionModel().getSelectedIndex() < simulator.getCurrentProgram().getUsedThreadIDs().length) {
+            if (threadTabPane.getSelectionModel().getSelectedIndex() < simulator.getCurrentProgram().getUsedThreadIDs().length)
+            {
                 int id = threadTabPane.getSelectionModel().getSelectedIndex();
                 simulator.stepBackward();
 
@@ -112,7 +130,8 @@ public class GUIController implements Initializable {
         btnBackward.setDisable(true);
 
         threadRegisters = new ArrayList<>();
-        for (int i = 0; i < Machine.MAX_THREADS; i++) {
+        for (int i = 0; i < Machine.MAX_THREADS; i++)
+        {
             threadRegisters.add(new LabelValue[SimulatorThread.REGISTERS_PER_THREAD]);
         }
 
@@ -121,13 +140,54 @@ public class GUIController implements Initializable {
 
     }
 
-    private void onThreadTabChanged(ObservableValue<? extends Number> observableValue, Number oldTab, Number newTab) {
-        if (newTab.intValue() < simulator.getCurrentProgram().getUsedThreadIDs().length) {
+    private void checkThreadsFinished()
+    {
+        boolean allFinished = true;
+
+        for (int id : simulator.getCurrentProgram().getUsedThreadIDs())
+        {
+            if (simulator.getMachine().getThread(id).getInstructionPointer() < simulator.getMachine().getThread(id).getInstructionsList().size())
+            {
+                allFinished = false;
+                break;
+            }
+        }
+
+        if (allFinished)
+        {
+            Node snackbarContent = snackbar.getChildren().get(0);
+            snackbarContent.setStyle("-fx-background-color: green");
+            snackbar.show("All threads complete!", 3000);
+        }
+    }
+
+    private void checkAwaitFlash(int id, int oldPointer)
+    {
+        SimulatorThread thread = simulator.getMachine().getThread(id);
+        if (thread.getInstructionsList().get(oldPointer).getKeyword() == InstructionKeyword.ATOMIC && thread.getInstructionsList().get(oldPointer + 1).getKeyword() == InstructionKeyword.AWAIT)
+        {
+            if (thread.getInstructionPointer() == oldPointer)
+            {
+                // TODO: Remove and highlight rows
+                Node snackbarContent = snackbar.getChildren().get(0);
+                snackbarContent.setStyle("-fx-background-color: red");
+                snackbar.show("Await failed", 3000);
+            }
+        }
+    }
+
+    private void onThreadTabChanged(ObservableValue<? extends Number> observableValue, Number oldTab, Number
+            newTab)
+    {
+        if (newTab.intValue() < simulator.getCurrentProgram().getUsedThreadIDs().length)
+        {
             if (tableRegisters.isDisabled()) tableRegisters.setDisable(false);
 
             updateRegisterView(newTab.intValue(), true);
             updateButtons(newTab.intValue());
-        } else {
+        }
+        else
+        {
             btnBackward.setDisable(true);
             btnForward.setDisable(true);
             tableRegisters.setDisable(true);
@@ -135,30 +195,40 @@ public class GUIController implements Initializable {
 
     }
 
-    private void updateButtons(int id) {
+    private void updateButtons(int id)
+    {
         SimulatorThread thread = simulator.getMachine().getThread(id);
-        if (thread.getInstructionPointer() >= thread.getInstructionsList().size()) {
+        if (thread.getInstructionPointer() >= thread.getInstructionsList().size())
+        {
             btnForward.setDisable(true);
-        } else if (btnForward.isDisabled()) {
+        }
+        else if (btnForward.isDisabled())
+        {
             btnForward.setDisable(false);
         }
 
 
-        if (thread.getInstructionPointer() <= 0) {
+        if (thread.getInstructionPointer() <= 0)
+        {
             btnBackward.setDisable(true);
-        } else {
+        }
+        else
+        {
             btnBackward.setDisable(false);
         }
 
     }
 
-    private void updateMemoryView() {
-        for (Object o : tableMemory.getItems()) {
+    private void updateMemoryView()
+    {
+        for (Object o : tableMemory.getItems())
+        {
             LabelValue v = (LabelValue) o;
             int oldValue = v.getValue();
             int newValue = simulator.getMachine().getMemory().getValue(v.getLocationName());
             v.setValue(newValue);
-            if (oldValue != newValue) {
+            if (oldValue != newValue)
+            {
                 tableViewAnimator.highlightRowByValueMatch(tableMemory, ((LabelValue) o).getLocationName());
             }
 
@@ -168,15 +238,21 @@ public class GUIController implements Initializable {
         tableMemory.refresh();
     }
 
-    private MemoryLocation[] getRelevantVariables(Program p) {
+    private MemoryLocation[] getRelevantVariables(Program p)
+    {
         HashSet<MemoryLocation> variables = new HashSet<>();
 
-        for (int i : p.getUsedThreadIDs()) {
-            for (Instruction instruction : p.getInstructionsForThread(i)) {
-                if (instruction.getKeyword() == InstructionKeyword.ST) {
+        for (int i : p.getUsedThreadIDs())
+        {
+            for (Instruction instruction : p.getInstructionsForThread(i))
+            {
+                if (instruction.getKeyword() == InstructionKeyword.ST)
+                {
                     Store s = (Store) instruction;
                     variables.add(s.getMemoryLocation());
-                } else if (instruction.getKeyword() == InstructionKeyword.LD) {
+                }
+                else if (instruction.getKeyword() == InstructionKeyword.LD)
+                {
                     Load l = (Load) instruction;
                     variables.add(l.getMemoryLocation());
                 }
@@ -186,21 +262,25 @@ public class GUIController implements Initializable {
         return variables.toArray(new MemoryLocation[0]);
     }
 
-    private void updateRegisterView(int id, boolean switchedThreads) {
+    private void updateRegisterView(int id, boolean switchedThreads)
+    {
         LabelValue[] vals = new LabelValue[threadRegisters.get(id).length];
-        for (int j = 0; j < threadRegisters.get(id).length; j++) {
+        for (int j = 0; j < threadRegisters.get(id).length; j++)
+        {
             vals[j] = new LabelValue("R" + id, simulator.getMachine().getThread(id).getRegisters()[j].getValue());
         }
         threadRegisters.set(id, vals);
 
 
         int i = 0;
-        for (Object o : tableRegisters.getItems()) {
+        for (Object o : tableRegisters.getItems())
+        {
             LabelValue v = (LabelValue) o;
             int oldValue = v.getValue();
             int newValue = simulator.getMachine().getThread(id).getRegisters()[i].getValue();
             v.setValue(newValue);
-            if (!switchedThreads) {
+            if (!switchedThreads)
+            {
                 if (oldValue != newValue)
                     tableViewAnimator.highlightRowByIndex(tableRegisters, id, i);
             }
@@ -213,12 +293,14 @@ public class GUIController implements Initializable {
         tableRegisters.refresh();
     }
 
-    void create(Program p, Simulator simulator) {
+    void create(Program p, Simulator simulator)
+    {
         this.simulator = simulator;
         initThreadLists(p);
 
         int maxThreads = 0;
-        for (int i : p.getUsedThreadIDs()) {
+        for (int i : p.getUsedThreadIDs())
+        {
             threadListViews[i].setMouseTransparent(true);
             threadListViews[i].setFocusTraversable(false);
             threadListViews[i].getSelectionModel().select(0);
@@ -231,19 +313,22 @@ public class GUIController implements Initializable {
 
         simulator.loadProgram(p);
 
-        for (int id : simulator.getCurrentProgram().getUsedThreadIDs()) {
+        for (int id : simulator.getCurrentProgram().getUsedThreadIDs())
+        {
             highlightInstruction(id, 0, simulator.getMachine().getThread(id).getNextInstruction().getKeyword());
         }
 
         setInitialMemoryTable();
     }
 
-    private void setInitialMemoryTable() {
+    private void setInitialMemoryTable()
+    {
         MemoryLocation[] relevantVariables = getRelevantVariables(simulator.getCurrentProgram());
         LabelValue[] rows = new LabelValue[relevantVariables.length];
 
         int i = 0;
-        for (MemoryLocation location : relevantVariables) {
+        for (MemoryLocation location : relevantVariables)
+        {
             rows[i] = new LabelValue(location.name(), simulator.getMachine().getMemory().getValue(location));
             i++;
         }
@@ -253,12 +338,15 @@ public class GUIController implements Initializable {
         tableMemory.refresh();
     }
 
-    private void initThreadLists(Program p) {
+    private void initThreadLists(Program p)
+    {
         threadListViews = new ListView[p.getUsedThreadIDs().length];
-        for (int i : p.getUsedThreadIDs()) {
+        for (int i : p.getUsedThreadIDs())
+        {
             ListView<String> chosen = null;
 
-            switch (i) {
+            switch (i)
+            {
                 case 0:
                     chosen = threadOneList;
                     break;
@@ -276,16 +364,23 @@ public class GUIController implements Initializable {
             threadListViews[i] = chosen;
 
             boolean foundLabel = false;
-            for (Instruction instruction : p.getInstructionsForThread(i)) {
+            for (Instruction instruction : p.getInstructionsForThread(i))
+            {
                 String mainString = instruction.toString().replace(" ", "\t");
-                if (instruction.getKeyword() != InstructionKeyword.LABEL) {
-                    if (foundLabel) {
+                if (instruction.getKeyword() != InstructionKeyword.LABEL)
+                {
+                    if (foundLabel)
+                    {
                         chosen.getItems().add("\t" + mainString);
                         System.out.println(mainString);
-                    } else {
+                    }
+                    else
+                    {
                         chosen.getItems().add(mainString);
                     }
-                } else {
+                }
+                else
+                {
                     chosen.getItems().add(mainString);
                     foundLabel = true;
                 }
@@ -299,18 +394,24 @@ public class GUIController implements Initializable {
         codeList.getItems().addAll(p.getHighLevelCodeLines());
     }
 
-    private void highlightInstruction(int threadID, int instructionNumber, InstructionKeyword keyword) {
+    private void highlightInstruction(int threadID, int instructionNumber, InstructionKeyword keyword)
+    {
         threadListViews[threadID].getSelectionModel().clearSelection();
-        if (keyword != InstructionKeyword.ATOMIC && keyword != InstructionKeyword.ENDATOMIC) {
+        if (keyword != InstructionKeyword.ATOMIC && keyword != InstructionKeyword.ENDATOMIC)
+        {
             threadListViews[threadID].getSelectionModel().select(instructionNumber);
-        } else {
+        }
+        else
+        {
             SimulatorThread thread = simulator.getMachine().getThread(threadID);
             int min = instructionNumber;
             int max = instructionNumber;
 
-            if (keyword == InstructionKeyword.ATOMIC) {
+            if (keyword == InstructionKeyword.ATOMIC)
+            {
 
-                for (int i = instructionNumber; i < thread.getInstructionsList().size(); i++) {
+                for (int i = instructionNumber; i < thread.getInstructionsList().size(); i++)
+                {
                     if (thread.getInstructionsList().get(i).getKeyword() == InstructionKeyword.ENDATOMIC) break;
                     max = i + 1;
                 }

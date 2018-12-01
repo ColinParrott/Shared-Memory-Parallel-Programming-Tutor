@@ -45,6 +45,12 @@ public class BranchIfEqual extends Instruction
 
     }
 
+    @Override
+    public ParameterType[] getExpectedParams()
+    {
+        return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.LABEL_STRING};
+    }
+
     public String toString()
     {
         return String.format("%s $R%d $R%d %s", this.getKeyword(), firstRegisterNumber, secondRegisterNumber, label);

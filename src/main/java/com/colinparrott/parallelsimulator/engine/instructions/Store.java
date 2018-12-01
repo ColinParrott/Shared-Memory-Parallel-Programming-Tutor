@@ -23,6 +23,12 @@ public class Store extends Instruction
     }
 
     @Override
+    public ParameterType[] getExpectedParams()
+    {
+        return new ParameterType[]{ParameterType.REGISTER, ParameterType.MEMORY_LOCATION};
+    }
+
+    @Override
     public String toString()
     {
         return String.format("%s %s $R%s", this.getKeyword(), memoryLocation, registerNumber);

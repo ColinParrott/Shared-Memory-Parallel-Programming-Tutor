@@ -86,6 +86,13 @@ public class Await extends Instruction
         }
     }
 
+    @Override
+    public ParameterType[] getExpectedParams()
+    {
+        // TODO: Fill
+        return new ParameterType[0];
+    }
+
     private void printInstruction(int pointer, SimulatorThread t)
     {
         System.out.println("Instruction: " + t.getInstructionsList().get(pointer).getClass().getSimpleName() + "\tPointer: " + pointer);

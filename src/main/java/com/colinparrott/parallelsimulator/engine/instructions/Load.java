@@ -24,6 +24,12 @@ public class Load extends Instruction
     }
 
     @Override
+    public ParameterType[] getExpectedParams()
+    {
+        return new ParameterType[]{ParameterType.REGISTER, ParameterType.MEMORY_LOCATION};
+    }
+
+    @Override
     public String toString()
     {
         return String.format("%s $R%s %s", this.getKeyword(), registerNumber, memoryLocation);
