@@ -1,6 +1,8 @@
 package com.colinparrott.parallelsimulator.programs.parser;
 
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
+import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
 import com.colinparrott.parallelsimulator.engine.instructions.ParameterType;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import javafx.util.Pair;
@@ -15,46 +17,112 @@ public class AssemblyParser
      * @param lines Lines of assembly code
      * @return Pair containing program if valid, returns with error message if invalid
      */
-    public static Pair<Program, Optional<String>> parseAssemblyCode(String[] lines)
+
+    private int line;
+
+    public Pair<Program, Optional<String>> parseAssemblyCode(String[] lines)
     {
         // TODO: Complete
+
+        for (line = 0; line < lines.length; line++)
+        {
+            // Trims whitespace and splits line on whitespace
+            String[] parts = lines[line].trim().split("\\s+");
+            String instruction = parts[line];
+            InstructionKeyword keyword = null;
+
+            try
+            {
+                keyword = InstructionKeyword.valueOf(instruction);
+            }
+            catch (IllegalArgumentException e)
+            {
+                return new Pair<>(null, generateErrorMessage(String.format("Unrecognised instruction: %s", instruction)));
+            }
+
+            Instruction instructionObject = parseInstruction(keyword, lines[line]);
+
+
+        }
         return null;
     }
 
-
-    private Pair<ParameterTypeData, Optional<String>> getParamType(String s)
+    private Instruction parseInstruction(InstructionKeyword keyword, String line)
     {
-        int index = 0;
+        // TODO: finish
+        return null;
+    }
 
-        // REGISTER
-        if (s.charAt(index) == '$')
+    private Optional<String> generateErrorMessage(String errorMesssage)
+    {
+        return Optional.of(String.format("[Parse Error] %s  (Line %d)", errorMesssage, line));
+    }
+
+    private Pair<ParameterTypeData, Optional<String>> parseParamType(ParameterType type, String s) throws UnimplementedParseException
+    {
+        switch (type)
         {
-            index++;
-            if (s.charAt(index) == 'R')
-            {
-                index++;
-                if (Character.isDigit(s.charAt(index)) && (int) s.charAt(index) < SimulatorThread.REGISTERS_PER_THREAD)
-                {
-                    return new Pair<>(new ParameterTypeData(ParameterType.INT_LITERAL, String.valueOf(s.charAt(index))), Optional.empty());
-                }
-            }
-            else
-            {
-                return new Pair<>(new ParameterTypeData(ParameterType.INT_LITERAL, null), Optional.of("Expected register, got: \"" + s + "\""));
-            }
+            case REGISTER:
+                return parseRegister(s);
+            case MEMORY_LOCATION:
+                return parseMemoryLocation(s);
+            case CONSTANT:
+                return parseConstant(s);
+            case LABEL_STRING:
+                return parseLabel(s);
+            default:
+                throw new UnimplementedParseException("Parser does not support token of type: " + type);
         }
-        // INT_LITERAL
-        else if (isInteger(s, 10))
-        {
-            return new Pair<>(new ParameterTypeData(ParameterType.INT_LITERAL, s), Optional.empty());
-        }
-        // MEMORY_LOCATION
-        else if (s.matches("^([a-zA-z])"))
+    }
+
+    private Pair<ParameterTypeData, Optional<String>> parseLabel(String s)
+    {
+        if (s.matches("[a-zA-z]"))
         {
             return new Pair<>(new ParameterTypeData(ParameterType.LABEL_STRING, s), Optional.empty());
         }
 
-        return null;
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), generateErrorMessage(String.format("Invalid label name: \"%s\" (must only contain alphabetic characters)", s)));
+    }
+
+    private Pair<ParameterTypeData, Optional<String>> parseRegister(String s)
+    {
+        if (s.charAt(0) == '$')
+        {
+            if (s.charAt(1) == 'R')
+            {
+                if (Character.isDigit(s.charAt(2)) && (int) s.charAt(2) < SimulatorThread.REGISTERS_PER_THREAD)
+                {
+                    return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, String.valueOf(s.charAt(2))), Optional.empty());
+                }
+            }
+            else
+            {
+                return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, null), generateErrorMessage("Expected register, got: \"" + s + "\""));
+            }
+        }
+
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), generateErrorMessage(String.format("Unknown register: \"%s\"", s)));
+    }
+
+    private Pair<ParameterTypeData, Optional<String>> parseConstant(String s)
+    {
+        if (isInteger(s, 10))
+        {
+            return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, s), Optional.empty());
+        }
+
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), generateErrorMessage(String.format("Invalid constant value: %s", s)));
+    }
+
+    private Pair<ParameterTypeData, Optional<String>> parseMemoryLocation(String s)
+    {
+        if (s.matches("^([a-zA-z])"))
+        {
+            return new Pair<>(new ParameterTypeData(ParameterType.LABEL_STRING, s), Optional.empty());
+        }
+
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), generateErrorMessage(String.format("Invalid memory location: %s (must be from a-z)", s)));
     }
 
     private boolean isInteger(String s, int radix)
@@ -71,5 +139,15 @@ public class AssemblyParser
         }
         return true;
     }
+
+    private class UnimplementedParseException extends Exception
+    {
+        UnimplementedParseException(String errorMessage)
+        {
+            super(errorMessage);
+        }
+    }
+
+
 
 }

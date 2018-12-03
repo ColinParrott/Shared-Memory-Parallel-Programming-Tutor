@@ -27,7 +27,7 @@ public class MulImmediate extends Instruction
     @Override
     public ParameterType[] getExpectedParams()
     {
-        return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.INT_LITERAL};
+        return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.CONSTANT};
     }
 
     @Override
