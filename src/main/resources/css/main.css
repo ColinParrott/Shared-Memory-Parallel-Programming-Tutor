@@ -1,5 +1,5 @@
 .root {
-    -fx-background-color: #466081;
+    -fx-background-color: #153761;
 }
 
 JFXTabPane {
@@ -16,7 +16,7 @@ JFXTabPane {
 }
 
 .list-cell:filled:selected {
-    -fx-background-color: #0093ff;
+    -fx-background-color: #245da3;
     -fx-text-fill: white;
 }
 
@@ -41,8 +41,10 @@ JFXTabPane {
 
 
 JFXButton {
-    -fx-background-color: #B2DFDB;
+    -fx-background-color: #2361B4;
+    -fx-text-fill: white;
 }
+
 
 Table {
     -fx-background-color: #009688;
@@ -50,4 +52,34 @@ Table {
 
 .table-column {
     -fx-alignment: CENTER;
+}
+
+
+.button:hover:pressed {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.animated-option-button {
+    -fx-background-color: #419FAE;
+    -fx-background-radius: 50px;
+    -fx-pref-height: 50px;
+    -fx-pref-width: 50px;
+    -fx-min-width: -fx-pref-width;
+    -fx-max-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
+    -fx-max-height: -fx-pref-height;
+    -jfx-button-type: RAISED;
+    -fx-text-fill: white;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.animated-option-button .jfx-rippler {
+    -jfx-rippler-fill: rgb(113, 118, 114);
 }

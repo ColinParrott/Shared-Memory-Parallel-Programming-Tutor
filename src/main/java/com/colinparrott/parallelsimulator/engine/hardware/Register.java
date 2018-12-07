@@ -8,9 +8,11 @@ public class Register
 {
     private int registerNum;
     private int value;
+    private SimulatorThread thread;
 
-    Register(int registerNum)
+    Register(int registerNum, SimulatorThread thread)
     {
+        this.thread = thread;
         this.registerNum = registerNum;
         this.value = 0;
     }
@@ -33,6 +35,7 @@ public class Register
     public void setValue(int value)
     {
         this.value = value;
+        thread.setLastUpdatedRegister(this.registerNum);
     }
 
     /**
@@ -53,5 +56,10 @@ public class Register
     public int getValue()
     {
         return value;
+    }
+
+    public SimulatorThread getThread()
+    {
+        return thread;
     }
 }

@@ -9,7 +9,10 @@ import com.colinparrott.parallelsimulator.engine.instructions.Load;
 import com.colinparrott.parallelsimulator.engine.instructions.Store;
 import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
 import com.colinparrott.parallelsimulator.engine.simulator.gui.anim.TableViewAnimator;
+import com.colinparrott.parallelsimulator.engine.simulator.gui.controls.JFXHistoryButton;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXNodesList;
 import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.beans.value.ObservableValue;
@@ -56,6 +59,9 @@ public class GUIController implements Initializable
     private JFXTabPane threadTabPane;
 
     @FXML
+    private JFXNodesList historyNodes;
+
+    @FXML
     private TableColumn tableRegisterValue;
 
     @FXML
@@ -79,6 +85,29 @@ public class GUIController implements Initializable
         tableViewAnimator = new TableViewAnimator();
         snackbar = new JFXSnackbar(rootPane);
 
+
+        historyNodes.setSpacing(5);
+        historyNodes.setRotate(-90);
+
+        JFXHistoryButton historyNodeButton = new JFXHistoryButton("Initial", 0);
+        historyNodeButton.setOnAction(event -> {
+            rewindSimulator(historyNodeButton.getMachineStep());
+        });
+
+        historyNodeButton.setOnMouseEntered(event -> {
+            historyNodeButton.setScaleX(1.1);
+            historyNodeButton.setScaleY(1.1);
+        });
+
+        historyNodeButton.setOnMouseExited(event -> {
+            historyNodeButton.setScaleX(1);
+            historyNodeButton.setScaleY(1);
+        });
+
+        historyNodeButton.getStyleClass().addAll("animated-option-button");
+        historyNodeButton.setButtonType(JFXButton.ButtonType.RAISED);
+        historyNodes.addAnimatedNode(historyNodeButton);
+
         btnForward.setOnAction(event -> {
 
             if (threadTabPane.getSelectionModel().getSelectedIndex() < simulator.getCurrentProgram().getUsedThreadIDs().length)
@@ -100,11 +129,10 @@ public class GUIController implements Initializable
                     highlightInstruction(id, pointer, nextInstruction.getKeyword());
 
 
-                updateRegisterView(id, false);
-                updateMemoryView();
-                updateButtons(id);
+                updateUIState(id);
                 checkAwaitFlash(id, oldPointer);
                 checkThreadsFinished();
+                addHistoryNodes(id);
             }
 
         });
@@ -121,13 +149,13 @@ public class GUIController implements Initializable
                 highlightInstruction(id, pointer, simulator.getMachine().getThread(id).getNextInstruction().getKeyword());
 
 
-                updateRegisterView(id, false);
-                updateMemoryView();
-                updateButtons(id);
+                updateUIState(id);
+                if (historyNodes.getChildren().size() > 1)
+                    deleteLastHistoryNode();
             }
 
         });
-        btnBackward.setDisable(true);
+//        btnBackward.setDisable(true);
 
         threadRegisters = new ArrayList<>();
         for (int i = 0; i < Machine.MAX_THREADS; i++)
@@ -138,6 +166,69 @@ public class GUIController implements Initializable
         threadTabPane.getSelectionModel().selectedIndexProperty().addListener(this::onThreadTabChanged);
 
 
+    }
+
+    private void updateUIState(int id)
+    {
+        updateRegisterView(id, false);
+        updateMemoryView();
+        updateButtons(id);
+    }
+
+    private void deleteLastHistoryNode()
+    {
+        historyNodes.getChildren().remove(historyNodes.getChildren().size() - 1);
+
+        if (historyNodes.getChildren().size() > 0)
+        {
+            historyNodes.animateList(false);
+            historyNodes.animateList(true);
+        }
+
+    }
+
+    private void rewindSimulator(int step)
+    {
+        logger.debug("rewindSimulator(" + step + ")");
+        int numToRewind = simulator.getStepsTaken() - step;
+        for (int i = 0; i < numToRewind; i++)
+        {
+            simulator.stepBackward();
+            historyNodes.getChildren().remove(step + 1, historyNodes.getChildren().size());
+        }
+
+        updateUIState(threadTabPane.getSelectionModel().getSelectedIndex());
+        for (int i = 0; i < simulator.getMachine().numberUsedThreads(); i++)
+        {
+            highlightInstruction(i, simulator.getMachine().getThread(i).getInstructionPointer(), simulator.getMachine().getThread(i).getNextInstruction().getKeyword());
+        }
+
+
+    }
+
+    private void addHistoryNodes(int id)
+    {
+        JFXHistoryButton historyNodeButton = new JFXHistoryButton(id + "", simulator.getStepsTaken());
+        historyNodeButton.setOnAction(event -> {
+            rewindSimulator(historyNodeButton.getMachineStep());
+        });
+        historyNodeButton.getStyleClass().addAll("animated-option-button");
+        historyNodeButton.setButtonType(JFXButton.ButtonType.RAISED);
+
+        historyNodeButton.setOnMouseEntered(event -> {
+            historyNodeButton.setScaleX(1.1);
+            historyNodeButton.setScaleY(1.1);
+        });
+
+        historyNodeButton.setOnMouseExited(event -> {
+            historyNodeButton.setScaleX(1);
+            historyNodeButton.setScaleY(1);
+        });
+
+
+        historyNodes.addAnimatedNode(historyNodeButton);
+        historyNodes.animateList(false);
+        historyNodes.animateList(true);
     }
 
     private void checkThreadsFinished()
@@ -183,12 +274,13 @@ public class GUIController implements Initializable
         {
             if (tableRegisters.isDisabled()) tableRegisters.setDisable(false);
 
+            highlightInstruction(newTab.intValue(), simulator.getMachine().getThread(newTab.intValue()).getInstructionPointer(), simulator.getMachine().getThread(newTab.intValue()).getNextInstruction().getKeyword());
             updateRegisterView(newTab.intValue(), true);
             updateButtons(newTab.intValue());
         }
         else
         {
-            btnBackward.setDisable(true);
+//            btnBackward.setDisable(true);
             btnForward.setDisable(true);
             tableRegisters.setDisable(true);
         }
@@ -208,30 +300,37 @@ public class GUIController implements Initializable
         }
 
 
-        if (thread.getInstructionPointer() <= 0)
-        {
-            btnBackward.setDisable(true);
-        }
-        else
-        {
-            btnBackward.setDisable(false);
-        }
+//        if (thread.getInstructionPointer() <= 0)
+//        {
+//            btnBackward.setDisable(true);
+//        }
+//        else
+//        {
+//            btnBackward.setDisable(false);
+//        }
 
     }
 
     private void updateMemoryView()
     {
+        boolean foundUpdated = false;
         for (Object o : tableMemory.getItems())
         {
             LabelValue v = (LabelValue) o;
             int oldValue = v.getValue();
             int newValue = simulator.getMachine().getMemory().getValue(v.getLocationName());
             v.setValue(newValue);
-            if (oldValue != newValue)
+            if (((LabelValue) o).getLocationName().toLowerCase().equals(simulator.getMachine().getMemory().getLastUpdatedLocation().name().toLowerCase()))
             {
+                foundUpdated = true;
                 tableViewAnimator.highlightRowByValueMatch(tableMemory, ((LabelValue) o).getLocationName());
             }
 
+        }
+
+        if (!foundUpdated)
+        {
+            tableViewAnimator.clearTableHighlighting(tableMemory);
         }
 
 
@@ -272,24 +371,31 @@ public class GUIController implements Initializable
         threadRegisters.set(id, vals);
 
 
+//        int i = 0;
+//        for (Object o : tableRegisters.getItems())
+//        {
+//            LabelValue v = (LabelValue) o;
+//            int oldValue = v.getValue();
+//            int newValue = simulator.getMachine().getThread(id).getRegisters()[i].getValue();
+//            v.setValue(newValue);
+//            if (!switchedThreads)
+//            {
+//                if (oldValue != newValue)
+//                    tableViewAnimator.highlightRowByIndex(tableRegisters, id, i);
+//            }
+//            i++;
+//        }
+
         int i = 0;
         for (Object o : tableRegisters.getItems())
         {
             LabelValue v = (LabelValue) o;
-            int oldValue = v.getValue();
             int newValue = simulator.getMachine().getThread(id).getRegisters()[i].getValue();
             v.setValue(newValue);
-            if (!switchedThreads)
-            {
-                if (oldValue != newValue)
-                    tableViewAnimator.highlightRowByIndex(tableRegisters, id, i);
-            }
             i++;
         }
 
-        if (switchedThreads)
-            tableViewAnimator.restoreRegisterHighlighting(tableRegisters, id);
-
+        tableViewAnimator.highlightRowByIndex(tableRegisters, id, simulator.getMachine().getThread(id).getLastUpdatedRegister());
         tableRegisters.refresh();
     }
 
@@ -312,7 +418,6 @@ public class GUIController implements Initializable
         threadTabPane.getTabs().remove(maxThreads + 1, Machine.MAX_THREADS);
 
         simulator.loadProgram(p);
-
         for (int id : simulator.getCurrentProgram().getUsedThreadIDs())
         {
             highlightInstruction(id, 0, simulator.getMachine().getThread(id).getNextInstruction().getKeyword());

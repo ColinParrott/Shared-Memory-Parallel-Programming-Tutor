@@ -27,7 +27,7 @@ public class TableViewAnimator {
             TableRow<LabelValue> row = new TableRow<>();
             BooleanBinding critical = row.indexProperty().isEqualTo(i);
             row.styleProperty().bind(Bindings.when(critical)
-                    .then("-fx-background-color: #42f48c;")
+                    .then("-fx-background-color: #EBCE7D;")
                     .otherwise(""));
             return row;
         });
@@ -43,10 +43,24 @@ public class TableViewAnimator {
                 if (item == null) {
                     setStyle("");
                 } else if (item.getLocationName().equals(label)) {
-                    setStyle("-fx-background-color: #42f48c;");
+                    setStyle("-fx-background-color: #EBCE7D;");
                 } else {
                     setStyle("");
                 }
+            }
+        });
+
+    }
+
+    // Sets row if value matches target to certain colour
+    public void clearTableHighlighting(TableView<LabelValue> view)
+    {
+        view.setRowFactory(tv -> new TableRow<LabelValue>()
+        {
+            @Override
+            public void updateItem(LabelValue item, boolean empty)
+            {
+                setStyle("");
             }
         });
 
@@ -65,7 +79,7 @@ public class TableViewAnimator {
                 else if (item.getLocationName().equals("R" + registersToHighlight.get(id)))
                 {
                     System.out.println("restore set green");
-                    setStyle("-fx-background-color: #42f48c;");
+                    setStyle("-fx-background-color: #EBCE7D;");
                 }
                 else
                     {

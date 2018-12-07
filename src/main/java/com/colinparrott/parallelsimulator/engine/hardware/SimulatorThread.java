@@ -20,6 +20,7 @@ public class SimulatorThread
     private  Register[] registers;
     private Memory memory;
     private boolean inAtomicSection = false;
+    private int lastUpdatedRegister = -1;
 
     public SimulatorThread(Memory m, int id)
     {
@@ -38,7 +39,7 @@ public class SimulatorThread
 
         for(int i = 0; i < registers.length; i++)
         {
-            registers[i] = new Register(i);
+            registers[i] = new Register(i, this);
         }
     }
 
@@ -152,5 +153,15 @@ public class SimulatorThread
     public void setInAtomicSection(boolean inAtomicSection)
     {
         this.inAtomicSection = inAtomicSection;
+    }
+
+    public int getLastUpdatedRegister()
+    {
+        return lastUpdatedRegister;
+    }
+
+    public void setLastUpdatedRegister(int lastUpdatedRegister)
+    {
+        this.lastUpdatedRegister = lastUpdatedRegister;
     }
 }

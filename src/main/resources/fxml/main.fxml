@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.colinparrott.parallelsimulator.engine.simulator.gui.controls.JFXHistoryNodesList?>
 <?import com.colinparrott.parallelsimulator.engine.simulator.gui.*?>
 <?import com.jfoenix.controls.*?>
 <?import javafx.collections.FXCollections?>
@@ -143,11 +144,17 @@
         <JFXButton buttonType="RAISED" layoutX="897.0" layoutY="611.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Load Program" AnchorPane.bottomAnchor="35.0" AnchorPane.rightAnchor="228.0" />
         <JFXButton buttonType="RAISED" layoutX="974.0" layoutY="559.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Generate New Sequence" visible="false" />
         <JFXButton buttonType="RAISED" layoutX="213.0" layoutY="666.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" text="Reset" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="213.0" />
-      <JFXNodesList layoutX="737.0" layoutY="560.0" prefHeight="0.0" prefWidth="0.0" />
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="806.0" layoutY="426.0" prefHeight="59.0" prefWidth="332.0" text="History" textFill="WHITE" AnchorPane.leftAnchor="806.0" AnchorPane.topAnchor="426.0">
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="806.0" layoutY="426.0" prefHeight="59.0"
+               prefWidth="332.0" text="Sequence History" textFill="WHITE" AnchorPane.leftAnchor="806.0"
+               AnchorPane.topAnchor="400.0">
          <font>
-            <Font name="Monospaced Regular" size="48.0" />
+             <Font name="Open Sans Regular" size="33.0"/>
          </font>
       </Label>
+        <HBox layoutX="664.0" layoutY="459.0" prefHeight="127.0" prefWidth="544.0">
+            <children>
+                <JFXHistoryNodesList fx:id="historyNodes" prefHeight="0.0" prefWidth="34.0"/>
+            </children>
+        </HBox>
     </children>
 </AnchorPane>

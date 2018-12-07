@@ -16,6 +16,7 @@ public abstract class Simulator
     Machine machine;
     MachineStateHolder stateHistory;
     Program currentProgram;
+    int stepsTaken = 0;
 
     protected Simulator()
     {
@@ -53,6 +54,7 @@ public abstract class Simulator
         {
             machine.executeInstruction(threadId);
             stateHistory.addState(machine);
+            stepsTaken++;
         }
 
     }
@@ -66,6 +68,7 @@ public abstract class Simulator
         if (stateHistory.machineStates.size() > 1)
         {
             // Clone previous state and restore it
+            stepsTaken--;
             Cloner cloner = new Cloner();
             machine = cloner.deepClone(stateHistory.rollbackState());
         }
@@ -104,5 +107,10 @@ public abstract class Simulator
     public Program getCurrentProgram()
     {
         return currentProgram;
+    }
+
+    public int getStepsTaken()
+    {
+        return stepsTaken;
     }
 }

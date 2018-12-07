@@ -14,6 +14,7 @@ public class ProgramFile
     private ArrayList<String> threadTwoInstructions;
     private ArrayList<String> threadThreeInstructions;
     private ArrayList<String> threadFourInstructions;
+    private boolean antiSequences;
     private ArrayList<ArrayList<Integer>> interestingSequences;
 
     // TODO: finish

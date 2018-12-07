@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 public class Memory
 {
     private HashMap<MemoryLocation, Integer> variables;
+    private MemoryLocation lastUpdatedLocation = null;
 
 
     public Memory()
@@ -31,6 +32,7 @@ public class Memory
      */
     public void setVariable(MemoryLocation variable, int value)
     {
+        lastUpdatedLocation = variable;
         variables.put(variable, value);
     }
 
@@ -132,5 +134,10 @@ public class Memory
 
     public HashMap<MemoryLocation, Integer> getVariables() {
         return variables;
+    }
+
+    public MemoryLocation getLastUpdatedLocation()
+    {
+        return lastUpdatedLocation;
     }
 }
