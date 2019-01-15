@@ -1,10 +1,5 @@
-import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.programs.ProgramFileReader;
-import com.colinparrott.parallelsimulator.programs.parser.AssemblyParser;
-import javafx.util.Pair;
 import org.junit.Test;
-
-import java.util.Optional;
 
 public class ParserTests
 {

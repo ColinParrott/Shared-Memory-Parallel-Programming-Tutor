@@ -6,6 +6,7 @@ import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 
 public abstract class Instruction
 {
+
     private InstructionKeyword keyword;
 
     Instruction(InstructionKeyword keyword)
@@ -21,5 +22,6 @@ public abstract class Instruction
     }
 
     public abstract ParameterType[] getExpectedParams();
+
 
 }

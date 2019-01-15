@@ -1,6 +1,7 @@
 package com.colinparrott.parallelsimulator.programs.parser;
 
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
+import com.colinparrott.parallelsimulator.engine.instructions.Add;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
 import com.colinparrott.parallelsimulator.engine.instructions.ParameterType;
@@ -41,25 +42,56 @@ public class AssemblyParser
                 return new Pair<>(null, generateErrorMessage(String.format("Unrecognised instruction: %s", instruction)));
             }
 
-            Instruction instructionObject = parseInstruction(keyword, lines[line]);
+            Pair<Instruction, Optional<String>> instructionObject = parseInstruction(keyword, lines[line]);
+
+            if(instructionObject != null && instructionObject.getValue().isPresent()){
+                return new Pair<>(null, generateErrorMessage(instructionObject.getValue().get()));
+            }
 
 
         }
         return null;
     }
 
-    private Instruction parseInstruction(InstructionKeyword keyword, String line)
+    /**
+     * Parses single line and returns instruction object if valid, else null and error message in string
+     * @param keyword Instruction keyword
+     * @param line Instruction line text
+     * @return Returns Instruction (if valid) and error message (if invalid)
+     */
+    private Pair<Instruction, Optional<String>> parseInstruction(InstructionKeyword keyword, String line)
     {
+        Instruction instruction;
         // TODO: finish
+        switch (keyword){
+            case ADD:
+                instruction = new Add(0, 0, 0);
+                for(ParameterType type : instruction.getExpectedParams()){
+                    String[] parts = line.trim().split("\\s+");
+                    for(int i = 0; i < instruction.getExpectedParams().length; i++)
+                    {
+                        Pair<ParameterTypeData, Optional<String>> data = parseParamType(instruction.getExpectedParams()[0], parts[i]);
+
+                        if(data.getValue().isPresent()){
+                            return new Pair<>(null, data.getValue());
+                        }
+
+                    }
+                }
+        }
+
         return null;
     }
 
-    private Optional<String> generateErrorMessage(String errorMesssage)
+    private Instruction parse
+
+    private Optional<String> generateErrorMessage(String errorMessage)
     {
-        return Optional.of(String.format("[Parse Error] %s  (Line %d)", errorMesssage, line));
+        return Optional.of(String.format("[Parse Error] %s  (Line %d)", errorMessage, line));
     }
 
-    private Pair<ParameterTypeData, Optional<String>> parseParamType(ParameterType type, String s) throws UnimplementedParseException
+
+    private Pair<ParameterTypeData, Optional<String>> parseParamType(ParameterType type, String s)
     {
         switch (type)
         {
@@ -72,7 +104,7 @@ public class AssemblyParser
             case LABEL_STRING:
                 return parseLabel(s);
             default:
-                throw new UnimplementedParseException("Parser does not support token of type: " + type);
+                return new Pair<>(null, Optional.of("Parser does not support token of type: " + type));
         }
     }
 
