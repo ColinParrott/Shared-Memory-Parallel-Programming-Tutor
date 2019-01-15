@@ -5,9 +5,11 @@ import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.programs.parser.AssemblyParser;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * Class to reprsent JSON assembly program
@@ -41,7 +43,14 @@ public class ProgramFile {
         HashMap<Integer, ArrayList<Instruction>> instructionLists = new HashMap<>();
 
         for(int i = 0; i < threadInstructions.length; i++){
-            instructionLists.put(i, assemblyParser.parseAssemblyCode(threadInstructions[i]).getKey());
+            Pair<ArrayList<Instruction>, Optional<String>> data = assemblyParser.parseAssemblyCode(threadInstructions[i]);
+            if(!data.getValue().isPresent()){
+                instructionLists.put(i, assemblyParser.parseAssemblyCode(threadInstructions[i]).getKey());
+            }
+            else{
+                System.out.println(data.getValue().get());
+                return null;
+            }
         }
 
 

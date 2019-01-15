@@ -1,5 +1,9 @@
+import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.programs.ProgramFileReader;
 import org.junit.Test;
+
+import java.util.ArrayList;
 
 public class ParserTests
 {
@@ -27,6 +31,15 @@ public class ParserTests
 
     @Test
     public void testParseProgramReader(){
-        ProgramFileReader.readPrograms();
+        ArrayList<Program> programs = ProgramFileReader.readPrograms();
+
+        for(Program p : programs){
+            for(int id : p.getUsedThreadIDs()){
+                System.out.println(id);
+                for(Instruction i : p.getInstructionsForThread(id)){
+                    System.out.println(i);
+                }
+            }
+        }
     }
 }
