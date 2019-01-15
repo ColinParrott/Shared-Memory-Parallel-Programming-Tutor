@@ -7,6 +7,7 @@ import com.colinparrott.parallelsimulator.engine.instructions.ParameterType;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class AssemblyParser
@@ -20,7 +21,7 @@ public class AssemblyParser
 
     private int line;
 
-    public Pair<Program, Optional<String>> parseAssemblyCode(String[] lines)
+    public Pair<ArrayList<Instruction>, Optional<String>> parseAssemblyCode(String[] lines)
     {
         // TODO: Complete
 

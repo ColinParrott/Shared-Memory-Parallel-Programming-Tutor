@@ -2,6 +2,7 @@ package com.colinparrott.parallelsimulator.engine.simulator.programs;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.programs.ProgramFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,21 @@ public class Program
     private Memory initialMemory;
     private String name = "N/A";
     private String[] highLevelCodeLines;
+    private ProgramFile programFile;
+
+    public Program(Memory initialMemory, String name, String[] highLevelCodeLines, HashMap<Integer, ArrayList<Instruction>> instructionLists, ProgramFile pf)
+    {
+        this.instructionLists = instructionLists;
+        this.initialMemory = initialMemory;
+        this.name = name;
+        this.highLevelCodeLines = highLevelCodeLines;
+        this.programFile = pf;
+
+        // Set instructions
+        for(int i : instructionLists.keySet()){
+            setInstructionsForThread(0, instructionLists.get(i));
+        }
+    }
 
     public Program(Memory initialMemory, String name, String[] highLevelCodeLines)
     {
@@ -115,5 +131,9 @@ public class Program
 
     public String[] getHighLevelCodeLines() {
         return highLevelCodeLines;
+    }
+
+    public ProgramFile getProgramFile() {
+        return programFile;
     }
 }
