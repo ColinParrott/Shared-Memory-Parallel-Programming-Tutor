@@ -36,16 +36,23 @@ class InstructionParser {
             i++;
         }
 
+
         switch (keyword)
         {
             case LD:
                 instruction = new Load(registerNumFromString(params[0]), MemoryLocation.valueOf(params[1]));
                 break;
             case ADDI:
-                instruction = new AddImmediate(registerNumFromString(params[0]), Integer.valueOf(params[1]),registerNumFromString(params[2]));
+                instruction = new AddImmediate(registerNumFromString(params[0]), registerNumFromString(params[1]), Integer.valueOf(params[2]));
                 break;
             case ST:
                 instruction = new Store(registerNumFromString(params[0]), MemoryLocation.valueOf(params[1]));
+                break;
+            case ATOMIC:
+                instruction = new Atomic();
+                break;
+            case ENDATOMIC:
+                instruction = new EndAtomic();
                 break;
         }
 
@@ -97,7 +104,7 @@ class InstructionParser {
             return new Pair<>(new ParameterTypeData(ParameterType.LABEL_STRING, s), Optional.empty());
         }
 
-        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), generateErrorMessage(String.format("Invalid label name: \"%s\" (must only contain alphabetic characters)", s)));
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), Optional.of(String.format("Invalid label name: \"%s\" (must only contain alphabetic characters)", s)));
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseRegister(String s) {
@@ -107,11 +114,11 @@ class InstructionParser {
                     return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, String.valueOf(s.charAt(2))), Optional.empty());
                 }
             } else {
-                return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, null), generateErrorMessage("Expected register, got: \"" + s + "\""));
+                return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, null), Optional.of("Expected register, got: \"" + s + "\""));
             }
         }
 
-        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), generateErrorMessage(String.format("Unknown register: \"%s\"", s)));
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null),  Optional.of(String.format("Unknown register: \"%s\"", s)));
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseConstant(String s) {
@@ -119,7 +126,7 @@ class InstructionParser {
             return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, s), Optional.empty());
         }
 
-        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), generateErrorMessage(String.format("Invalid constant value: %s", s)));
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null),  Optional.of(String.format("Invalid constant value: %s", s)));
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseMemoryLocation(String s) {
@@ -127,7 +134,7 @@ class InstructionParser {
             return new Pair<>(new ParameterTypeData(ParameterType.LABEL_STRING, s), Optional.empty());
         }
 
-        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), generateErrorMessage(String.format("Invalid memory location: %s (must be from a-z)", s)));
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null),  Optional.of(String.format("Invalid memory location: %s (must be from a-z)", s)));
     }
 
     private boolean isInteger(String s, int radix) {

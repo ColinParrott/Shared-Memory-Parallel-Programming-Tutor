@@ -10,7 +10,7 @@
   },
   "highLevelCode": [["x++; // x++;"]],
   "threadCode": [
-    ["LD $R0 x", "ADDI $RO 1", "ST x $R0"],
-    ["LD $R0 x", "ADDI $RO $R0 1", "ST x $R0"]
+    ["LD $R0 x", "ADDI $R0 $R0 1", "ST $R0 x"],
+    ["LD $R0 x", "ADDI $R0 $R0 1", "ST $R0 x"]
   ]
 }

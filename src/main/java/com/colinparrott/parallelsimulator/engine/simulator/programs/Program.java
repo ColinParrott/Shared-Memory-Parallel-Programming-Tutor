@@ -31,7 +31,6 @@ public class Program
 
         // Set instructions
         for(int i : instructionLists.keySet()){
-            System.out.println(instructionLists.get(i));
             this.setInstructionsForThread(i, instructionLists.get(i));
         }
     }

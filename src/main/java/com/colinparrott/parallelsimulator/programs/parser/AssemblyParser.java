@@ -16,7 +16,7 @@ public class AssemblyParser {
      * @return Pair containing program if valid, returns with error message if invalid
      */
 
-    private int line;
+    private int lineNumber;
 
 
     public Pair<ArrayList<Instruction>, Optional<String>> parseAssemblyCode(String[] lines) {
@@ -24,12 +24,11 @@ public class AssemblyParser {
 
 
         ArrayList<Instruction> instructions = new ArrayList<>() ;
-        for (line = 0; line < lines.length; line++) {
-            // Trims whitespace and splits line on whitespace
-            String[] parts = lines[line].trim().split("\\s+");
+        for (lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+            // Trims whitespace and splits lineNumber on whitespace
+            String[] parts = lines[lineNumber].trim().split("\\s+");
             String instruction = parts[0];
             InstructionKeyword keyword;
-
 
             try {
                 keyword = InstructionKeyword.valueOf(instruction);
@@ -37,7 +36,7 @@ public class AssemblyParser {
                 return new Pair<>(null, generateErrorMessage(String.format("Unrecognised instruction: %s", instruction)));
             }
 
-            InstructionParser instructionParser = new InstructionParser(line);
+            InstructionParser instructionParser = new InstructionParser(lineNumber);
             String[] params = Arrays.copyOfRange(parts, 1, parts.length);
             Pair<Instruction, Optional<String>> instructionObject = instructionParser.parseInstruction(keyword, params);
 
@@ -53,7 +52,7 @@ public class AssemblyParser {
     }
 
     protected Optional<String> generateErrorMessage(String errorMessage) {
-        return Optional.of(String.format("[Parse Error] %s  (Line %d)", errorMessage, line));
+        return Optional.of(String.format("[Parse Error] %s  (Line %d)", errorMessage, lineNumber));
     }
 
 

@@ -32,14 +32,17 @@ public class ParserTests
     @Test
     public void testParseProgramReader(){
         ArrayList<Program> programs = ProgramFileReader.readPrograms();
+        for(Program p : programs){
+            System.out.println(p.getName());
+        }
 
         for(Program p : programs){
             for(int id : p.getUsedThreadIDs()){
-                System.out.println(id);
                 for(Instruction i : p.getInstructionsForThread(id)){
                     System.out.println(i);
                 }
             }
+
         }
     }
 }
