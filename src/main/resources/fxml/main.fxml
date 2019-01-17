@@ -159,8 +159,13 @@
       </Label>
         <HBox layoutX="664.0" layoutY="459.0" prefHeight="130.0" prefWidth="544.0">
             <children>
-                <JFXHistoryNodesList fx:id="historyNodes"/>
+                <JFXHistoryNodesList fx:id="historyNodes" />
             </children>
         </HBox>
+      <Label fx:id="titleLabel" alignment="BOTTOM_CENTER" layoutX="29.0" prefHeight="40.0" prefWidth="469.0" text="hello world" textAlignment="RIGHT" textFill="WHITE" AnchorPane.leftAnchor="29.0" AnchorPane.topAnchor="0.0">
+         <font>
+            <Font name="Monospaced Bold" size="13.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>

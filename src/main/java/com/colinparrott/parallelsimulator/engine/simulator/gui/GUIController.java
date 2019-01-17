@@ -89,6 +89,8 @@ public class GUIController implements Initializable {
     private TableView<LabelValue> tableMemory;
 
 
+    @FXML
+    private Label titleLabel;
 
     private JFXSnackbar snackbar;
 
@@ -113,7 +115,7 @@ public class GUIController implements Initializable {
         historyNodes.setRotate(-90);
 
 
-        JFXHistoryButton historyNodeButton = new JFXHistoryButton("START", 0);
+        JFXHistoryButton historyNodeButton = new JFXHistoryButton("INITIAL", 0);
         historyNodeButton.setOnAction(event -> {
             rewindSimulator(historyNodeButton.getMachineStep());
         });
@@ -194,6 +196,7 @@ public class GUIController implements Initializable {
         updateRegisterView(id, false);
         updateMemoryView();
         updateButtons(id);
+        titleLabel.setText(simulator.getCurrentProgram().getName());
     }
 
     private void deleteLastHistoryNode() {
@@ -401,6 +404,7 @@ public class GUIController implements Initializable {
             System.out.println(p.getName());
         }
 
+
         Program p;
         if(program == null)
             p = programs.get(0);
@@ -425,6 +429,7 @@ public class GUIController implements Initializable {
 
 
         simulator.loadProgram(p);
+        titleLabel.setText(simulator.getCurrentProgram().getName());
         for (int id : simulator.getCurrentProgram().getUsedThreadIDs()) {
             highlightInstruction(id, 0, simulator.getMachine().getThread(id).getNextInstruction().getKeyword());
         }
