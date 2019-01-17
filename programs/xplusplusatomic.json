@@ -1,0 +1,16 @@
+{
+  "name": "<x++>",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory":
+  {
+    "a": 0
+  },
+  "highLevelCode": [["<x++;>"]],
+  "threadCode": [
+    ["ATOMIC" ,"LD $R0 x", "ADDI $R0 $R0 1", "ST $R0 x", "ENDATOMIC"],
+    ["ATOMIC" ,"LD $R0 x", "ADDI $R0 $R0 1", "ST $R0 x", "ENDATOMIC"]
+  ]
+}
