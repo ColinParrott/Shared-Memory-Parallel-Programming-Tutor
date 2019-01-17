@@ -68,8 +68,8 @@ Table {
 .animated-option-button {
     -fx-background-color: #419FAE;
     -fx-background-radius: 50px;
-    -fx-pref-height: 50px;
-    -fx-pref-width: 50px;
+    -fx-pref-height: 65px;
+    -fx-pref-width: 65px;
     -fx-min-width: -fx-pref-width;
     -fx-max-width: -fx-pref-width;
     -fx-min-height: -fx-pref-height;

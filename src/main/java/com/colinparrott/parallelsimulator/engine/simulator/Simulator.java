@@ -31,6 +31,7 @@ public abstract class Simulator
      */
     public void loadProgram(Program p)
     {
+        stateHistory.machineStates.clear();
         setInitialMemory(p.getInitialMemory());
         SimulatorThread[] threads = new SimulatorThread[p.getUsedThreadIDs().length];
 

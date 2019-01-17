@@ -49,6 +49,7 @@ public class Machine
         return memory;
     }
 
+
     /**
      * Get the number of threads used in the current program
      * @return Number of threads used in the program

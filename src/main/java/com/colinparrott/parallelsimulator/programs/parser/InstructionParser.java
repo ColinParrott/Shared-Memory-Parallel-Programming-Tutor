@@ -11,7 +11,7 @@ class InstructionParser {
 
     private int line;
 
-    InstructionParser(int line){
+    InstructionParser(int line) {
         this.line = line;
     }
 
@@ -19,7 +19,7 @@ class InstructionParser {
      * Parses single line and returns instruction object if valid, else null and error message in string
      *
      * @param keyword Instruction keyword
-     * @param params   Instruction params text
+     * @param params  Instruction params text
      * @return Returns Instruction (if valid) and error message (if invalid)
      */
     Pair<Instruction, Optional<String>> parseInstruction(InstructionKeyword keyword, String[] params) {
@@ -27,20 +27,24 @@ class InstructionParser {
 
         // Verifies program is correct
         int i = 0;
-        for(ParameterType type : InstructionKeyword.getExpectedParams(keyword)){
+        for (ParameterType type : InstructionKeyword.getExpectedParams(keyword)) {
             Pair<ParameterTypeData, Optional<String>> data = parseParamType(type, params[i]);
-            if(data.getValue().isPresent())
-            {
+            if (data.getValue().isPresent()) {
                 return new Pair<>(null, data.getValue());
             }
             i++;
         }
 
 
-        switch (keyword)
-        {
+        switch (keyword) {
             case LD:
                 instruction = new Load(registerNumFromString(params[0]), MemoryLocation.valueOf(params[1]));
+                break;
+            case LDI:
+                instruction = new LoadImmediate(registerNumFromString(params[0]), Integer.valueOf(params[1]));
+                break;
+            case ADD:
+                instruction = new Add(registerNumFromString(params[0]), registerNumFromString(params[1]), registerNumFromString(params[2]));
                 break;
             case ADDI:
                 instruction = new AddImmediate(registerNumFromString(params[0]), registerNumFromString(params[1]), Integer.valueOf(params[2]));
@@ -54,12 +58,16 @@ class InstructionParser {
             case ENDATOMIC:
                 instruction = new EndAtomic();
                 break;
+            case AWAIT:
+                instruction = new Await(MemoryLocation.valueOf(params[0]), AwaitComparator.valueOf(params[1]), MemoryLocation.valueOf(params[2]));
+                break;
         }
 
         return new Pair<>(instruction, Optional.empty());
     }
 
-    private int registerNumFromString(String s){
+
+    private int registerNumFromString(String s) {
         return Integer.valueOf(s.substring(2, 3));
     }
 
@@ -118,7 +126,7 @@ class InstructionParser {
             }
         }
 
-        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null),  Optional.of(String.format("Unknown register: \"%s\"", s)));
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), Optional.of(String.format("Unknown register: \"%s\"", s)));
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseConstant(String s) {
@@ -126,7 +134,7 @@ class InstructionParser {
             return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, s), Optional.empty());
         }
 
-        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null),  Optional.of(String.format("Invalid constant value: %s", s)));
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), Optional.of(String.format("Invalid constant value: %s", s)));
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseMemoryLocation(String s) {
@@ -134,7 +142,7 @@ class InstructionParser {
             return new Pair<>(new ParameterTypeData(ParameterType.LABEL_STRING, s), Optional.empty());
         }
 
-        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null),  Optional.of(String.format("Invalid memory location: %s (must be from a-z)", s)));
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), Optional.of(String.format("Invalid memory location: %s (must be from a-z)", s)));
     }
 
     private boolean isInteger(String s, int radix) {
@@ -153,4 +161,9 @@ class InstructionParser {
         return Optional.of(String.format("[Parse Error] %s  (Line %d)", errorMessage, line));
     }
 
+    public class UnimplementedInstructionError extends Exception {
+        public UnimplementedInstructionError(String errorMessage) {
+            super(errorMessage);
+        }
+    }
 }

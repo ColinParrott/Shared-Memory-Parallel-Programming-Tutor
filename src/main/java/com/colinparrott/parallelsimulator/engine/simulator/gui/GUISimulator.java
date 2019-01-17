@@ -36,7 +36,7 @@ public class GUISimulator extends Application
         stage.setScene(scene);
         stage.show();
 
-        guiController.create(new InternalSimulator());
+        guiController.create(new InternalSimulator(), stage, null);
 
     }
 

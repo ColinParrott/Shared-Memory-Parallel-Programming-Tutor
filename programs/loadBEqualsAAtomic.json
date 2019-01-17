@@ -1,0 +1,17 @@
+{
+  "name": "a=1 // a=2 // <b=a+a>",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory":
+  {
+    "a": 0
+  },
+  "highLevelCode": [["a=1 // a=2 // <b=a+a>"]],
+  "threadCode": [
+    ["LDI $R0 1", "ST $R0 a"],
+    ["LDI $R0 2", "ST $R0 a"],
+    ["ATOMIC","LD $R1 a", "LD $R2 a", "ADD $R3 $R1 $R2", "ST $R3 b", "ENDATOMIC"]
+  ]
+}

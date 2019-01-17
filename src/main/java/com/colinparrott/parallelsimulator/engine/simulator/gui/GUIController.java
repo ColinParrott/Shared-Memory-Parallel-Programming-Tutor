@@ -12,17 +12,24 @@ import com.colinparrott.parallelsimulator.engine.simulator.gui.anim.TableViewAni
 import com.colinparrott.parallelsimulator.engine.simulator.gui.controls.JFXHistoryButton;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.programs.ProgramFileReader;
-import com.colinparrott.parallelsimulator.programs.parser.AssemblyParser;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXNodesList;
 import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTabPane;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +39,15 @@ import java.util.HashSet;
 import java.util.ResourceBundle;
 
 public class GUIController implements Initializable {
+
     @FXML
     private AnchorPane rootPane;
+
+    @FXML
+    private AnchorPane selectorAnchor;
+
+    @FXML
+    private ListView<String> programList;
 
     @FXML
     private ListView<String> threadOneList;
@@ -57,6 +71,9 @@ public class GUIController implements Initializable {
     private Button btnBackward;
 
     @FXML
+    private Button btnLoad;
+
+    @FXML
     private JFXTabPane threadTabPane;
 
     @FXML
@@ -71,6 +88,8 @@ public class GUIController implements Initializable {
     @FXML
     private TableView<LabelValue> tableMemory;
 
+
+
     private JFXSnackbar snackbar;
 
     private Simulator simulator;
@@ -81,18 +100,20 @@ public class GUIController implements Initializable {
 
     private ArrayList<Program> programs;
 
+    private Stage mainWindow;
+    private Stage programSelectorWindow;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+
+    public void init() {
+        System.out.println("initialise");
         tableViewAnimator = new TableViewAnimator();
         snackbar = new JFXSnackbar(rootPane);
-
-
 
         historyNodes.setSpacing(5);
         historyNodes.setRotate(-90);
 
-        JFXHistoryButton historyNodeButton = new JFXHistoryButton("Initial", 0);
+
+        JFXHistoryButton historyNodeButton = new JFXHistoryButton("START", 0);
         historyNodeButton.setOnAction(event -> {
             rewindSimulator(historyNodeButton.getMachineStep());
         });
@@ -168,6 +189,7 @@ public class GUIController implements Initializable {
 
     }
 
+
     private void updateUIState(int id) {
         updateRegisterView(id, false);
         updateMemoryView();
@@ -193,7 +215,7 @@ public class GUIController implements Initializable {
         }
 
         updateUIState(threadTabPane.getSelectionModel().getSelectedIndex());
-        for (int i = 0; i < simulator.getMachine().numberUsedThreads(); i++) {
+        for (int i = 0; i < simulator.getCurrentProgram().getUsedThreadIDs().length; i++) {
             highlightInstruction(i, simulator.getMachine().getThread(i).getInstructionPointer(), simulator.getMachine().getThread(i).getNextInstruction().getKeyword());
         }
 
@@ -364,12 +386,27 @@ public class GUIController implements Initializable {
         tableRegisters.refresh();
     }
 
-    void create(Simulator simulator) {
+    void create(Simulator simulator, Stage window, Program program) {
+        this.mainWindow = window;
+
+        // Close program select window when main window closed
+        this.mainWindow.setOnCloseRequest(e -> {
+            if(programSelectorWindow != null && programSelectorWindow.isShowing())
+                programSelectorWindow.close();
+        });
+
+        init();
         programs = ProgramFileReader.readPrograms();
-        for(Program p : programs){
+        for (Program p : programs) {
             System.out.println(p.getName());
         }
-        Program p = programs.get(0);
+
+        Program p;
+        if(program == null)
+            p = programs.get(0);
+        else
+            p = program;
+
         this.simulator = simulator;
         initThreadLists(p);
 
@@ -385,12 +422,78 @@ public class GUIController implements Initializable {
 
         threadTabPane.getTabs().remove(maxThreads + 1, Machine.MAX_THREADS);
 
+
+
         simulator.loadProgram(p);
         for (int id : simulator.getCurrentProgram().getUsedThreadIDs()) {
             highlightInstruction(id, 0, simulator.getMachine().getThread(id).getNextInstruction().getKeyword());
         }
 
         setInitialMemoryTable();
+
+        btnLoad.setOnAction(event -> {
+            VBox secondaryLayout = new VBox(30);
+            secondaryLayout.setAlignment(Pos.CENTER);
+            secondaryLayout.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
+            Scene secondScene = new Scene(secondaryLayout, 300, 500);
+
+            ListView<String> list = new ListView<String>();
+            int i = 1;
+            for (Program pr : programs) {
+                list.getItems().add(i + "| " + pr.getName());
+                i++;
+            }
+
+//            list.setPrefWidth(300);
+//            list.setPrefHeight(400);
+            secondaryLayout.getChildren().add(list);
+
+            JFXButton button = new JFXButton("Load");
+            button.setPrefWidth(150);
+            button.setPrefHeight(40);
+            button.setAlignment(Pos.CENTER);
+            secondaryLayout.getChildren().add(button);
+
+            button.setOnAction(e -> {
+//                create(new InternalSimulator(), mainWindow, programs.get(list.getSelectionModel().getSelectedIndex()));
+                Program pro = programs.get(list.getSelectionModel().getSelectedIndex());
+                simulator.loadProgram(pro);
+                reset(pro);
+                programSelectorWindow.close();
+            });
+
+            // New window (Stage)
+            programSelectorWindow = new Stage();
+            programSelectorWindow.setTitle("Select Program");
+            programSelectorWindow.setScene(secondScene);
+            programSelectorWindow.show();
+        });
+    }
+
+    private void reset(Program p){
+        for(int i = 0; i < 4; i++){
+            updateUIState(i);
+        }
+
+        System.out.println(p.getUsedThreadIDs().length);
+//        threadTabPane.getTabs().clear();
+        initThreadLists(p);
+//        threadTabPane.getTabs().remove(p.getUsedThreadIDs().length + 1, p.getu);
+
+        for(int i : p.getUsedThreadIDs()){
+            highlightInstruction(i, 0, p.getInstructionsForThread(i).get(0).getKeyword());
+        }
+
+        historyNodes.getChildren().remove(1, historyNodes.getChildren().size());
+    }
+
+
+    private void populateProgramList() {
+//        programList = new ListView<String>();
+        System.out.println(programList == null);
+        for (Program p : programs) {
+            programList.getItems().add(p.getName());
+        }
     }
 
     private void setInitialMemoryTable() {
@@ -409,6 +512,11 @@ public class GUIController implements Initializable {
     }
 
     private void initThreadLists(Program p) {
+        threadOneList.getItems().clear();
+        threadTwoList.getItems().clear();
+        threadThreeList.getItems().clear();
+        threadFourList.getItems().clear();
+
         threadListViews = new ListView[p.getUsedThreadIDs().length];
         for (int i : p.getUsedThreadIDs()) {
             ListView<String> chosen = null;
@@ -429,6 +537,8 @@ public class GUIController implements Initializable {
             }
 
             threadListViews[i] = chosen;
+//            threadTabPane.getTabs().
+
 
             boolean foundLabel = false;
             for (Instruction instruction : p.getInstructionsForThread(i)) {
@@ -451,10 +561,12 @@ public class GUIController implements Initializable {
             chosen.getItems().add(" ");
             chosen.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         }
+        codeList.getItems().clear();
         codeList.getItems().addAll(p.getHighLevelCodeLines());
     }
 
     private void highlightInstruction(int threadID, int instructionNumber, InstructionKeyword keyword) {
+        logger.debug("highlightInstruction(" + threadID + ")");
         threadListViews[threadID].getSelectionModel().clearSelection();
         if (keyword != InstructionKeyword.ATOMIC && keyword != InstructionKeyword.ENDATOMIC) {
             threadListViews[threadID].getSelectionModel().select(instructionNumber);
@@ -476,4 +588,8 @@ public class GUIController implements Initializable {
     }
 
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
 }

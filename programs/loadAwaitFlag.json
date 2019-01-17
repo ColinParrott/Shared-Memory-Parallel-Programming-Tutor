@@ -1,0 +1,16 @@
+{
+  "name": "Await Flag",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory":
+  {
+    "z": 1
+  },
+  "highLevelCode": [[""]],
+  "threadCode": [
+    ["LDI $R0 25", "ST $R0 a", "LDI $R0 1", "ST $R0 x"],
+    ["ATOMIC", "AWAIT x EQ z","LD $R0 a", "ST $R0 x", "ENDATOMIC"]
+  ]
+}
