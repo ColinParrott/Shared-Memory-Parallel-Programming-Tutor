@@ -16,9 +16,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXNodesList;
 import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTabPane;
-import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -26,8 +24,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -74,6 +70,9 @@ public class GUIController implements Initializable {
     private Button btnLoad;
 
     @FXML
+    private Button btnReset;
+
+    @FXML
     private JFXTabPane threadTabPane;
 
     @FXML
@@ -95,6 +94,7 @@ public class GUIController implements Initializable {
     private JFXSnackbar snackbar;
 
     private Simulator simulator;
+    ArrayList<Tab> tabs;
     private ListView<String>[] threadListViews;
     private ArrayList<LabelValue[]> threadRegisters;
     private TableViewAnimator tableViewAnimator;
@@ -114,6 +114,11 @@ public class GUIController implements Initializable {
         historyNodes.setSpacing(5);
         historyNodes.setRotate(-90);
 
+
+
+        btnReset.setOnAction(e -> {
+            rewindSimulator(0);
+        });
 
         JFXHistoryButton historyNodeButton = new JFXHistoryButton("INITIAL", 0);
         historyNodeButton.setOnAction(event -> {
@@ -211,17 +216,18 @@ public class GUIController implements Initializable {
 
     private void rewindSimulator(int step) {
         logger.debug("rewindSimulator(" + step + ")");
-        int numToRewind = simulator.getStepsTaken() - step;
-        for (int i = 0; i < numToRewind; i++) {
-            simulator.stepBackward();
-            historyNodes.getChildren().remove(step + 1, historyNodes.getChildren().size());
-        }
+        if(simulator.getStepsTaken() > 0){
+            int numToRewind = simulator.getStepsTaken() - step;
+            for (int i = 0; i < numToRewind; i++) {
+                simulator.stepBackward();
+                historyNodes.getChildren().remove(step + 1, historyNodes.getChildren().size());
+            }
 
-        updateUIState(threadTabPane.getSelectionModel().getSelectedIndex());
-        for (int i = 0; i < simulator.getCurrentProgram().getUsedThreadIDs().length; i++) {
-            highlightInstruction(i, simulator.getMachine().getThread(i).getInstructionPointer(), simulator.getMachine().getThread(i).getNextInstruction().getKeyword());
+            updateUIState(threadTabPane.getSelectionModel().getSelectedIndex());
+            for (int i = 0; i < simulator.getCurrentProgram().getUsedThreadIDs().length; i++) {
+                highlightInstruction(i, simulator.getMachine().getThread(i).getInstructionPointer(), simulator.getMachine().getThread(i).getNextInstruction().getKeyword());
+            }
         }
-
 
     }
 
@@ -423,10 +429,8 @@ public class GUIController implements Initializable {
         }
         System.out.println(maxThreads);
 
-
+        tabs = new ArrayList<>(threadTabPane.getTabs().subList(0, threadTabPane.getTabs().size() - 1));
         threadTabPane.getTabs().remove(maxThreads + 1, Machine.MAX_THREADS);
-
-
 
         simulator.loadProgram(p);
         titleLabel.setText(simulator.getCurrentProgram().getName());
@@ -476,6 +480,29 @@ public class GUIController implements Initializable {
     }
 
     private void reset(Program p){
+
+        if(threadTabPane.getTabs().size() < p.getUsedThreadIDs().length + 1)
+        {
+            while(threadTabPane.getTabs().size() < p.getUsedThreadIDs().length + 1){
+                int lastIndex = threadTabPane.getTabs().size() - 1;
+                Tab codeTab = threadTabPane.getTabs().get(lastIndex);
+                threadTabPane.getTabs().remove(lastIndex);
+                threadTabPane.getTabs().add(tabs.get(lastIndex));
+                threadTabPane.getTabs().add(codeTab);
+            }
+        }
+        else if(threadTabPane.getTabs().size() > p.getUsedThreadIDs().length + 1){
+            int lastIndex = threadTabPane.getTabs().size() - 1;
+            Tab codeTab = threadTabPane.getTabs().get(lastIndex);
+            while(threadTabPane.getTabs().size() > p.getUsedThreadIDs().length){
+                threadTabPane.getTabs().remove(threadTabPane.getTabs().size() - 1);
+            }
+            threadTabPane.getTabs().add(codeTab);
+        }
+
+        setInitialMemoryTable();
+
+
         for(int i = 0; i < 4; i++){
             updateUIState(i);
         }
