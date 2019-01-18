@@ -115,12 +115,14 @@ public class GUIController implements Initializable {
         historyNodes.setRotate(-90);
 
 
+        btnBackward.setDisable(true);
 
         btnReset.setOnAction(e -> {
             rewindSimulator(0);
         });
 
-        JFXHistoryButton historyNodeButton = new JFXHistoryButton("INITIAL", 0);
+        JFXHistoryButton historyNodeButton = new JFXHistoryButton("[]", 0);
+        historyNodeButton.setStyle("-fx-font-size: 20px");
         historyNodeButton.setOnAction(event -> {
             rewindSimulator(historyNodeButton.getMachineStep());
         });
@@ -225,7 +227,10 @@ public class GUIController implements Initializable {
 
             updateUIState(threadTabPane.getSelectionModel().getSelectedIndex());
             for (int i = 0; i < simulator.getCurrentProgram().getUsedThreadIDs().length; i++) {
-                highlightInstruction(i, simulator.getMachine().getThread(i).getInstructionPointer(), simulator.getMachine().getThread(i).getNextInstruction().getKeyword());
+                System.out.println("thread id: " + i);
+                System.out.println(simulator.getMachine().getThread(i) == null);
+                if(simulator.getMachine().getThread(i).getNextInstruction() != null)
+                    highlightInstruction(i, simulator.getMachine().getThread(i).getInstructionPointer(), simulator.getMachine().getThread(i).getNextInstruction().getKeyword());
             }
         }
 
@@ -236,6 +241,7 @@ public class GUIController implements Initializable {
         historyNodeButton.setOnAction(event -> {
             rewindSimulator(historyNodeButton.getMachineStep());
         });
+
         historyNodeButton.getStyleClass().addAll("animated-option-button");
         historyNodeButton.setButtonType(JFXButton.ButtonType.RAISED);
 
@@ -308,6 +314,21 @@ public class GUIController implements Initializable {
             btnForward.setDisable(false);
         }
 
+        boolean canGoBackwards = false;
+
+        for(int i : simulator.getCurrentProgram().getUsedThreadIDs()){
+            if(simulator.getMachine().getThread(i).getInstructionPointer() > 0){
+                canGoBackwards = true;
+                break;
+            }
+        }
+
+        if(canGoBackwards){
+            btnBackward.setDisable(false);
+        }
+        else{
+            btnBackward.setDisable(true);
+        }
 
 //        if (thread.getInstructionPointer() <= 0)
 //        {

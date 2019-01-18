@@ -1,8 +1,6 @@
 package com.colinparrott.parallelsimulator.engine.simulator.gui;
 
 import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
-import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
-import com.colinparrott.parallelsimulator.engine.simulator.programs.ProgramList;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,6 +33,7 @@ public class GUISimulator extends Application
         stage.setTitle("PP Tutor");
         stage.setScene(scene);
         stage.show();
+        root.requestFocus();
 
         guiController.create(new InternalSimulator(), stage, null);
 
