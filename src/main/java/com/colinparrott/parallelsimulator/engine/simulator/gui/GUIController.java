@@ -91,6 +91,12 @@ public class GUIController implements Initializable {
     @FXML
     private Label titleLabel;
 
+    @FXML
+    private Label registersTitle;
+
+    @FXML
+    private Label memoryTitle;
+
     private JFXSnackbar snackbar;
 
     private Simulator simulator;
@@ -122,6 +128,7 @@ public class GUIController implements Initializable {
         });
 
         JFXHistoryButton historyNodeButton = new JFXHistoryButton("[]", 0);
+//        historyNodeButton.setTooltip(new Tooltip("Reset to initial program state"));
         historyNodeButton.setStyle("-fx-font-size: 20px");
         historyNodeButton.setOnAction(event -> {
             rewindSimulator(historyNodeButton.getMachineStep());
