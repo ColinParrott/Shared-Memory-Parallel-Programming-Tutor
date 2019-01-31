@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.colinparrott.parallelsimulator.engine.simulator.gui.LabelValue?>
 <?import com.colinparrott.parallelsimulator.engine.simulator.gui.controls.JFXHistoryNodesList?>
-<?import com.colinparrott.parallelsimulator.engine.simulator.gui.*?>
-<?import com.jfoenix.controls.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.collections.FXCollections?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<AnchorPane fx:id="rootPane" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../css/main.css"
-            xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.colinparrott.parallelsimulator.engine.simulator.gui.GUIController">
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootPane" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.colinparrott.parallelsimulator.engine.simulator.gui.GUIController">
     <children>
         <HBox layoutX="30.0" layoutY="539.0" prefHeight="40.0" prefWidth="469.0" spacing="40.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="539.0">
             <children>
@@ -118,8 +129,7 @@
          </columnResizePolicy>
         </TableView>
         <Label layoutX="237.0" layoutY="605.0" text="Speed (1x)" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="99.0" AnchorPane.leftAnchor="237.0" />
-        <TableView fx:id="tableMemory" layoutX="808.0" layoutY="50.0" prefHeight="336.0" prefWidth="332.0"
-                   AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="50.0">
+        <TableView fx:id="tableMemory" layoutX="808.0" layoutY="50.0" prefHeight="336.0" prefWidth="332.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="50.0">
             <columns>
                 <TableColumn fx:id="tableMem21" editable="false" prefWidth="279.0" text="Memory Location">
                     <cellValueFactory>
@@ -141,15 +151,10 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <JFXButton fx:id="btnLoad" buttonType="RAISED" layoutX="791.0" layoutY="620.0" mnemonicParsing="false"
-                   prefHeight="74.0" prefWidth="155.0" text="Load Program" AnchorPane.bottomAnchor="36.0"
-                   AnchorPane.rightAnchor="334.0"/>
-        <JFXButton fx:id="btnQuestion" buttonType="RAISED" layoutX="974.0" layoutY="610.0" mnemonicParsing="false"
-                   prefHeight="74.0" prefWidth="155.0" text="Start Challenge" AnchorPane.bottomAnchor="36.0"
-                   AnchorPane.rightAnchor="151.0"/>
+        <JFXButton fx:id="btnLoad" buttonType="RAISED" layoutX="791.0" layoutY="620.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Load Program" AnchorPane.bottomAnchor="36.0" AnchorPane.rightAnchor="334.0" />
+        <JFXButton fx:id="btnQuestion" buttonType="RAISED" layoutX="974.0" layoutY="610.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Start Challenge" AnchorPane.bottomAnchor="36.0" AnchorPane.rightAnchor="151.0" />
         <JFXButton fx:id="btnReset" buttonType="RAISED" layoutX="213.0" layoutY="666.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" text="Reset" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="213.0" />
-        <HBox id="seqBox" fx:id="historyBox" alignment="TOP_CENTER" layoutX="664.0" layoutY="459.0" prefHeight="130.0"
-              prefWidth="544.0" visible="false" AnchorPane.bottomAnchor="131.0" AnchorPane.rightAnchor="72.0">
+        <HBox id="seqBox" fx:id="historyBox" alignment="TOP_CENTER" layoutX="664.0" layoutY="459.0" prefHeight="130.0" prefWidth="544.0" visible="false" AnchorPane.bottomAnchor="131.0" AnchorPane.rightAnchor="72.0">
             <children>
             <VBox prefHeight="130.0" prefWidth="557.0" spacing="10.0">
                <children>
@@ -169,85 +174,72 @@
             </VBox>
             </children>
         </HBox>
-        <HBox id="seqBox" fx:id="gameBox" alignment="TOP_CENTER" layoutX="674.0" layoutY="469.0" prefHeight="308.0"
-              prefWidth="544.0" visible="false" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="400.0">
+        <HBox id="seqBox" fx:id="gameBox" alignment="TOP_CENTER" layoutX="674.0" layoutY="469.0" prefHeight="308.0" prefWidth="544.0" visible="false" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="400.0">
             <children>
                 <VBox alignment="CENTER" prefHeight="130.0" prefWidth="557.0">
                     <opaqueInsets>
-                        <Insets/>
+                        <Insets />
                     </opaqueInsets>
                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
                     </HBox.margin>
                     <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="538.0"
-                               text="Challenge Sequence" textAlignment="CENTER" textFill="WHITE">
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="538.0" text="Challenge Sequence" textAlignment="CENTER" textFill="WHITE">
                             <font>
-                                <Font size="21.0"/>
+                                <Font size="21.0" />
                             </font>
                         </Label>
-                        <Label fx:id="lblChallengeSequence" alignment="TOP_CENTER" prefHeight="17.0" prefWidth="524.0"
-                               text="0 1 0 1 0 1" textFill="WHITE">
+                        <Label fx:id="lblChallengeSequence" alignment="TOP_CENTER" prefHeight="17.0" prefWidth="524.0" text="0 1 0 1 0 1" textFill="WHITE">
                             <font>
-                                <Font name="Monospaced Bold" size="25.0"/>
+                                <Font name="Monospaced Bold" size="25.0" />
                             </font>
                         </Label>
-                        <Label fx:id="lblChallengeQuestion" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0"
-                               prefWidth="538.0" text="What is the final value of x?" textAlignment="CENTER"
-                               textFill="WHITE">
+                        <Label fx:id="lblChallengeQuestion" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="538.0" text="What is the final value of x?" textAlignment="CENTER" textFill="WHITE">
                             <font>
-                                <Font size="21.0"/>
+                                <Font size="21.0" />
                             </font>
                             <VBox.margin>
-                                <Insets top="30.0"/>
+                                <Insets top="30.0" />
                             </VBox.margin>
                         </Label>
                         <HBox prefHeight="30.0" prefWidth="524.0">
                             <children>
-                                <JFXTextField fx:id="challengeInputField" alignment="CENTER" focusColor="WHITE"
-                                              prefHeight="25.0" prefWidth="393.0" promptText="Enter value here"
-                                              stylesheets="@../css/textfield.css" unFocusColor="#8a8989">
+                                <JFXTextField fx:id="challengeInputField" alignment="CENTER" focusColor="WHITE" prefHeight="25.0" prefWidth="393.0" promptText="Enter value here" stylesheets="@../css/textfield.css" unFocusColor="#8a8989">
                                     <font>
-                                        <Font name="Monospaced Regular" size="17.0"/>
+                                        <Font name="Monospaced Regular" size="17.0" />
                                     </font>
                                     <HBox.margin>
-                                        <Insets/>
+                                        <Insets />
                                     </HBox.margin>
                                     <padding>
-                                        <Insets left="120.0"/>
+                                        <Insets left="120.0" />
                                     </padding>
                                 </JFXTextField>
-                                <Label fx:id="lblCorrect" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0"
-                                       prefWidth="99.0" text="Incorrect!" textAlignment="CENTER" textFill="WHITE">
+                                <Label fx:id="lblCorrect" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="99.0" text="Incorrect!" textAlignment="CENTER" textFill="WHITE">
                                     <font>
-                                        <Font size="18.0"/>
+                                        <Font size="18.0" />
                                     </font>
                                     <HBox.margin>
-                                        <Insets left="30.0" top="5.0"/>
+                                        <Insets left="30.0" top="5.0" />
                                     </HBox.margin>
                                 </Label>
                             </children>
                         </HBox>
-                        <JFXButton fx:id="btnSubmit" alignment="BASELINE_CENTER" buttonType="RAISED"
-                                   contentDisplay="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="155.0"
-                                   text="Submit" textAlignment="CENTER" wrapText="true">
+                        <JFXButton fx:id="btnSubmit" alignment="BASELINE_CENTER" buttonType="RAISED" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="155.0" text="Submit" textAlignment="CENTER" wrapText="true">
                             <VBox.margin>
-                                <Insets top="20.0"/>
+                                <Insets top="20.0" />
                             </VBox.margin>
                         </JFXButton>
                         <HBox alignment="BASELINE_CENTER" prefHeight="40.0" prefWidth="200.0" spacing="30.0">
                             <children>
-                                <JFXButton fx:id="btnExploreMode" buttonType="RAISED" mnemonicParsing="false"
-                                           prefHeight="74.0" prefWidth="155.0" text="Go Back to Explore Mode"
-                                           wrapText="true"/>
-                                <JFXButton fx:id="btnShowAnswer" buttonType="RAISED" mnemonicParsing="false"
-                                           prefHeight="74.0" prefWidth="155.0" text="Show Answer"/>
+                                <JFXButton fx:id="btnExploreMode" buttonType="RAISED" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Explore Mode" wrapText="true" />
+                                <JFXButton fx:id="btnShowAnswer" buttonType="RAISED" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Show Answer" />
                             </children>
                             <opaqueInsets>
-                                <Insets top="20.0"/>
+                                <Insets top="20.0" />
                             </opaqueInsets>
                             <VBox.margin>
-                                <Insets top="20.0"/>
+                                <Insets top="20.0" />
                             </VBox.margin>
                         </HBox>
                     </children>
@@ -256,19 +248,17 @@
         </HBox>
       <Label fx:id="titleLabel" alignment="BOTTOM_CENTER" layoutX="29.0" prefHeight="40.0" prefWidth="469.0" text="hello world" textAlignment="RIGHT" textFill="WHITE" AnchorPane.leftAnchor="29.0" AnchorPane.topAnchor="0.0">
          <font>
-             <Font name="System Bold" size="20.0"/>
+             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-        <Label fx:id="memoryTitle" alignment="BOTTOM_CENTER" layoutX="807.0" prefHeight="40.0" prefWidth="332.0"
-               text="Memory" textAlignment="RIGHT" textFill="WHITE">
+        <Label fx:id="memoryTitle" alignment="BOTTOM_CENTER" layoutX="807.0" prefHeight="40.0" prefWidth="332.0" text="Memory" textAlignment="RIGHT" textFill="WHITE">
             <font>
-                <Font name="System Bold" size="20.0"/>
+                <Font name="System Bold" size="20.0" />
             </font>
         </Label>
-        <Label fx:id="registersTitle" alignment="BOTTOM_CENTER" layoutX="502.0" prefHeight="40.0" prefWidth="165.0"
-               text="Registers" textAlignment="RIGHT" textFill="WHITE">
+        <Label fx:id="registersTitle" alignment="BOTTOM_CENTER" layoutX="502.0" prefHeight="40.0" prefWidth="165.0" text="Registers" textAlignment="RIGHT" textFill="WHITE">
             <font>
-                <Font name="System Bold" size="20.0"/>
+                <Font name="System Bold" size="20.0" />
          </font>
       </Label>
     </children>
