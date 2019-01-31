@@ -73,6 +73,15 @@ Table {
     -fx-background-radius: 10 10 0 0;
 }
 
+
+#btnSubmit {
+    -fx-background-color: #008000;
+}
+
+#btnNewSequence {
+    -fx-background-color: #008000;
+}
+
 .animated-option-button {
     -fx-background-color: #419FAE;
     -fx-background-radius: 70px;

@@ -11,11 +11,16 @@ import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
 import com.colinparrott.parallelsimulator.engine.simulator.gui.anim.TableViewAnimator;
 import com.colinparrott.parallelsimulator.engine.simulator.gui.controls.JFXHistoryButton;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.game.OutcomeCalculator;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.GenMethod;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.ThreadSequenceGen;
+import com.colinparrott.parallelsimulator.programs.ProgramFile;
 import com.colinparrott.parallelsimulator.programs.ProgramFileReader;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXNodesList;
-import com.jfoenix.controls.JFXSnackbar;
-import com.jfoenix.controls.JFXTabPane;
+import com.jfoenix.controls.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,14 +29,17 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class GUIController implements Initializable {
@@ -67,7 +75,37 @@ public class GUIController implements Initializable {
     private Button btnBackward;
 
     @FXML
+    private HBox historyBox;
+
+    @FXML
+    private HBox gameBox;
+
+    @FXML
+    private Label lblChallengeSequence;
+
+    @FXML
+    private Label lblChallengeQuestion;
+
+    @FXML
+    private Label lblCorrect;
+
+    @FXML
+    private JFXTextField challengeInputField;
+
+    @FXML
+    private JFXButton btnSubmit;
+
+    @FXML
+    private JFXButton btnExploreMode;
+
+    @FXML
+    private JFXButton btnShowAnswer;
+
+    @FXML
     private Button btnLoad;
+
+    @FXML
+    private Button btnQuestion;
 
     @FXML
     private Button btnReset;
@@ -110,6 +148,9 @@ public class GUIController implements Initializable {
 
     private Stage mainWindow;
     private Stage programSelectorWindow;
+
+    private MemoryLocation chosenVariable;
+    private int correctAnswer;
 
 
     public void init() {
@@ -168,12 +209,29 @@ public class GUIController implements Initializable {
                     highlightInstruction(id, pointer, nextInstruction.getKeyword());
 
 
+                addHistoryNodes(id);
                 updateUIState(id);
                 checkAwaitFlash(id, oldPointer);
                 checkThreadsFinished();
-                addHistoryNodes(id);
             }
 
+        });
+
+        challengeInputField.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue)
+            {
+                if (newValue.length() > 9)
+                {
+                    challengeInputField.setText(newValue.substring(0, 9));
+                }
+                else if (!newValue.matches("\\d*"))
+                {
+                    challengeInputField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
         });
 
         btnBackward.setOnAction(event -> {
@@ -186,10 +244,10 @@ public class GUIController implements Initializable {
                 // Going backwards must check if previous instruction was atomic
                 highlightInstruction(id, pointer, simulator.getMachine().getThread(id).getNextInstruction().getKeyword());
 
-
-                updateUIState(id);
                 if (historyNodes.getChildren().size() > 1)
                     deleteLastHistoryNode();
+                updateUIState(id);
+
             }
 
         });
@@ -203,8 +261,162 @@ public class GUIController implements Initializable {
         threadTabPane.getSelectionModel().selectedIndexProperty().addListener(this::onThreadTabChanged);
 
 
+        btnQuestion.setOnAction(event -> {
+            rewindSimulator(0);
+            historyBox.setVisible(false);
+            btnLoad.setVisible(false);
+            btnQuestion.setVisible(false);
+            gameBox.setVisible(true);
+            beginChallengeMode();
+        });
+
+        btnExploreMode.setOnAction(event -> {
+            rewindSimulator(0);
+            gameBox.setVisible(false);
+            historyBox.setVisible(true);
+            btnLoad.setVisible(true);
+            btnQuestion.setVisible(true);
+        });
+
+        btnShowAnswer.setOnAction(event -> {
+            if (btnShowAnswer.getText().equals("Show Answer"))
+            {
+                challengeInputField.setEditable(false);
+                challengeInputField.setText("" + correctAnswer);
+                lblChallengeQuestion.setText("The value of " + chosenVariable + " would be:");
+                resetGuessStylesheet();
+                lblCorrect.setText("");
+                btnSubmit.setVisible(false);
+                btnShowAnswer.setText("New Challenge");
+            }
+            else
+            {
+                beginChallengeMode();
+            }
+
+        });
+
+
     }
 
+
+    private void beginChallengeMode()
+    {
+        ProgramFile programFile = simulator.getCurrentProgram().getProgramFile();
+        int[][] interestingSequences = programFile.getInterestingSequences();
+        int[] chosenSeq;
+
+        if (interestingSequences.length > 0)
+            chosenSeq = programFile.getInterestingSequences()[new Random().nextInt(programFile.getInterestingSequences().length)];
+        else
+            chosenSeq = ThreadSequenceGen.generateThreadSequence(simulator.getCurrentProgram(), 10, GenMethod.RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS);
+
+        btnSubmit.setVisible(true);
+        btnShowAnswer.setText("Show Answer");
+
+        StringBuilder sequenceString = new StringBuilder();
+        for (int i : chosenSeq) sequenceString.append(i).append(" ");
+        lblChallengeSequence.setText(sequenceString.toString());
+
+        MemoryLocation[] relevantVariables = getRelevantVariables(simulator.getCurrentProgram());
+        chosenVariable = relevantVariables[new Random().nextInt(relevantVariables.length)];
+        lblChallengeQuestion.setText("What is the final value of " + chosenVariable + "?");
+
+        resetGuessStylesheet();
+        challengeInputField.clear();
+
+        challengeInputField.setEditable(true);
+        lblCorrect.setText("");
+
+        correctAnswer = OutcomeCalculator.calculateVariableOutcome(chosenVariable, chosenSeq, simulator.getCurrentProgram().getInitialMemory(), simulator.getCurrentProgram());
+        btnSubmit.setOnAction(event -> {
+
+            if (challengeInputField.getText() != null && challengeInputField.getText().length() > 0)
+            {
+                int input = Integer.valueOf(challengeInputField.getText());
+
+                if (input == correctAnswer)
+                {
+                    System.out.println("correct!");
+
+                    onCorrect();
+                }
+                else
+                {
+                    System.out.println("incorrect!");
+
+                    // Define the Durations
+                    Duration startDuration = Duration.ZERO;
+                    Duration endDuration = Duration.millis(100);
+
+
+                    // Create the start and end Key Frames
+                    KeyValue startKeyValue = new KeyValue(challengeInputField.translateXProperty(), 2);
+                    KeyFrame startKeyFrame = new KeyFrame(startDuration, startKeyValue);
+                    KeyValue endKeyValue = new KeyValue(challengeInputField.translateXProperty(), -2);
+                    KeyFrame endKeyFrame = new KeyFrame(endDuration, endKeyValue);
+
+                    // Create a Timeline
+                    Timeline timeline = new Timeline(startKeyFrame, endKeyFrame);
+                    // Let the animation run forever
+                    timeline.setCycleCount(2);
+                    // Run the animation
+                    timeline.play();
+
+                    onIncorrect();
+                }
+            }
+            // INPUT EMPTY
+            else
+            {
+
+            }
+
+        });
+    }
+
+    private void onCorrect()
+    {
+        lblCorrect.setText("Correct!");
+        lblCorrect.setStyle("-fx-text-fill: #008000");
+        challengeInputField.getStylesheets().clear();
+        challengeInputField.getStylesheets().add(getClass().getClassLoader().getResource("css/textfield_correct.css").toExternalForm());
+        challengeInputField.setEditable(false);
+        btnSubmit.setVisible(false);
+        btnShowAnswer.setText("New Challenge");
+
+    }
+
+    private void onIncorrect()
+    {
+        lblCorrect.setText("Incorrect");
+        lblCorrect.setStyle("-fx-text-fill: red");
+        challengeInputField.getStylesheets().clear();
+        challengeInputField.getStylesheets().add(getClass().getClassLoader().getResource("css/textfield_error.css").toExternalForm());
+
+        Duration startDuration = Duration.ZERO;
+        Duration endDuration = Duration.millis(100);
+
+
+        // Create the start and end Key Frames
+        KeyValue startKeyValue = new KeyValue(lblCorrect.translateXProperty(), 2);
+        KeyFrame startKeyFrame = new KeyFrame(startDuration, startKeyValue);
+        KeyValue endKeyValue = new KeyValue(lblCorrect.translateXProperty(), -2);
+        KeyFrame endKeyFrame = new KeyFrame(endDuration, endKeyValue);
+
+        // Create a Timeline
+        Timeline timeline = new Timeline(startKeyFrame, endKeyFrame);
+        // Let the animation run forever
+        timeline.setCycleCount(2);
+        // Run the animation
+        timeline.play();
+    }
+
+    private void resetGuessStylesheet()
+    {
+        challengeInputField.getStylesheets().clear();
+        challengeInputField.getStylesheets().add(getClass().getClassLoader().getResource("css/textfield.css").toExternalForm());
+    }
 
     private void updateUIState(int id) {
         updateRegisterView(id, false);
@@ -330,7 +542,9 @@ public class GUIController implements Initializable {
             }
         }
 
-        if(canGoBackwards){
+        System.out.println(historyNodes.getChildren().size());
+        if (canGoBackwards || historyNodes.getChildren().size() > 1)
+        {
             btnBackward.setDisable(false);
         }
         else{

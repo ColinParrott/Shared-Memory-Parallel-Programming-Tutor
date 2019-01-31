@@ -1,0 +1,8 @@
+.text-field {
+    -fx-text-fill: white;
+}
+
+
+.text-field .input-line {
+    -fx-background-color: green;
+}

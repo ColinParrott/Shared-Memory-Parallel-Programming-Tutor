@@ -1,5 +1,8 @@
+import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.game.OutcomeCalculator;
+import com.colinparrott.parallelsimulator.programs.ProgramFile;
 import com.colinparrott.parallelsimulator.programs.ProgramFileReader;
 import org.junit.Test;
 
@@ -44,5 +47,27 @@ public class ParserTests
             }
 
         }
+    }
+
+    @Test
+    public void testParseProgramReaderCalculateOutcome()
+    {
+
+        ProgramFile file = null;
+        ArrayList<ProgramFile> programFiles = ProgramFileReader.readProgramFiles();
+        for (ProgramFile f : programFiles)
+        {
+            if (f.getName().equals("x++"))
+            {
+                file = f;
+                break;
+            }
+        }
+
+        int[] seq = file.getInterestingSequences()[1];
+        Program p = file.generateProgram();
+        int value = OutcomeCalculator.calculateVariableOutcome(MemoryLocation.x, seq, p.getInitialMemory(), p);
+        System.out.println("Value of x: " + value);
+
     }
 }
