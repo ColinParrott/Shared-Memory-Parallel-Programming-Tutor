@@ -81,6 +81,27 @@ public class GUIController implements Initializable {
     private HBox gameBox;
 
     @FXML
+    private HBox gameBox2;
+
+    @FXML
+    private Label lblChallengeOutcome;
+
+    @FXML
+    private Label lblCorrectOutcome;
+
+    @FXML
+    private JFXTextField challengeInputFieldSequence;
+
+    @FXML
+    private JFXButton btnSubmitOutcome;
+
+    @FXML
+    private JFXButton btnShowAnswerOutcome;
+
+    @FXML
+    private JFXButton btnExploreMode2;
+
+    @FXML
     private Label lblChallengeSequence;
 
     @FXML
@@ -135,6 +156,12 @@ public class GUIController implements Initializable {
     @FXML
     private Label memoryTitle;
 
+    @FXML
+    private HBox modeBox;
+
+    @FXML
+    private JFXToggleButton modeToggle;
+
     private JFXSnackbar snackbar;
 
     private Simulator simulator;
@@ -150,7 +177,21 @@ public class GUIController implements Initializable {
     private Stage programSelectorWindow;
 
     private MemoryLocation chosenVariable;
+    private int chosenOutcome;
     private int correctAnswer;
+    private int[] correctAnswerSequence;
+
+    @FXML
+    private JFXButton btnHint;
+
+    private GameMode gameMode;
+    private String hintString = "";
+    private String allowedThreadIDs = "";
+
+    enum GameMode
+    {
+        OUTCOME, SEQUENCE
+    }
 
 
     public void init() {
@@ -166,6 +207,22 @@ public class GUIController implements Initializable {
 
         btnReset.setOnAction(e -> {
             rewindSimulator(0);
+        });
+
+        btnHint.setOnAction(event -> {
+            if (gameMode == GameMode.SEQUENCE)
+            {
+                if (hintString.length() < correctAnswerSequence.length)
+                {
+                    hintString = hintString + correctAnswerSequence[hintString.length()];
+                    challengeInputFieldSequence.setText(hintString);
+
+                    if (hintString.length() == correctAnswerSequence.length)
+                    {
+                        onCorrectOutcome();
+                    }
+                }
+            }
         });
 
         JFXHistoryButton historyNodeButton = new JFXHistoryButton("[]", 0);
@@ -217,6 +274,7 @@ public class GUIController implements Initializable {
 
         });
 
+
         challengeInputField.textProperty().addListener(new ChangeListener<String>()
         {
             @Override
@@ -230,6 +288,30 @@ public class GUIController implements Initializable {
                 else if (!newValue.matches("\\d*"))
                 {
                     challengeInputField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        challengeInputFieldSequence.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue)
+            {
+                System.out.println(newValue);
+                if (newValue.length() > 15)
+                {
+                    challengeInputFieldSequence.setText(newValue.substring(0, 15));
+                }
+                else if (!newValue.matches(String.format("[%s]*", allowedThreadIDs)))
+                {
+                    System.out.println("shit");
+                    challengeInputFieldSequence.setText(newValue.replaceAll(String.format("[^%s]", allowedThreadIDs), ""));
+                }
+
+                if (challengeInputFieldSequence.getLength() < hintString.length())
+                {
+                    challengeInputFieldSequence.setText(hintString);
                 }
             }
         });
@@ -267,7 +349,47 @@ public class GUIController implements Initializable {
             btnLoad.setVisible(false);
             btnQuestion.setVisible(false);
             gameBox.setVisible(true);
+            modeBox.setVisible(true);
             beginChallengeMode();
+        });
+
+        modeToggle.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+
+            // guess outcome
+            if (newValue == false)
+            {
+                rewindSimulator(0);
+                boolean switchedModes = gameBox2.isVisible();
+
+
+                // Only show guess outcome mode if switched from guess sequence mode (rather than when trying to going back to explore mode button which resets toggle to false)
+                if (switchedModes)
+                {
+                    gameBox2.setVisible(false);
+                    gameBox.setVisible(true);
+                    beginChallengeMode();
+                }
+
+            }
+            else
+            {
+                System.out.println("hi");
+                rewindSimulator(0);
+                gameBox.setVisible(false);
+                gameBox2.setVisible(true);
+                beginChallengeModeGuessSequence();
+            }
+        }));
+
+        btnExploreMode2.setOnAction(event -> {
+            System.out.println("BACK 2");
+            rewindSimulator(0);
+            gameBox2.setVisible(false);
+            historyBox.setVisible(true);
+            btnLoad.setVisible(true);
+            btnQuestion.setVisible(true);
+            modeToggle.setSelected(false);
+            modeBox.setVisible(false);
         });
 
         btnExploreMode.setOnAction(event -> {
@@ -276,6 +398,8 @@ public class GUIController implements Initializable {
             historyBox.setVisible(true);
             btnLoad.setVisible(true);
             btnQuestion.setVisible(true);
+//            modeToggle.setSelected(false);
+            modeBox.setVisible(false);
         });
 
         btnShowAnswer.setOnAction(event -> {
@@ -296,12 +420,132 @@ public class GUIController implements Initializable {
 
         });
 
+        btnShowAnswerOutcome.setOnAction(event -> {
+            if (btnShowAnswerOutcome.getText().equals("Show Answer"))
+            {
+                challengeInputFieldSequence.setEditable(false);
+
+                StringBuilder answer = new StringBuilder();
+                for (int i : correctAnswerSequence) answer.append(i).append(" ");
+                challengeInputFieldSequence.setText("" + answer.toString());
+                lblChallengeQuestion.setText("A valid sequence would be for " + chosenVariable + " = " + chosenOutcome + ":");
+                resetGuessStylesheet();
+                lblCorrectOutcome.setText("");
+                btnSubmitOutcome.setVisible(false);
+                btnShowAnswerOutcome.setText("New Challenge");
+            }
+            else
+            {
+                beginChallengeModeGuessSequence();
+            }
+
+        });
+
 
     }
 
+    private void beginChallengeModeGuessSequence()
+    {
+
+        gameMode = GameMode.SEQUENCE;
+        hintString = "";
+        btnHint.setVisible(true);
+
+        StringBuilder sb = new StringBuilder();
+        for (int i : simulator.getCurrentProgram().getUsedThreadIDs())
+        {
+            sb.append(i);
+        }
+        allowedThreadIDs = sb.toString();
+
+        ProgramFile programFile = simulator.getCurrentProgram().getProgramFile();
+        int[][] interestingSequences = programFile.getInterestingSequences();
+        int[] chosenSeq;
+
+        if (interestingSequences.length > 0)
+            chosenSeq = programFile.getInterestingSequences()[new Random().nextInt(programFile.getInterestingSequences().length)];
+        else
+            chosenSeq = ThreadSequenceGen.generateThreadSequence(simulator.getCurrentProgram(), 10, GenMethod.RANDOM_MAX_GLOBAL_STEPS_IGNORE_COMPLETE_THREADS);
+
+
+        correctAnswerSequence = chosenSeq;
+
+        btnSubmitOutcome.setVisible(true);
+        btnShowAnswerOutcome.setText("Show Answer");
+        btnShowAnswerOutcome.setVisible(true);
+
+        MemoryLocation[] relevantVariables = getRelevantVariables(simulator.getCurrentProgram());
+        chosenVariable = relevantVariables[new Random().nextInt(relevantVariables.length)];
+
+        chosenOutcome = OutcomeCalculator.calculateVariableOutcome(chosenVariable, chosenSeq, simulator.getCurrentProgram().getInitialMemory(), simulator.getCurrentProgram());
+
+        lblChallengeOutcome.setText(chosenVariable + " = " + chosenOutcome);
+        resetGuessStylesheet();
+        challengeInputFieldSequence.clear();
+        challengeInputFieldSequence.setEditable(true);
+        lblCorrectOutcome.setText("");
+
+        System.out.println("GUESS SEQUENCE");
+        System.out.println("CHOSEN VARIABLE: " + chosenVariable);
+        System.out.println("CHOSEN VALUE: " + chosenOutcome);
+
+        btnSubmitOutcome.setOnAction(event -> {
+            if (challengeInputFieldSequence.getText() != null && challengeInputFieldSequence.getText().length() > 0)
+            {
+                String input = challengeInputFieldSequence.getText().replaceAll("\\s+", "");
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i : chosenSeq) stringBuilder.append(i);
+                String answer = stringBuilder.toString().trim();
+                int[] seqAnswer = new int[input.length()];
+
+                for (int i = 0; i < input.length(); i++)
+                {
+                    seqAnswer[i] = Integer.valueOf(String.valueOf(input.charAt(i)));
+                }
+
+                int calculatedOutcome = OutcomeCalculator.calculateVariableOutcome(chosenVariable, seqAnswer, simulator.getCurrentProgram().getInitialMemory(), simulator.getCurrentProgram());
+
+                System.out.println("CALCULATED OUTCOME: " + calculatedOutcome);
+
+                if (input.equals(answer) || chosenOutcome == calculatedOutcome)
+                {
+                    System.out.println("correct!");
+
+                    onCorrectOutcome();
+                }
+                else
+                {
+                    System.out.println("incorrect!");
+
+                    // Define the Durations
+                    Duration startDuration = Duration.ZERO;
+                    Duration endDuration = Duration.millis(100);
+
+
+                    // Create the start and end Key Frames
+                    KeyValue startKeyValue = new KeyValue(challengeInputFieldSequence.translateXProperty(), 2);
+                    KeyFrame startKeyFrame = new KeyFrame(startDuration, startKeyValue);
+                    KeyValue endKeyValue = new KeyValue(challengeInputFieldSequence.translateXProperty(), -2);
+                    KeyFrame endKeyFrame = new KeyFrame(endDuration, endKeyValue);
+
+                    // Create a Timeline
+                    Timeline timeline = new Timeline(startKeyFrame, endKeyFrame);
+                    // Let the animation run forever
+                    timeline.setCycleCount(2);
+                    // Run the animation
+                    timeline.play();
+
+                    onIncorrectOutcome();
+                }
+            }
+        });
+
+    }
 
     private void beginChallengeMode()
     {
+        gameMode = GameMode.OUTCOME;
+
         ProgramFile programFile = simulator.getCurrentProgram().getProgramFile();
         int[][] interestingSequences = programFile.getInterestingSequences();
         int[] chosenSeq;
@@ -384,6 +628,18 @@ public class GUIController implements Initializable {
         challengeInputField.setEditable(false);
         btnSubmit.setVisible(false);
         btnShowAnswer.setText("New Challenge");
+    }
+
+    private void onCorrectOutcome()
+    {
+        lblCorrectOutcome.setText("Correct!");
+        lblCorrectOutcome.setStyle("-fx-text-fill: #008000");
+        challengeInputFieldSequence.getStylesheets().clear();
+        challengeInputFieldSequence.getStylesheets().add(getClass().getClassLoader().getResource("css/textfield_correct.css").toExternalForm());
+        challengeInputFieldSequence.setEditable(false);
+        btnSubmitOutcome.setVisible(false);
+        btnShowAnswerOutcome.setText("New Challenge");
+        btnHint.setVisible(false);
 
     }
 
@@ -412,10 +668,37 @@ public class GUIController implements Initializable {
         timeline.play();
     }
 
+    private void onIncorrectOutcome()
+    {
+        lblCorrectOutcome.setText("Incorrect");
+        lblCorrectOutcome.setStyle("-fx-text-fill: red");
+        challengeInputFieldSequence.getStylesheets().clear();
+        challengeInputFieldSequence.getStylesheets().add(getClass().getClassLoader().getResource("css/textfield_error.css").toExternalForm());
+
+        Duration startDuration = Duration.ZERO;
+        Duration endDuration = Duration.millis(100);
+
+
+        // Create the start and end Key Frames
+        KeyValue startKeyValue = new KeyValue(lblCorrectOutcome.translateXProperty(), 2);
+        KeyFrame startKeyFrame = new KeyFrame(startDuration, startKeyValue);
+        KeyValue endKeyValue = new KeyValue(lblCorrectOutcome.translateXProperty(), -2);
+        KeyFrame endKeyFrame = new KeyFrame(endDuration, endKeyValue);
+
+        // Create a Timeline
+        Timeline timeline = new Timeline(startKeyFrame, endKeyFrame);
+        // Let the animation run forever
+        timeline.setCycleCount(2);
+        // Run the animation
+        timeline.play();
+    }
+
     private void resetGuessStylesheet()
     {
         challengeInputField.getStylesheets().clear();
         challengeInputField.getStylesheets().add(getClass().getClassLoader().getResource("css/textfield.css").toExternalForm());
+        challengeInputFieldSequence.getStylesheets().clear();
+        challengeInputFieldSequence.getStylesheets().add(getClass().getClassLoader().getResource("css/textfield.css").toExternalForm());
     }
 
     private void updateUIState(int id) {

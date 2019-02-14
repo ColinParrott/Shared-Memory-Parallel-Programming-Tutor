@@ -117,8 +117,25 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
         </TableView>
+        <HBox fx:id="modeBox" alignment="CENTER" layoutX="429.0" layoutY="618.0" prefHeight="58.0" prefWidth="305.0"
+              visible="false" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="300.0">
+            <children>
+                <Label text="Guess Outcome" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="14.0"/>
+                    </font>
+                </Label>
+                <JFXToggleButton fx:id="modeToggle" mnemonicParsing="false" text=" " toggleColor="WHITE"
+                                 toggleLineColor="#bfbdbd" unToggleColor="WHITE" unToggleLineColor="#bfbdbd"/>
+                <Label text="Guess Sequence" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="14.0"/>
+                    </font>
+                </Label>
+            </children>
+        </HBox>
         <Label layoutX="237.0" layoutY="605.0" text="Speed (1x)" textFill="WHITE" visible="false" AnchorPane.bottomAnchor="99.0" AnchorPane.leftAnchor="237.0" />
-        <TableView fx:id="tableMemory" layoutX="808.0" layoutY="50.0" prefHeight="336.0" prefWidth="332.0"
+        <TableView fx:id="tableMemory" layoutX="808.0" layoutY="50.0" prefHeight="217.0" prefWidth="332.0"
                    AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="50.0">
             <columns>
                 <TableColumn fx:id="tableMem21" editable="false" prefWidth="279.0" text="Memory Location">
@@ -149,7 +166,7 @@
                    AnchorPane.rightAnchor="151.0"/>
         <JFXButton fx:id="btnReset" buttonType="RAISED" layoutX="213.0" layoutY="666.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" text="Reset" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="213.0" />
         <HBox id="seqBox" fx:id="historyBox" alignment="TOP_CENTER" layoutX="664.0" layoutY="459.0" prefHeight="130.0"
-              prefWidth="544.0" visible="false" AnchorPane.bottomAnchor="131.0" AnchorPane.rightAnchor="72.0">
+              prefWidth="544.0" AnchorPane.bottomAnchor="131.0" AnchorPane.rightAnchor="72.0">
             <children>
             <VBox prefHeight="130.0" prefWidth="557.0" spacing="10.0">
                <children>
@@ -169,8 +186,8 @@
             </VBox>
             </children>
         </HBox>
-        <HBox id="seqBox" fx:id="gameBox" alignment="TOP_CENTER" layoutX="674.0" layoutY="469.0" prefHeight="308.0"
-              prefWidth="544.0" visible="false" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="400.0">
+        <HBox id="seqBox" fx:id="gameBox" alignment="TOP_CENTER" layoutX="674.0" layoutY="469.0" prefHeight="360.0"
+              prefWidth="544.0" visible="false" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="350.0">
             <children>
                 <VBox alignment="CENTER" prefHeight="130.0" prefWidth="557.0">
                     <opaqueInsets>
@@ -241,6 +258,93 @@
                                            prefHeight="74.0" prefWidth="155.0" text="Go Back to Explore Mode"
                                            wrapText="true"/>
                                 <JFXButton fx:id="btnShowAnswer" buttonType="RAISED" mnemonicParsing="false"
+                                           prefHeight="74.0" prefWidth="155.0" text="Show Answer"/>
+                            </children>
+                            <opaqueInsets>
+                                <Insets top="20.0"/>
+                            </opaqueInsets>
+                            <VBox.margin>
+                                <Insets top="20.0"/>
+                            </VBox.margin>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox id="seqBox" fx:id="gameBox2" alignment="TOP_CENTER" layoutX="674.0" layoutY="360.0" prefHeight="360.0"
+              prefWidth="544.0" visible="false" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="350.0">
+            <children>
+                <VBox alignment="CENTER" prefHeight="130.0" prefWidth="557.0">
+                    <opaqueInsets>
+                        <Insets/>
+                    </opaqueInsets>
+                    <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0"/>
+                    </HBox.margin>
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="538.0"
+                               text="Challenge Outcome" textAlignment="CENTER" textFill="WHITE">
+                            <font>
+                                <Font size="21.0"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="lblChallengeOutcome" alignment="TOP_CENTER" prefHeight="17.0" prefWidth="524.0"
+                               text="x = 2" textFill="WHITE">
+                            <font>
+                                <Font name="Monospaced Bold" size="25.0"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="lblChallengeQuestion1" alignment="CENTER" contentDisplay="CENTER"
+                               prefHeight="17.0" prefWidth="538.0" text="Enter sequence that gives outcome:"
+                               textAlignment="CENTER" textFill="WHITE">
+                            <font>
+                                <Font size="21.0"/>
+                            </font>
+                            <VBox.margin>
+                                <Insets top="30.0"/>
+                            </VBox.margin>
+                        </Label>
+                        <HBox prefHeight="30.0" prefWidth="524.0">
+                            <children>
+                                <JFXButton fx:id="btnHint" mnemonicParsing="false" prefWidth="100.0" text="Hint"/>
+                                <JFXTextField fx:id="challengeInputFieldSequence" alignment="CENTER" focusColor="WHITE"
+                                              prefHeight="25.0" prefWidth="393.0" promptText="Enter sequence here"
+                                              stylesheets="@../css/textfield.css" unFocusColor="#8a8989">
+                                    <font>
+                                        <Font name="Monospaced Regular" size="17.0"/>
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets/>
+                                    </HBox.margin>
+                                    <padding>
+                                        <Insets left="50.0"/>
+                                    </padding>
+                                </JFXTextField>
+                                <Label fx:id="lblCorrectOutcome" alignment="CENTER" contentDisplay="CENTER"
+                                       prefHeight="27.0" prefWidth="128.0" text="Incorrect!" textAlignment="CENTER"
+                                       textFill="WHITE">
+                                    <font>
+                                        <Font size="18.0"/>
+                                    </font>
+                                    <HBox.margin>
+                                        <Insets left="30.0" top="5.0"/>
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <JFXButton fx:id="btnSubmitOutcome" alignment="BASELINE_CENTER" buttonType="RAISED"
+                                   contentDisplay="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="155.0"
+                                   text="Submit" textAlignment="CENTER" wrapText="true">
+                            <VBox.margin>
+                                <Insets top="20.0"/>
+                            </VBox.margin>
+                        </JFXButton>
+                        <HBox alignment="BASELINE_CENTER" prefHeight="40.0" prefWidth="200.0" spacing="30.0">
+                            <children>
+                                <JFXButton fx:id="btnExploreMode2" buttonType="RAISED" mnemonicParsing="false"
+                                           prefHeight="74.0" prefWidth="155.0" text="Go Back to Explore Mode"
+                                           wrapText="true"/>
+                                <JFXButton fx:id="btnShowAnswerOutcome" buttonType="RAISED" mnemonicParsing="false"
                                            prefHeight="74.0" prefWidth="155.0" text="Show Answer"/>
                             </children>
                             <opaqueInsets>

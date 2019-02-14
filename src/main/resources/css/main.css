@@ -78,8 +78,16 @@ Table {
     -fx-background-color: #008000;
 }
 
+#btnSubmitOutcome {
+    -fx-background-color: #008000;
+}
+
 #btnNewSequence {
     -fx-background-color: #008000;
+}
+
+#btnHint {
+    -fx-background-color: #9A7D0A;
 }
 
 .animated-option-button {
