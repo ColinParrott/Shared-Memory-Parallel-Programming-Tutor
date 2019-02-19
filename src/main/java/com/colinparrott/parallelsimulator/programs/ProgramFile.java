@@ -48,6 +48,7 @@ public class ProgramFile {
                 instructionLists.put(i, assemblyParser.parseAssemblyCode(threadInstructions[i]).getKey());
             }
             else{
+                System.out.println("program invalid!");
                 return null;
             }
         }

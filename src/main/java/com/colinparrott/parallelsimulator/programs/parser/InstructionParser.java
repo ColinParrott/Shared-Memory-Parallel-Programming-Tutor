@@ -23,6 +23,10 @@ class InstructionParser {
      * @return Returns Instruction (if valid) and error message (if invalid)
      */
     Pair<Instruction, Optional<String>> parseInstruction(InstructionKeyword keyword, String[] params) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String p : params) stringBuilder.append(p + " ");
+        System.out.println(String.format("parseInstruction(%s, %s)", keyword, stringBuilder.toString().trim()));
         Instruction instruction = null;
 
         // Verifies program is correct
@@ -35,6 +39,11 @@ class InstructionParser {
             i++;
         }
 
+        for (String s : params)
+        {
+            System.out.print(s + " ");
+        }
+        System.out.println();
 
         switch (keyword) {
             case LD:
@@ -42,6 +51,24 @@ class InstructionParser {
                 break;
             case LDI:
                 instruction = new LoadImmediate(registerNumFromString(params[0]), Integer.valueOf(params[1]));
+                break;
+            case SUB:
+                instruction = new Sub(registerNumFromString(params[0]), registerNumFromString(params[1]), registerNumFromString(params[2]));
+                break;
+            case SUBI:
+                instruction = new SubImmediate(registerNumFromString(params[0]), registerNumFromString(params[0]), Integer.valueOf(params[2]));
+                break;
+            case BNE:
+                instruction = new BranchNotEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), params[2]);
+                break;
+            case BEQ:
+                instruction = new BranchIfEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), params[2]);
+                break;
+            case JUMP:
+                instruction = new Jump(params[0]);
+                break;
+            case LABEL:
+                instruction = new Label(params[0]);
                 break;
             case ADD:
                 instruction = new Add(registerNumFromString(params[0]), registerNumFromString(params[1]), registerNumFromString(params[2]));
@@ -108,7 +135,8 @@ class InstructionParser {
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseLabel(String s) {
-        if (s.matches("[a-zA-z]")) {
+        if (s.matches("[a-zA-z]*"))
+        {
             return new Pair<>(new ParameterTypeData(ParameterType.LABEL_STRING, s), Optional.empty());
         }
 

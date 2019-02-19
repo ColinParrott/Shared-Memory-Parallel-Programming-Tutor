@@ -295,7 +295,7 @@
                             </font>
                         </Label>
                         <Label fx:id="lblChallengeQuestion1" alignment="CENTER" contentDisplay="CENTER"
-                               prefHeight="17.0" prefWidth="538.0" text="Enter sequence that gives outcome:"
+                               prefHeight="17.0" prefWidth="538.0" text="Enter sequence that gives this outcome"
                                textAlignment="CENTER" textFill="WHITE">
                             <font>
                                 <Font size="21.0"/>

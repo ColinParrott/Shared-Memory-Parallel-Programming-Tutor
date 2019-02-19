@@ -1,0 +1,52 @@
+{
+  "name": "cw1",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory": {
+    "x": 10,
+    "y": 0
+  },
+  "highLevelCode": [
+    "co",
+    "{",
+    "while (x != y) {",
+    "x = x-1;",
+    "}",
+    "y = y + 1;",
+    "}",
+    "//",
+    "{",
+    "<await (x==y);>",
+    "x = 8;",
+    "y = 2;",
+    "}",
+    "oc"
+  ],
+  "threadCode": [
+    [
+      "LD $R0 x",
+      "LD $R1 y",
+      "loop:",
+      "BEQ $R0 $R1 exit",
+      "LD $R0 x",
+      "SUBI $R0 $R0 1",
+      "ST $R0 x",
+      "JUMP loop",
+      "exit:",
+      "LD $R0 y",
+      "ADDI $R0 $R0 1",
+      "ST $R0 y"
+    ],
+    [
+      "ATOMIC",
+      "AWAIT x EQ y",
+      "ENDATOMIC",
+      "LDI $R0 8",
+      "ST $R0 x",
+      "LDI $R0 2",
+      "ST $R0 y"
+    ]
+  ]
+}

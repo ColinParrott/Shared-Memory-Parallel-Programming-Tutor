@@ -31,16 +31,36 @@ public class AssemblyParser {
             InstructionKeyword keyword;
 
             try {
-                keyword = InstructionKeyword.valueOf(instruction);
+
+                // Label is special case with no keyword
+                if (!instruction.endsWith(":"))
+                {
+                    keyword = InstructionKeyword.valueOf(instruction);
+
+                }
+                else
+                {
+                    keyword = InstructionKeyword.LABEL;
+                }
+
             } catch (IllegalArgumentException e) {
+                System.out.println("hi");
                 return new Pair<>(null, generateErrorMessage(String.format("Unrecognised instruction: %s", instruction)));
             }
 
+
             InstructionParser instructionParser = new InstructionParser(lineNumber);
             String[] params = Arrays.copyOfRange(parts, 1, parts.length);
+
+            if (instruction.endsWith(":"))
+            {
+                params = new String[]{instruction.replace(":", "")};
+            }
             Pair<Instruction, Optional<String>> instructionObject = instructionParser.parseInstruction(keyword, params);
 
             if (instructionObject != null && instructionObject.getValue().isPresent()) {
+                System.out.println("instruction object null");
+                System.out.println(generateErrorMessage(instructionObject.getValue().get()).get());
                 return new Pair<>(null, generateErrorMessage(instructionObject.getValue().get()));
             }
 
@@ -52,7 +72,7 @@ public class AssemblyParser {
     }
 
     protected Optional<String> generateErrorMessage(String errorMessage) {
-        return Optional.of(String.format("[Parse Error] %s  (Line %d)", errorMessage, lineNumber));
+        return Optional.of(String.format("[Parse Error] %s  (Line %d)", errorMessage, lineNumber + 1));
     }
 
 
