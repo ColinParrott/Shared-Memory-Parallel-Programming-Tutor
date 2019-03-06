@@ -32,6 +32,7 @@ public class GUISimulator extends Application
         Scene scene = new Scene(root, 1280, 720);
         stage.setTitle("PP Tutor");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
         root.requestFocus();
 

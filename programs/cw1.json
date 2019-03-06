@@ -1,5 +1,5 @@
 {
-  "name": "cw1",
+  "name": "PPLS CW1",
   "sequenceData": {
     "desired": false,
     "sequences": []
@@ -26,9 +26,9 @@
   ],
   "threadCode": [
     [
+      "loop:",
       "LD $R0 x",
       "LD $R1 y",
-      "loop:",
       "BEQ $R0 $R1 exit",
       "LD $R0 x",
       "SUBI $R0 $R0 1",

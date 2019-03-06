@@ -28,6 +28,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -442,6 +444,19 @@ public class GUIController implements Initializable {
         });
 
 
+    }
+
+    @FXML
+    private void onKeyPressed(KeyEvent ke)
+    {
+        if (ke.getCode() == KeyCode.RIGHT)
+        {
+            btnForward.fire();
+        }
+        else if (ke.getCode() == KeyCode.LEFT)
+        {
+            btnBackward.fire();
+        }
     }
 
     private void beginChallengeModeGuessSequence()
