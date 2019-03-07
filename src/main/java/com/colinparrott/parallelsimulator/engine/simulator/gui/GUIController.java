@@ -720,7 +720,7 @@ public class GUIController implements Initializable {
         updateRegisterView(id, false);
         updateMemoryView();
         updateButtons(id);
-        titleLabel.setText(simulator.getCurrentProgram().getName());
+        titleLabel.setText("Program: " + simulator.getCurrentProgram().getName());
     }
 
     private void deleteLastHistoryNode() {
@@ -973,7 +973,7 @@ public class GUIController implements Initializable {
         threadTabPane.getTabs().remove(maxThreads + 1, Machine.MAX_THREADS);
 
         simulator.loadProgram(p);
-        titleLabel.setText(simulator.getCurrentProgram().getName());
+        titleLabel.setText("Program: " + simulator.getCurrentProgram().getName());
         for (int id : simulator.getCurrentProgram().getUsedThreadIDs()) {
             highlightInstruction(id, 0, simulator.getMachine().getThread(id).getNextInstruction().getKeyword());
         }

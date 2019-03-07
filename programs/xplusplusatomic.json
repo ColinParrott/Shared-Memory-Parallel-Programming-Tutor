@@ -1,8 +1,17 @@
 {
   "name": "<x++>",
   "sequenceData": {
-    "desired": false,
-    "sequences": []
+    "desired": true,
+    "sequences": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ]
   },
   "initialMemory":
   {
