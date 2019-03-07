@@ -166,17 +166,34 @@
                    prefHeight="74.0" prefWidth="155.0" text="Start Challenge" AnchorPane.bottomAnchor="36.0"
                    AnchorPane.rightAnchor="151.0"/>
         <JFXButton fx:id="btnReset" buttonType="RAISED" layoutX="213.0" layoutY="666.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" text="Reset" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="213.0" />
-        <HBox id="seqBox" fx:id="historyBox" alignment="TOP_CENTER" layoutX="664.0" layoutY="459.0" prefHeight="130.0"
-              prefWidth="544.0" AnchorPane.bottomAnchor="131.0" AnchorPane.rightAnchor="72.0">
+        <HBox id="seqBox" fx:id="historyBox" alignment="TOP_CENTER" layoutX="664.0" layoutY="459.0" prefHeight="145.0"
+              prefWidth="544.0" AnchorPane.bottomAnchor="115.0" AnchorPane.rightAnchor="72.0">
             <children>
-            <VBox prefHeight="130.0" prefWidth="557.0" spacing="10.0">
+                <VBox prefHeight="147.0" prefWidth="524.0" spacing="10.0">
                <children>
                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="59.0" prefWidth="551.0" text="Sequence History" textFill="WHITE">
                      <font>
                          <Font name="Open Sans Regular" size="33.0" />
                      </font>
                   </Label>
-                      <JFXHistoryNodesList fx:id="historyNodes" alignment="BOTTOM_LEFT" prefHeight="71.0" prefWidth="0.0" />
+                   <ScrollPane fx:id="historyScrollPane" hbarPolicy="ALWAYS" prefHeight="99.0" prefWidth="524.0"
+                               vbarPolicy="NEVER">
+                       <content>
+                           <AnchorPane maxWidth="2000.0" prefHeight="45.0" prefWidth="1500.0">
+                               <children>
+                                   <JFXHistoryNodesList fx:id="historyNodes" alignment="BOTTOM_LEFT" prefHeight="71.0"
+                                                        prefWidth="0.0">
+                                       <padding>
+                                           <Insets left="5.0" right="5.0"/>
+                                       </padding>
+                                   </JFXHistoryNodesList>
+                               </children>
+                           </AnchorPane>
+                       </content>
+                       <VBox.margin>
+                           <Insets/>
+                       </VBox.margin>
+                   </ScrollPane>
                </children>
                <opaqueInsets>
                   <Insets />

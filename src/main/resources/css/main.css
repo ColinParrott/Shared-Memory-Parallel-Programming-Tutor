@@ -56,6 +56,13 @@ Table {
     -fx-alignment: CENTER;
 }
 
+.scroll-pane > .viewport {
+    -fx-background-color: #133257;
+}
+
+#historyScrollPane {
+    -fx-background-color: #133257;
+}
 
 .button:hover:pressed {
     -fx-scale-x: 1.02;
