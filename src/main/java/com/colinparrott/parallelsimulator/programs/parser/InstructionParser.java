@@ -26,7 +26,7 @@ class InstructionParser {
 
         StringBuilder stringBuilder = new StringBuilder();
         for (String p : params) stringBuilder.append(p + " ");
-        System.out.println(String.format("parseInstruction(%s, %s)", keyword, stringBuilder.toString().trim()));
+//        System.out.println(String.format("parseInstruction(%s, %s)", keyword, stringBuilder.toString().trim()));
         Instruction instruction = null;
 
         // Verifies program is correct
@@ -58,11 +58,29 @@ class InstructionParser {
             case SUBI:
                 instruction = new SubImmediate(registerNumFromString(params[0]), registerNumFromString(params[0]), Integer.valueOf(params[2]));
                 break;
+            case MUL:
+                instruction = new Mul(registerNumFromString(params[0]), registerNumFromString(params[0]), registerNumFromString(params[1]));
+                break;
+            case MULI:
+                instruction = new MulImmediate(registerNumFromString(params[0]), registerNumFromString(params[0]), Integer.valueOf(params[2]));
+                break;
+            case DIV:
+                instruction = new Div(registerNumFromString(params[0]), registerNumFromString(params[0]), registerNumFromString(params[1]));
+                break;
+            case DIVI:
+                instruction = new DivImmediate(registerNumFromString(params[0]), registerNumFromString(params[0]), Integer.valueOf(params[2]));
+                break;
             case BNE:
                 instruction = new BranchNotEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), params[2]);
                 break;
             case BEQ:
                 instruction = new BranchIfEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), params[2]);
+                break;
+            case BGT:
+                instruction = new BranchGreaterThan(registerNumFromString(params[0]), registerNumFromString(params[1]), params[2]);
+                break;
+            case BLT:
+                instruction = new BranchLessThan(registerNumFromString(params[0]), registerNumFromString(params[1]), params[2]);
                 break;
             case JUMP:
                 instruction = new Jump(params[0]);
@@ -144,10 +162,18 @@ class InstructionParser {
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseRegister(String s) {
+        System.out.println("parseRegister: " + s);
         if (s.charAt(0) == '$') {
             if (s.charAt(1) == 'R') {
-                if (Character.isDigit(s.charAt(2)) && Character.getNumericValue(s.charAt(2)) < SimulatorThread.REGISTERS_PER_THREAD) {
+                String numString = s.substring(2);
+                if (isInteger(numString, 10) && Integer.valueOf(numString) < SimulatorThread.REGISTERS_PER_THREAD)
+                {
                     return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, String.valueOf(s.charAt(2))), Optional.empty());
+                }
+                else
+                {
+                    System.out.println("register out of range");
+                    return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), Optional.of("Registers range from 0-9, got: \"" + s + "\""));
                 }
             } else {
                 return new Pair<>(new ParameterTypeData(ParameterType.CONSTANT, null), Optional.of("Expected register, got: \"" + s + "\""));

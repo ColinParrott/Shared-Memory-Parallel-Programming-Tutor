@@ -7,6 +7,6 @@ public class Launcher
     public static void main(String[] args)
     {
         CLISimulator simulator = new CLISimulator(args);
-        simulator.start();
+        simulator.originalCLI();
     }
 }

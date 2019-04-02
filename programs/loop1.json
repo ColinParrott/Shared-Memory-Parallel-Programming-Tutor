@@ -1,0 +1,64 @@
+{
+  "name": "Loop with Await",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory": {
+    "i": 4,
+    "g": 0
+  },
+  "highLevelCode": [
+    [
+      "i = 4; g = 0;"
+    ],
+    [
+      "co"
+    ],
+    [
+      "    while (i >= g) {"
+    ],
+    [
+      "    i--;"
+    ],
+    [
+      "    }"
+    ],
+    [
+      ""
+    ],
+    [
+      "    //"
+    ],
+    [
+      ""
+    ],
+    [
+      "    <await (i == 0) i++;>"
+    ],
+    [
+      "oc"
+    ]
+  ],
+  "threadCode": [
+    [
+      "loop:",
+      "LD $R0 i",
+      "LD $R1 g",
+      "BLT $R0 $R1 end",
+      "LD $R0 i",
+      "SUBI $R0 $R0 1",
+      "ST $R0 i",
+      "JUMP loop",
+      "end:"
+    ],
+    [
+      "ATOMIC",
+      "AWAIT i EQ z",
+      "LD $R0 i",
+      "ADDI $R0 $R0 1",
+      "ST $R0 i",
+      "ENDATOMIC"
+    ]
+  ]
+}

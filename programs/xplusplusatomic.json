@@ -17,7 +17,11 @@
   {
     "a": 0
   },
-  "highLevelCode": [["<x++;>"]],
+  "highLevelCode": [
+    [
+      "<x++;> // <x++;>"
+    ]
+  ],
   "threadCode": [
     ["ATOMIC" ,"LD $R0 x", "ADDI $R0 $R0 1", "ST $R0 x", "ENDATOMIC"],
     ["ATOMIC" ,"LD $R0 x", "ADDI $R0 $R0 1", "ST $R0 x", "ENDATOMIC"]

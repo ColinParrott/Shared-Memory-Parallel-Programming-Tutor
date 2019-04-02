@@ -1,0 +1,70 @@
+{
+  "name": "Three threads branch",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory": {
+    "a": 0,
+    "b": 0,
+    "c": 0
+  },
+  "highLevelCode": [
+    [
+      "a = 0; b = 0; c = 0;"
+    ],
+    [
+      "co"
+    ],
+    [
+      "    {a = 2; b = 1;}"
+    ],
+    [
+      "    //"
+    ],
+    [
+      "    <a = 1; b = 2; c = 3;>"
+    ],
+    [
+      "    //"
+    ],
+    [
+      "    if(a == 2){"
+    ],
+    [
+      "        c = 5;"
+    ],
+    [
+      "    }"
+    ],
+    [
+      "oc"
+    ]
+  ],
+  "threadCode": [
+    [
+      "LDI $R0 2",
+      "ST $R0 a",
+      "LDI $R0 1",
+      "ST $R0 b"
+    ],
+    [
+      "ATOMIC",
+      "LDI $R0 1",
+      "ST $R0 a",
+      "LDI $R0 2",
+      "ST $R0 b",
+      "LDI $R0 3",
+      "ST $R0 c",
+      "ENDATOMIC"
+    ],
+    [
+      "LD $R0 a",
+      "LDI $R1 2",
+      "BNE $R0 $R1 end",
+      "LDI $R0 5",
+      "ST $R0 c",
+      "end:"
+    ]
+  ]
+}

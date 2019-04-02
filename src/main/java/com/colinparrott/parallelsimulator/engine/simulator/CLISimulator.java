@@ -135,7 +135,7 @@ public class CLISimulator extends Simulator
     }
 
 
-    private void originalCLI()
+    public void originalCLI()
     {
         ProgramList programList = new ProgramList();
 

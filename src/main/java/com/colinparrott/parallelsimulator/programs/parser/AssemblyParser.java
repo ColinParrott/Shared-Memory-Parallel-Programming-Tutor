@@ -61,6 +61,7 @@ public class AssemblyParser {
             if (instructionObject != null && instructionObject.getValue().isPresent()) {
                 System.out.println("instruction object null");
                 System.out.println(generateErrorMessage(instructionObject.getValue().get()).get());
+                System.exit(0);
                 return new Pair<>(null, generateErrorMessage(instructionObject.getValue().get()));
             }
 
