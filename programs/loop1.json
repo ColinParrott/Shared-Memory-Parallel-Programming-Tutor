@@ -6,7 +6,8 @@
   },
   "initialMemory": {
     "i": 4,
-    "g": 0
+    "g": 0,
+    "z": 0
   },
   "highLevelCode": [
     [
