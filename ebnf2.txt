@@ -1,0 +1,37 @@
+# #  comment
+# () grouping
+# [] optional
+# *  zero or more
+# +  one or more
+# |  alternative
+
+# variables must be lower case (underscores allowed), makes detecting AWAIT simpler, AWAIT MUST BE ALL UPPERCASE
+
+program    ::= block EOF
+
+
+varDecl    ::= "int" IDENT ";"                       # normal declaration, e.g. int a;
+             | "int" IDENT "=" INT_LITERAL ";"       # assigned declaration, e.g. int a = 5;
+
+
+stmt       ::= block
+             | "while" "(" condExp ")" stmt              # while loop
+             | "if" "(" condExp ")" stmt ["else" stmt]   # if then else
+             | IDENT "=" additionExp ";"                      # assignment
+             | "<AWAIT" condExp  ">" ";"             # await statement
+atomicStmt: "<" (stmt)+ ">" ;
+
+block      ::= (varDecl)* (stmt | atomicStmt)*
+
+
+condExp: andExp;
+
+# conditional expressions
+andExp: orExp ("||" orExp)*
+orExp: compExp ("&&" compExp)*
+compExp: additionExp ("==" | "!=" | "<" | ">") additionExp | "(" andExp ")"
+
+# mathematical operations
+additionExp: multiplyExp ( "+" multiplyExp | "-" multiplyExp)*
+multiplyExp: atomExp ( "*" atomExp | "/" atomExp)*
+atomExp : INT_LITERAL | IDENTIFIER | "(" additionExp ")"

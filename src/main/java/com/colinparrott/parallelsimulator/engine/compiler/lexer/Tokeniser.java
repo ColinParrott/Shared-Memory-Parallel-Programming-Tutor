@@ -119,12 +119,40 @@ public class Tokeniser
                 return new Token(TokenClass.INVALID, line, column);
             }
         }
-        else if (c == '>') // > or >=
+        else if (c == '>') // >
         {
             return new Token(TokenClass.GT, line, column);
         }
-        else if (c == '<') // < or <=
+        else if (c == '<') // < or await
         {
+
+            // Loop while receiving char
+            if (scanner.hasNext() && scanner.peek() == 'A')
+            {
+                scanner.next(); // consume 'A'
+
+                String target = "WAIT";
+                int i = 0;
+                while (i < target.length())
+                {
+                    if (!scanner.hasNext())
+                    {
+                        error(c, line, column);
+                        return new Token(TokenClass.INVALID, line, column);
+                    }
+
+                    if (scanner.next() != target.charAt(i))
+                    {
+                        error(c, line, column);
+                        return new Token(TokenClass.INVALID, line, column);
+                    }
+
+                    i++;
+                }
+
+                return new Token(TokenClass.AWAIT, line, column);
+            }
+
             return new Token(TokenClass.LT, line, column);
         }
         else if (c == '=') // = or ==
@@ -146,8 +174,8 @@ public class Tokeniser
                 return new Token(TokenClass.ASSIGN, line, column);
             }
         }
-        // Identifier or keyword (beginning with letter or _)
-        else if (Character.isLetter(c) || c == '_')
+        // Identifier or keyword (beginning with letter or _) (MUST BE LOWERCASE)
+        else if (Character.isLetter(c) && Character.isLowerCase(c) || c == '_')
         {
             // Hashmap of keywords
             HashMap<String, TokenClass> keywords = new HashMap<>();

@@ -1,11 +1,16 @@
 package com.colinparrott.parallelsimulator;
 
+import com.colinparrott.parallelsimulator.engine.compiler.ast.ASTPrinter;
+import com.colinparrott.parallelsimulator.engine.compiler.ast.Program;
 import com.colinparrott.parallelsimulator.engine.compiler.lexer.Scanner;
 import com.colinparrott.parallelsimulator.engine.compiler.lexer.Token;
 import com.colinparrott.parallelsimulator.engine.compiler.lexer.Tokeniser;
+import com.colinparrott.parallelsimulator.engine.compiler.parser.Parser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class CompilerLauncher
 {
@@ -82,6 +87,40 @@ public class CompilerLauncher
                 System.out.println("Lexing: failed (" + tokeniser.getErrorCount() + " errors)");
             System.exit(tokeniser.getErrorCount() == 0 ? PASS : LEXER_FAIL);
         }
+        else if (mode == Mode.PARSER)
+        {
+            Parser parser = new Parser(tokeniser);
+            parser.parse();
+            if (parser.getErrorCount() == 0)
+                System.out.println("Parsing: pass");
+            else
+                System.out.println("Parsing: failed (" + parser.getErrorCount() + " errors)");
+            System.exit(parser.getErrorCount() == 0 ? PASS : PARSER_FAIL);
+        }
+        else if (mode == Mode.AST)
+        {
+            Parser parser = new Parser(tokeniser);
+            Program programAst = parser.parse();
+            if (parser.getErrorCount() == 0)
+            {
+                System.out.println("Parsing: pass");
+                System.out.println("Printing out AST:");
+                PrintWriter writer;
+                StringWriter sw = new StringWriter();
+                try
+                {
+                    writer = new PrintWriter(sw);
+                    programAst.accept(new ASTPrinter(writer));
+                    writer.flush();
+                    System.out.print(sw.toString());
+                    writer.close();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
 
+        }
     }
 }

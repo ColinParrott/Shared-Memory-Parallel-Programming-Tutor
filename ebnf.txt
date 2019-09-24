@@ -5,11 +5,11 @@
 # +  one or more
 # |  alternative
 
-program ::= (block)*
+program ::= (block)
 block ::= (vardecl)* (stmt)*
 
 vardecl ::= "int" IDENT ";" |
-             "int" IDENT "=" INT_LITERAL;
+             "int" IDENT "=" INT_LITERAL ";"
 
 stmt ::= block
         | "while" "(" exp ")" stmt

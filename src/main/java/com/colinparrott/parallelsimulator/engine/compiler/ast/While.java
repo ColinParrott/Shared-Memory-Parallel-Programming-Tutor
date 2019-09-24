@@ -1,0 +1,20 @@
+package com.colinparrott.parallelsimulator.engine.compiler.ast;
+
+public class While extends Stmt
+{
+
+    public final Expr expr;
+    public final Stmt stmt;
+
+    public While(Expr expr, Stmt stmt)
+    {
+        this.expr = expr;
+        this.stmt = stmt;
+    }
+
+    @Override
+    public <T> T accept(ASTVisitor<T> v)
+    {
+        return v.visitWhile(this);
+    }
+}

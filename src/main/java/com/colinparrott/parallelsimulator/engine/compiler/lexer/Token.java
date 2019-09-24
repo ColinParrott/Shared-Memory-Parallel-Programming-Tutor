@@ -12,6 +12,7 @@ public class Token
         // ' is used to enclose character while " is used to enclose strings
 
         IDENTIFIER, // ('a'|...|'z'|'A'|...|'Z'|'_')('0'|...|'9'|'a'|...|'z'|'A'|...|'Z'|'_')*
+        AWAIT, // await statement
 
         ASSIGN, // '='
 
