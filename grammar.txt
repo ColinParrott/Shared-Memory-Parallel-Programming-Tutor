@@ -1,0 +1,35 @@
+// The program top AST node
+Program  ::= Block
+
+Type ::= INT
+VarDecl ::= INT String
+
+
+IntLiteral ::= int
+ChrLiteral ::= char
+
+VarExpr ::= String
+BinOp ::= Expr Op Expr
+Op ::= ADD | SUB | MUL | DIV | GT | LT | EQ | NE | OR | AND
+
+
+// Expressions
+Expr ::= IntLiteral | VarExpr | BinOp
+
+// While loop : while (Expr) Stmt;
+While ::= Expr Stmt
+
+// If statement: if (Expr) Stmt1 else Stmt2;
+If ::= Expr Stmt [Stmt]
+
+// Assignment statement: Expr = Expr (x = 5;)
+Assign ::= Expr Expr
+
+// Expression statement (eg x+3;)
+ExprStmt ::= Expr
+
+// Statements
+Stmt ::= Block | While | If | Assign | ExprStmt
+
+// Main block
+Block ::= VarDecl* Stmt*
