@@ -1,9 +1,6 @@
 package com.colinparrott.parallelsimulator.engine.compiler.parser;
 
-import com.colinparrott.parallelsimulator.engine.compiler.ast.Block;
-import com.colinparrott.parallelsimulator.engine.compiler.ast.Program;
-import com.colinparrott.parallelsimulator.engine.compiler.ast.Stmt;
-import com.colinparrott.parallelsimulator.engine.compiler.ast.VarDecl;
+import com.colinparrott.parallelsimulator.engine.compiler.ast.*;
 import com.colinparrott.parallelsimulator.engine.compiler.lexer.Token;
 import com.colinparrott.parallelsimulator.engine.compiler.lexer.Token.TokenClass;
 import com.colinparrott.parallelsimulator.engine.compiler.lexer.Tokeniser;
@@ -141,9 +138,9 @@ public class Parser
     private Program parseProgram()
     {
         List<VarDecl> vds = parseVarDecls();
-        Block block = parseBlock();
+        List<Block> blocks = parseAllBlocks();
         expect(TokenClass.EOF);
-        return new Program(vds, block);
+        return new Program(vds, blocks);
     }
 
     private List<VarDecl> parseVarDecls()
@@ -159,8 +156,11 @@ public class Parser
             if (accept(TokenClass.ASSIGN))
             {
                 nextToken();
-                // todo: handle too big ints (maybe support negative assigments)
-                value = Integer.valueOf(expect(TokenClass.INT_LITERAL).data);
+                // todo: handle too big ints (maybe support negative assignments)
+                Token t = expect(TokenClass.INT_LITERAL);
+
+                if (t != null)
+                    value = Integer.parseInt(t.data);
             }
 
             expect(TokenClass.SC);
@@ -169,17 +169,104 @@ public class Parser
         return varDecls;
     }
 
-    private Block parseBlock()
+    private List<Block> parseAllBlocks()
     {
         // TODO: finish
-        List<Stmt> statements = new ArrayList<Stmt>();
+        List<Block> blocks = new ArrayList<>();
+        boolean lastBlockAtomic = false;
+        boolean initialBlockFound = false;
 
-//        while(accept(TokenClass.WHILE, TokenClass.IF, TokenClass.IDENTIFIER, TokenClass.AWAIT))
-//        {
-//
-//        }
+        while (accept(TokenClass.WHILE, TokenClass.IF, TokenClass.IDENTIFIER, TokenClass.AWAIT, TokenClass.LT))
+        {
+            initialBlockFound = true;
+            if (accept(TokenClass.LT))
+            {
+                lastBlockAtomic = true;
+                blocks.add(parseAtomicBlock());
+            }
+            else
+            {
+                lastBlockAtomic = false;
+                blocks.add(parseBlock());
+            }
+        }
+        return blocks;
+    }
 
-        return new Block(statements);
+    private AtomicBlock parseAtomicBlock()
+    {
+        List<Stmt> stmts = new ArrayList<>();
+        nextToken(); // CONSUME OPENING "<"
+
+        // parse statements
+        while (accept(TokenClass.WHILE, TokenClass.IF, TokenClass.IDENTIFIER, TokenClass.AWAIT))
+            stmts.add(parseStatement());
+
+        // expect closing ">" to end atomic block
+        expect(TokenClass.GT);
+        return new AtomicBlock(stmts);
+    }
+
+    private Block parseBlock()
+    {
+        List<Stmt> stmts = new ArrayList<>();
+
+        //todo: finish
+        return null;
+    }
+
+    private Stmt parseStatement()
+    {
+
+        if (accept(TokenClass.WHILE)) // while loops
+        {
+            nextToken();
+            expect(TokenClass.LPAR);
+            Expr expr = parseCondExpression();
+            expect(TokenClass.RPAR);
+            Stmt stmt = parseStatement();
+            return new While(expr, stmt);
+        }
+        else if (accept(TokenClass.IF)) // if-else statements
+        {
+            return parseIf();
+        }
+        else if (accept(TokenClass.IDENTIFIER)) // assignments (eg x=5 or x=y*4);
+        {
+            Token ident = expect(TokenClass.IDENTIFIER); // consume identifier
+            expect(TokenClass.ASSIGN); // "="
+            Expr mathExpr = parseAdditionExpr();
+            expect(TokenClass.SC);
+            return new Assign(ident.data, mathExpr);
+        }
+        else
+        {
+            error(TokenClass.WHILE, TokenClass.IF, TokenClass.IDENTIFIER, TokenClass.AWAIT);
+        }
+
+        return null;
+    }
+
+    private Expr parseAdditionExpr()
+    {
+        //todo: finish
+        Token initial = expect(TokenClass.INT_LITERAL, TokenClass.IDENTIFIER, TokenClass.LPAR);
+
+
+        return null;
+    }
+
+    private Stmt parseIf()
+    {
+        //todo: finish
+        return null;
+    }
+
+
+    private Expr parseCondExpression()
+    {
+        //todo: finish
+        return null;
     }
 
 

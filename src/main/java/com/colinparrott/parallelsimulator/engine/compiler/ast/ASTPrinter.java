@@ -27,6 +27,21 @@ public class ASTPrinter implements ASTVisitor<Void>
         return null;
     }
 
+    @Override
+    public Void visitAtomicBlock(AtomicBlock b)
+    {
+        writer.print("AtomicBlock(");
+        String delimiter = "";
+        for (Stmt stmt : b.stmts)
+        {
+            writer.print(delimiter);
+            delimiter = ",";
+            stmt.accept(this);
+        }
+        writer.print(")");
+        return null;
+    }
+
 
     @Override
     public Void visitProgram(Program p)
@@ -134,7 +149,7 @@ public class ASTPrinter implements ASTVisitor<Void>
     public Void visitAssign(Assign assign)
     {
         writer.print("Assign(");
-        assign.left.accept(this);
+        writer.print(assign.varName);
         writer.print(",");
         assign.right.accept(this);
         writer.print(")");

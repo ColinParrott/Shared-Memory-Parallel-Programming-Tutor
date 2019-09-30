@@ -1,9 +1,8 @@
-grammar new_grammar;
+grammar highLanguage;
 
 /*
  * Lexer Rules
  */
-KEYWORD_INT: 'int' ;
 ASSIGN: '=' ;
 LBRA: '{' ;
 RBRA: '}' ;
@@ -34,19 +33,26 @@ LINE_COMMENT: '//' ~[\r\n]* -> skip;
  * Parser Rules
  */
 
-program: block ;
-block: (varDecl)* (atomicStmt | stmt)* ;
+program: (atomicBlock | block)* ;
 
-stmt: WHILE LPAR condExp RPAR LBRA stmt? RBRA | IF LPAR condExp RPAR LBRA stmt? RBRA (ELSE LBRA stmt? RBRA)?  | IDENTIFIER '=' additionExp SC | AWAIT condExp GT_OP SC;
-atomicStmt: LT_OP (stmt)+ GT_OP ;
+// blocks must have at least one statement
+atomicBlock: LT_OP (stmt)+ GT_OP ;
+block: (stmt)+ ;
+
+stmt:  whileStmt | ifStmt | assignStmt | awaitStmt;
 condExp: andExp;
+
+whileStmt:   WHILE LPAR condExp RPAR LBRA stmt? RBRA ;
+ifStmt:      IF LPAR condExp RPAR LBRA stmt? RBRA (ELSE LBRA stmt? RBRA)? ;
+assignStmt:  IDENTIFIER ASSIGN additionExp SC ;
+awaitStmt:   AWAIT condExp GT_OP SC ;
 
 // conditional expressions
 andExp: orExp (OR_OP orExp)* ;
 orExp: compExp (AND_OP compExp)* ;
 compExp: additionExp (EQ_OP | NE_OP | LT_OP | GT_OP) additionExp | LPAR andExp RPAR ;
 
-varDecl: KEYWORD_INT IDENTIFIER (SC | '=' (SUB_MATH_OP)? INT_LITERAL SC) ;
+// varDecl: IDENTIFIER (SC | ASSIGN (SUB_MATH_OP)? INT_LITERAL SC) ;
 
 // mathematical operations
 additionExp: multiplyExp ( ADD_MATH_OP multiplyExp | SUB_MATH_OP multiplyExp)* ;

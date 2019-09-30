@@ -175,11 +175,11 @@ public class Tokeniser
             }
         }
         // Identifier or keyword (beginning with letter or _) (MUST BE LOWERCASE)
+        // TODO: limit to one lowercase char to match the 26 memory locations (variables)
         else if (Character.isLetter(c) && Character.isLowerCase(c) || c == '_')
         {
             // Hashmap of keywords
             HashMap<String, TokenClass> keywords = new HashMap<>();
-            keywords.put("int", TokenClass.INT);
             keywords.put("if", TokenClass.IF);
             keywords.put("else", TokenClass.ELSE);
             keywords.put("while", TokenClass.WHILE);

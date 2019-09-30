@@ -7,21 +7,21 @@
 
 # variables must be lower case (underscores allowed), makes detecting AWAIT simpler, AWAIT MUST BE ALL UPPERCASE
 
-program    ::= block EOF
+program    ::= (varDecl)* (atomicBlock | block)* EOF
 
 
 varDecl    ::= "int" IDENT ";"                       # normal declaration, e.g. int a;
              | "int" IDENT "=" INT_LITERAL ";"       # assigned declaration, e.g. int a = 5;
 
 
-stmt       ::= block
-             | "while" "(" condExp ")" stmt              # while loop
-             | "if" "(" condExp ")" stmt ["else" stmt]   # if then else
+stmt       ::=
+             "while" "(" condExp ")" "{" stmt "}"              # while loop
+             | "if" "(" condExp ")" "{" stmt "}" ["else" "{" stmt "}"]   # if then else
              | IDENT "=" additionExp ";"                      # assignment
              | "<AWAIT" condExp  ">" ";"             # await statement
-atomicStmt: "<" (stmt)+ ">" ;
 
-block      ::= (varDecl)* (stmt | atomicStmt)*
+block      ::= (stmt)*
+atomicBlock ::= "<" (stmt)* ">"
 
 
 condExp: andExp;

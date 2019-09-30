@@ -3,12 +3,12 @@ package com.colinparrott.parallelsimulator.engine.compiler.ast;
 public class Assign extends Stmt
 {
 
-    public final Expr left;
+    public final String varName;
     public final Expr right;
 
-    public Assign(Expr left, Expr right)
+    public Assign(String varName, Expr right)
     {
-        this.left = left;
+        this.varName = varName;
         this.right = right;
     }
 

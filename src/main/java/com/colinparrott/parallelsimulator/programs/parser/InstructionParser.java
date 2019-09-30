@@ -41,9 +41,9 @@ class InstructionParser {
 
         for (String s : params)
         {
-            System.out.print(s + " ");
+//            System.out.print(s + " ");
         }
-        System.out.println();
+//        System.out.println();
 
         switch (keyword) {
             case LD:
@@ -162,7 +162,7 @@ class InstructionParser {
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseRegister(String s) {
-        System.out.println("parseRegister: " + s);
+//        System.out.println("parseRegister: " + s);
         if (s.charAt(0) == '$') {
             if (s.charAt(1) == 'R') {
                 String numString = s.substring(2);

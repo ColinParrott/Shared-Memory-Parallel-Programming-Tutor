@@ -6,12 +6,12 @@ public class Program implements ASTNode
 {
 
     public final List<VarDecl> varDecls;
-    public final Block block;
+    public final List<Block> blocks;
 
-    public Program(List<VarDecl> varDecls, Block block)
+    public Program(List<VarDecl> varDecls, List<Block> blocks)
     {
         this.varDecls = varDecls;
-        this.block = block;
+        this.blocks = blocks;
     }
 
     public <T> T accept(ASTVisitor<T> v)

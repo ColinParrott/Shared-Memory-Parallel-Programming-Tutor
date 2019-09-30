@@ -30,5 +30,7 @@ public interface ASTVisitor<T>
 
     public T visitAwait(Await await);
 
+    public T visitAtomicBlock(AtomicBlock atomicBlock);
+
     // to complete ... (should have one visit method for each concrete AST node class)
 }

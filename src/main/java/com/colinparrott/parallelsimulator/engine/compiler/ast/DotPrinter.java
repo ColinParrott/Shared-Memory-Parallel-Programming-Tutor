@@ -41,6 +41,25 @@ public class DotPrinter implements ASTVisitor<String>
     }
 
     @Override
+    public String visitAtomicBlock(AtomicBlock b)
+    {
+        String blockNodeId = "Node" + nodeCount++;
+        writer.println(blockNodeId + "[label=\"Block\"];");
+
+        ArrayList<String> nodeIds = new ArrayList<>();
+
+        for (Stmt s : b.stmts)
+        {
+            String node = s.accept(this);
+            nodeIds.add(node);
+        }
+
+        for (String s : nodeIds) writer.println(blockNodeId + "->" + s + ";");
+
+        return blockNodeId;
+    }
+
+    @Override
     public String visitProgram(Program p)
     {
         String programNodeId = "Node" + nodeCount++;
