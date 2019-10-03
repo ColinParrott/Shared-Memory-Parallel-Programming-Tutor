@@ -153,12 +153,12 @@ class InstructionParser {
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseLabel(String s) {
-        if (s.matches("[a-zA-z]*"))
+        if (s.matches("[a-zA-Z0-9_]*"))
         {
             return new Pair<>(new ParameterTypeData(ParameterType.LABEL_STRING, s), Optional.empty());
         }
 
-        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), Optional.of(String.format("Invalid label name: \"%s\" (must only contain alphabetic characters)", s)));
+        return new Pair<>(new ParameterTypeData(ParameterType.ERROR_TYPE, null), Optional.of(String.format("Invalid label name: \"%s\" (must only contain letters, numbers and underscores)", s)));
     }
 
     private Pair<ParameterTypeData, Optional<String>> parseRegister(String s) {

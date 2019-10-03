@@ -37,6 +37,8 @@ public class Machine
      */
     public SimulatorThread getThread(int id)
     {
+//        System.out.println("Threads size: " + threads.size());
+//        System.out.println("Thread index: " + id);
         return threads.get(id);
     }
 

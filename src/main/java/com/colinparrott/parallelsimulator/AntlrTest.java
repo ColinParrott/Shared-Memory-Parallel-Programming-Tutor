@@ -4,6 +4,8 @@ import com.colinparrott.parallelsimulator.engine.compiler.antlrgen.highLanguageB
 import com.colinparrott.parallelsimulator.engine.compiler.antlrgen.highLanguageLexer;
 import com.colinparrott.parallelsimulator.engine.compiler.antlrgen.highLanguageParser;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
+import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.programs.parser.AssemblyParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -13,11 +15,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 
 import static org.antlr.v4.runtime.CharStreams.fromFileName;
 
-public class AntlrTest
-{
+public class AntlrTest {
     private static final Logger logger = LoggerFactory.getLogger(AntlrTest.class);
     static ArrayList<String> programText;
     private static final String LOOP_LABEL_PREFIX = "loop";
@@ -25,12 +27,10 @@ public class AntlrTest
     private static int loopCounter = 0;
     private static HashSet<Integer> freeRegisters;
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         // Populate register stack in reverse order (so lower ones get used first)
         freeRegisters = new HashSet<>();
-        for (int i = SimulatorThread.REGISTERS_PER_THREAD - 1; i >= 0; i--)
-        {
+        for (int i = SimulatorThread.REGISTERS_PER_THREAD - 1; i >= 0; i--) {
             freeRegisters.add(i);
         }
 
@@ -41,16 +41,18 @@ public class AntlrTest
         ParseTree tree = parser.program(); // parse the content and get the tree
 
         if (parser.getNumberOfSyntaxErrors() > 0)
+        {
+            System.out.println("parser errors");
             System.exit(0);
+        }
+
 
         MyVisitor visitor = new MyVisitor();
         visitor.visit(tree);
     }
 
-    private static void freeRegisters(int... regNum)
-    {
-        for (int i : regNum)
-        {
+    private static void freeRegisters(int... regNum) {
+        for (int i : regNum) {
             logger.debug("Freeing register: $R" + i);
             freeRegisters.remove(i);
         }
@@ -62,10 +64,8 @@ public class AntlrTest
 //        }
     }
 
-    private static int getRegister()
-    {
-        if (freeRegisters.size() > 0)
-        {
+    private static int getRegister() {
+        if (freeRegisters.size() > 0) {
             int reg = freeRegisters.iterator().next();
             freeRegisters.remove(reg);
             logger.debug("Allocating register: $R" + reg);
@@ -78,50 +78,44 @@ public class AntlrTest
         return -1;
     }
 
-    private static class MyVisitor<T> extends highLanguageBaseVisitor
-    {
+    private static class MyVisitor<T> extends highLanguageBaseVisitor {
         @Override
-        public T visitProgram(highLanguageParser.ProgramContext context)
-        {
+        public T visitProgram(highLanguageParser.ProgramContext context) {
 
-            for (int i = 0; i < context.children.size(); i++)
-            {
+            for (int i = 0; i < context.children.size(); i++) {
                 context.getChild(i).accept(this);
             }
 
-            printAssemblyString();
-//            parseAndPrintAssembly();
+//            printAssemblyString();
+            parseAndPrintAssembly();
             return null;
         }
 
-        static void printAssemblyString()
-        {
-            for (String s : programText)
-            {
+        static void printAssemblyString() {
+            for (String s : programText) {
                 System.out.println(s);
             }
         }
 
-        public static void parseAndPrintAssembly()
-        {
-//            AssemblyParser assemblyParser = new AssemblyParser();
-//            ArrayList<Instruction> assemblyInstructions = assemblyParser.parseAssemblyCode(programText.toArray(new String[0])).getKey();
-//
-//            for (Instruction i : assemblyInstructions)
-//            {
-//                System.out.println(i);
-//            }
+        public static void parseAndPrintAssembly() {
+            AssemblyParser assemblyParser = new AssemblyParser();
+            ArrayList<Instruction> assemblyInstructions = assemblyParser.parseAssemblyCode(programText.toArray(new String[0])).getKey();
+
+            for (Instruction i : assemblyInstructions)
+            {
+                System.out.println(i);
+            }
+
+            ProgramJsonProducer.produceJsonFile("egg_" + new Random().nextInt(30000), programText.toArray(new String[0]));
         }
 
         @Override
-        public Integer visitValueExp(highLanguageParser.ValueExpContext ctx)
-        {
+        public Integer visitValueExp(highLanguageParser.ValueExpContext ctx) {
             return (int) ctx.children.get(0).accept(this);
         }
 
         @Override
-        public Integer visitAdditionExp(highLanguageParser.AdditionExpContext ctx)
-        {
+        public Integer visitAdditionExp(highLanguageParser.AdditionExpContext ctx) {
             int lhs = (int) ctx.singleValue(0).accept(this);
             int rhs = (int) ctx.singleValue(1).accept(this);
             int sumReg = getRegister();
@@ -131,8 +125,7 @@ public class AntlrTest
         }
 
         @Override
-        public Integer visitSubExp(highLanguageParser.SubExpContext ctx)
-        {
+        public Integer visitSubExp(highLanguageParser.SubExpContext ctx) {
             int lhs = (int) ctx.singleValue(0).accept(this);
             int rhs = (int) ctx.singleValue(1).accept(this);
             int sumReg = getRegister();
@@ -142,8 +135,7 @@ public class AntlrTest
         }
 
         @Override
-        public Integer visitMultExp(highLanguageParser.MultExpContext ctx)
-        {
+        public Integer visitMultExp(highLanguageParser.MultExpContext ctx) {
             int lhs = (int) ctx.singleValue(0).accept(this);
             int rhs = (int) ctx.singleValue(1).accept(this);
             int sumReg = getRegister();
@@ -153,8 +145,7 @@ public class AntlrTest
         }
 
         @Override
-        public Integer visitDivExp(highLanguageParser.DivExpContext ctx)
-        {
+        public Integer visitDivExp(highLanguageParser.DivExpContext ctx) {
             int lhs = (int) ctx.singleValue(0).accept(this);
             int rhs = (int) ctx.singleValue(1).accept(this);
             int sumReg = getRegister();
@@ -164,16 +155,12 @@ public class AntlrTest
         }
 
         @Override
-        public Integer visitSingleValue(highLanguageParser.SingleValueContext ctx)
-        {
+        public Integer visitSingleValue(highLanguageParser.SingleValueContext ctx) {
             int reg;
-            if (ctx.INT_LITERAL() != null)
-            {
+            if (ctx.INT_LITERAL() != null) {
                 reg = getRegister();
                 programText.add(String.format("LDI $R%d %s", reg, ctx.INT_LITERAL().getText()));
-            }
-            else
-            {
+            } else {
                 reg = getRegister();
                 programText.add(String.format("LD $R%d %s", reg, ctx.IDENTIFIER()));
             }
@@ -182,13 +169,11 @@ public class AntlrTest
         }
 
         @Override
-        public T visitAtomicBlock(highLanguageParser.AtomicBlockContext ctx)
-        {
+        public T visitAtomicBlock(highLanguageParser.AtomicBlockContext ctx) {
 //            System.out.println("visitAtomicBlock");
             programText.add("ATOMIC");
 
-            for (highLanguageParser.StmtContext stmt : ctx.stmt())
-            {
+            for (highLanguageParser.StmtContext stmt : ctx.stmt()) {
                 stmt.accept(this);
             }
             programText.add("ENDATOMIC");
@@ -196,47 +181,45 @@ public class AntlrTest
         }
 
         @Override
-        public T visitBlock(highLanguageParser.BlockContext ctx)
-        {
+        public T visitBlock(highLanguageParser.BlockContext ctx) {
 //            System.out.println("visitBlock");
-            for (highLanguageParser.StmtContext stmt : ctx.stmt())
-            {
+            for (highLanguageParser.StmtContext stmt : ctx.stmt()) {
                 stmt.accept(this);
             }
             return null;
         }
 
         @Override
-        public T visitStmt(highLanguageParser.StmtContext ctx)
-        {
-            for (ParseTree stmt : ctx.children)
-            {
+        public T visitStmt(highLanguageParser.StmtContext ctx) {
+            for (ParseTree stmt : ctx.children) {
                 stmt.accept(this);
             }
             return null;
         }
 
         @Override
-        public T visitWhileStmt(highLanguageParser.WhileStmtContext ctx)
-        {
+        public T visitWhileStmt(highLanguageParser.WhileStmtContext ctx) {
             String loopLabel = String.format("%s_%d:", LOOP_LABEL_PREFIX, loopCounter);
             programText.add(loopLabel);
             loopCounter++;
-            ctx.condExp().accept(this);
 
+            for(ParseTree stmt : ctx.stmt()){
+                stmt.accept(this);
+            }
+
+            // substring to remove colon in label
+            visitCondExpEnhanced(ctx.condExp(), loopLabel.substring(0, loopLabel.length()-1));
 
             return null;
         }
 
         @Override
-        public T visitIfStmt(highLanguageParser.IfStmtContext ctx)
-        {
+        public T visitIfStmt(highLanguageParser.IfStmtContext ctx) {
             return null;
         }
 
         @Override
-        public T visitAssignStmt(highLanguageParser.AssignStmtContext ctx)
-        {
+        public T visitAssignStmt(highLanguageParser.AssignStmtContext ctx) {
             int registerNum = (int) ctx.valueExp().accept(this);
             programText.add(String.format("ST $R%d %s", registerNum, ctx.IDENTIFIER()));
             freeRegisters(registerNum);
@@ -245,21 +228,79 @@ public class AntlrTest
 
 
         @Override
-        public T visitAwaitStmt(highLanguageParser.AwaitStmtContext ctx)
-        {
+        public T visitAwaitStmt(highLanguageParser.AwaitStmtContext ctx) {
+            return null;
+        }
+
+        public T visitCondExpEnhanced(highLanguageParser.CondExpContext ctx, String label){
+
+            // Single comparison (x==5, a>b...)
+            if(ctx.condDualExp() == null){
+                int lhs = (int) ctx.compExp().singleValue(0).accept(this);
+                int rhs = (int) ctx.compExp().singleValue(1).accept(this);
+                programText.add(String.format("%s $R%d $R%d %s", branchOpGetter(ctx.compExp()), lhs, rhs, label));
+                // todo: is it ok to free the registers here??
+                freeRegisters(lhs, rhs);
+                return null;
+//                return new int[]{lhs, rhs};
+            }
+            else{
+                return null;
+            }
+        }
+
+        String branchOpGetter(highLanguageParser.CompExpContext compExp){
+            if(compExp.NE_OP() != null){
+                return "BNE";
+            }
+            else if(compExp.EQ_OP() != null){
+                return "BEQ";
+            }
+            else if(compExp.LT_OP() != null){
+                return "BLT";
+            }
+            else{
+                return "BGT";
+            }
+        }
+
+        String branchOpGetter(String str){
+            switch (str){
+                case ">":
+                    return "BGT";
+                case "<":
+                    return "LGT";
+                case "==":
+                    return "BEQ";
+                case "!=":
+                    return "BNE";
+                default:
+                    logger.error("Unrecognised comparison op: " + str);
+                    return null;
+            }
+        }
+
+        public T visitCompExpEnhanced(highLanguageParser.CompExpContext ctx, String label){
+            return null;
+        }
+
+        public T visitCondDualExpEnhanced(highLanguageParser.CondDualExpContext ctx, String label){
             return null;
         }
 
         @Override
-        public T visitCondExp(highLanguageParser.CondExpContext ctx)
-        {
+        public T visitCondExp(highLanguageParser.CondExpContext ctx) {
             return null;
         }
 
 
         @Override
-        public T visitCompExp(highLanguageParser.CompExpContext ctx)
-        {
+        public T visitCondDualExp(highLanguageParser.CondDualExpContext ctx) {
+            return null;
+        }
+
+        @Override
+        public T visitCompExp(highLanguageParser.CompExpContext ctx) {
             return null;
         }
 

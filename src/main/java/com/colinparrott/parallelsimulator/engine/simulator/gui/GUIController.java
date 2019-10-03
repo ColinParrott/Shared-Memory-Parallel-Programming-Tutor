@@ -906,6 +906,7 @@ public class GUIController implements Initializable {
     }
 
     private void updateRegisterView(int id, boolean switchedThreads) {
+        logger.debug("updateRegisterView: " + id);
         LabelValue[] vals = new LabelValue[threadRegisters.get(id).length];
         for (int j = 0; j < threadRegisters.get(id).length; j++) {
             vals[j] = new LabelValue("R" + id, simulator.getMachine().getThread(id).getRegisters()[j].getValue());

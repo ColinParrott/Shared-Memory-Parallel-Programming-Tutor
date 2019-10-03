@@ -1,3 +1,4 @@
+
 grammar highLanguage;
 
 /*
@@ -40,10 +41,12 @@ atomicBlock: LT_OP (stmt)+ GT_OP ;
 block: (stmt)+ ;
 
 stmt:  whileStmt | ifStmt | assignStmt | awaitStmt;
-condExp: compExp  ((AND_OP | OR_OP) compExp)? ;
+condExp: compExp | condDualExp;
+condDualExp: compExp (AND_OP | OR_OP) compExp;
 
-whileStmt:   WHILE LPAR condExp RPAR LBRA stmt? RBRA ;
-ifStmt:      IF LPAR condExp RPAR LBRA stmt? RBRA (ELSE LBRA stmt? RBRA)? ;
+
+whileStmt:   WHILE LPAR condExp RPAR LBRA stmt* RBRA ;
+ifStmt:      IF LPAR condExp RPAR LBRA stmt* RBRA (ELSE LBRA stmt* RBRA)? ;
 assignStmt:  IDENTIFIER ASSIGN valueExp SC ;
 awaitStmt:   AWAIT condExp GT_OP SC ;
 

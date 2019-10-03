@@ -8,9 +8,10 @@ import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenUtils;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenerationSim;
 import javafx.util.Pair;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
+
+//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Class for generating a sequence of threads to execute
@@ -36,7 +37,8 @@ public class ThreadSequenceGen
             case PROBABILISTIC_MOST_STORES_AND_BRANCHES_STATIC:
                 return generateProbabilisticMostStoresBranches(p, steps);
             default:
-                throw new NotImplementedException();
+                return null;
+//                throw new NotImplementedException();
         }
     }
 
