@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.compiler.antlrgen;// Generated from /afs/inf.ed.ac.uk/user/s15/s1546623/MInf/Shared-Memory-Parallel-Programming-Tutor/highLanguage.g4 by ANTLR 4.7.2
+package com.colinparrott.parallelsimulator.engine.compiler.antlrgen;// Generated from C:/Users/Colin/IdeaProjects/tutor-test\highLanguage.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -87,6 +87,19 @@ public interface highLanguageListener extends ParseTreeListener {
 	 */
 	void exitIfStmt(highLanguageParser.IfStmtContext ctx);
 	/**
+     * Enter a parse tree produced by {@link highLanguageParser#elseStmt}.
+     * @param ctx the parse tree
+     */
+    void enterElseStmt(highLanguageParser.ElseStmtContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link highLanguageParser#elseStmt}.
+     *
+     * @param ctx the parse tree
+     */
+    void exitElseStmt(highLanguageParser.ElseStmtContext ctx);
+
+    /**
 	 * Enter a parse tree produced by {@link highLanguageParser#assignStmt}.
 	 * @param ctx the parse tree
 	 */

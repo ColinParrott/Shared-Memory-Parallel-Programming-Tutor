@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.compiler.antlrgen;// Generated from /afs/inf.ed.ac.uk/user/s15/s1546623/MInf/Shared-Memory-Parallel-Programming-Tutor/highLanguage.g4 by ANTLR 4.7.2
+package com.colinparrott.parallelsimulator.engine.compiler.antlrgen;// Generated from C:/Users/Colin/IdeaProjects/tutor-test\highLanguage.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -58,11 +58,18 @@ public interface highLanguageVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfStmt(highLanguageParser.IfStmtContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link highLanguageParser#assignStmt}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAssignStmt(highLanguageParser.AssignStmtContext ctx);
+     * Visit a parse tree produced by {@link highLanguageParser#elseStmt}.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitElseStmt(highLanguageParser.ElseStmtContext ctx);
+
+    /**
+     * Visit a parse tree produced by {@link highLanguageParser#assignStmt}.
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitAssignStmt(highLanguageParser.AssignStmtContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link highLanguageParser#awaitStmt}.
 	 * @param ctx the parse tree

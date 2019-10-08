@@ -5,7 +5,8 @@ package com.colinparrott.parallelsimulator.engine.instructions;
  */
 
 public enum InstructionKeyword {
-    LD, ST, LDI, ADD, ADDI, SUB, SUBI, MUL, MULI, DIV, DIVI, BEQ, BNE, BGT, BLT, JUMP, LABEL, ATOMIC, ENDATOMIC, AWAIT;
+    LD, ST, LDI, ADD, ADDI, SUB, SUBI, MUL, MULI, DIV, DIVI, BEQ, BNE, BGT, BLT, BGE, BLE, JUMP, LABEL, ATOMIC, ENDATOMIC, AWAIT,
+    SEQ, SNE, SLT, SGT, SGE, SLE;
 
     public static ParameterType[] getExpectedParams(InstructionKeyword keyword) {
         switch (keyword) {
@@ -39,6 +40,22 @@ public enum InstructionKeyword {
                 return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.LABEL_STRING};
             case BLT:
                 return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.LABEL_STRING};
+            case BGE:
+                return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.LABEL_STRING};
+            case BLE:
+                return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.LABEL_STRING};
+            case SEQ:
+                return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.REGISTER};
+            case SNE:
+                return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.REGISTER};
+            case SLT:
+                return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.REGISTER};
+            case SGT:
+                return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.REGISTER};
+            case SLE:
+                return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.REGISTER};
+            case SGE:
+                return new ParameterType[]{ParameterType.REGISTER, ParameterType.REGISTER, ParameterType.REGISTER};
             case JUMP:
                 return new ParameterType[]{ParameterType.LABEL_STRING};
             case LABEL:

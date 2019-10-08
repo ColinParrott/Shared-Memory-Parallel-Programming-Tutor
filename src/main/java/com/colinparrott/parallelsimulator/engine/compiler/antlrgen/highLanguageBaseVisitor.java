@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.compiler.antlrgen;// Generated from /afs/inf.ed.ac.uk/user/s15/s1546623/MInf/Shared-Memory-Parallel-Programming-Tutor/highLanguage.g4 by ANTLR 4.7.2
+package com.colinparrott.parallelsimulator.engine.compiler.antlrgen;// Generated from C:/Users/Colin/IdeaProjects/tutor-test\highLanguage.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -67,12 +67,24 @@ public class highLanguageBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 */
 	@Override public T visitIfStmt(highLanguageParser.IfStmtContext ctx) { return visitChildren(ctx); }
 	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitAssignStmt(highLanguageParser.AssignStmtContext ctx) { return visitChildren(ctx); }
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
+    public T visitElseStmt(highLanguageParser.ElseStmtContext ctx)
+    {
+        return visitChildren(ctx);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override public T visitAssignStmt(highLanguageParser.AssignStmtContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

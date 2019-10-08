@@ -82,6 +82,30 @@ class InstructionParser {
             case BLT:
                 instruction = new BranchLessThan(registerNumFromString(params[0]), registerNumFromString(params[1]), params[2]);
                 break;
+            case BGE:
+                instruction = new BranchGreaterThanEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), params[2]);
+                break;
+            case BLE:
+                instruction = new BranchLessThanEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), params[2]);
+                break;
+            case SEQ:
+                instruction = new SetIfEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), registerNumFromString(params[2]));
+                break;
+            case SNE:
+                instruction = new SetIfNotEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), registerNumFromString(params[2]));
+                break;
+            case SLT:
+                instruction = new SetIfLessThan(registerNumFromString(params[0]), registerNumFromString(params[1]), registerNumFromString(params[2]));
+                break;
+            case SGT:
+                instruction = new SetIfGreaterThan(registerNumFromString(params[0]), registerNumFromString(params[1]), registerNumFromString(params[2]));
+                break;
+            case SLE:
+                instruction = new SetIfLessThanEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), registerNumFromString(params[2]));
+                break;
+            case SGE:
+                instruction = new SetIfGreaterThanEqual(registerNumFromString(params[0]), registerNumFromString(params[1]), registerNumFromString(params[2]));
+                break;
             case JUMP:
                 instruction = new Jump(params[0]);
                 break;
