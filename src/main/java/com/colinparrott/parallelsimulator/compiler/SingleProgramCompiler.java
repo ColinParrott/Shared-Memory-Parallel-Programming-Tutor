@@ -1,22 +1,25 @@
-package com.colinparrott.parallelsimulator.engine.compiler;
+package com.colinparrott.parallelsimulator.compiler;
 
-import com.colinparrott.parallelsimulator.engine.compiler.antlrgen.highLanguageBaseVisitor;
-import com.colinparrott.parallelsimulator.engine.compiler.antlrgen.highLanguageLexer;
-import com.colinparrott.parallelsimulator.engine.compiler.antlrgen.highLanguageParser;
+import com.colinparrott.parallelsimulator.compiler.errorhandlers.CompilerErrorHandler;
+import com.colinparrott.parallelsimulator.compiler.singleprogramcompiler.SingleProgramLanguageBaseVisitor;
+import com.colinparrott.parallelsimulator.compiler.singleprogramcompiler.SingleProgramLanguageLexer;
+import com.colinparrott.parallelsimulator.compiler.singleprogramcompiler.SingleProgramLanguageParser;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 import com.colinparrott.parallelsimulator.engine.instructions.AwaitComparator;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
 import com.colinparrott.parallelsimulator.programs.parser.AssemblyParser;
 import javafx.util.Pair;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.ATNConfigSet;
-import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Random;
 
 import static org.antlr.v4.runtime.CharStreams.fromString;
 
@@ -40,11 +43,11 @@ public class SingleProgramCompiler
     /**
      * Compiles a single program for a thread from high-level code to assembly
      *
-     * @return A pair containing an array of the compiled assembly lines and an optional string denoting an error.
-     * If no error, the optional is empty. If there is an error, the optional string contains the error message
+     * @return A pair containing an array of the compiled assembly lines and a list of error strings.
+     * If no error, the error list is empty. If there is an error, the error list contains the error message(s)
      * from the lexer or parser.
      */
-    public Pair<String[], Optional<String>> compileProgram()
+    public Pair<ArrayList<String>, ArrayList<String>> compileProgram()
     {
         freeRegisters = new HashSet<>();
 
@@ -57,47 +60,32 @@ public class SingleProgramCompiler
 
         programText = new ArrayList<>();
         CharStream cs = fromString(this.highLevelCode);
-        highLanguageLexer lexer = new highLanguageLexer(cs);
+        SingleProgramLanguageLexer lexer = new SingleProgramLanguageLexer(cs);
 
-
+        CompilerErrorHandler lexerErrorHandler = new CompilerErrorHandler();
         lexer.removeErrorListeners();
-        lexer.addErrorListener(new ANTLRErrorListener()
-        {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e)
-            {
-                System.out.println("LEXER ERROR: " + msg + " at line " + line + " character " + charPositionInLine);
-            }
+        lexer.addErrorListener(lexerErrorHandler);
 
-            @Override
-            public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact, BitSet ambigAlts, ATNConfigSet configs)
-            {
+        SingleProgramLanguageParser parser = new SingleProgramLanguageParser((new CommonTokenStream(lexer)));
+        CompilerErrorHandler parserErrorHandler = new CompilerErrorHandler();
+        parser.removeErrorListeners();
+        parser.addErrorListener(parserErrorHandler);
 
-            }
-
-            @Override
-            public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet conflictingAlts, ATNConfigSet configs)
-            {
-
-            }
-
-            @Override
-            public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs)
-            {
-
-            }
-        });
-
-
-        highLanguageParser parser = new highLanguageParser((new CommonTokenStream(lexer)));
         ParseTree tree = parser.program(); // parse the content and get the tree
 
+        if (lexerErrorHandler.hasErrors())
+        {
+            return new Pair<>(null, lexerErrorHandler.getErrorMessages());
+        }
+
+        if (parserErrorHandler.hasErrors())
+        {
+            return new Pair<>(null, parserErrorHandler.getErrorMessages());
+        }
 
         MyVisitor visitor = new MyVisitor();
         visitor.visit(tree);
-
-        return null;
-
+        return new Pair<>(programText, new ArrayList<>());
     }
 
     private void freeRegisters(int... regNum)
@@ -155,11 +143,11 @@ public class SingleProgramCompiler
         ProgramJsonProducer.produceJsonFile("egg_" + new Random().nextInt(30000), programText.toArray(new String[0]));
     }
 
-    private class MyVisitor<T> extends highLanguageBaseVisitor
+    private class MyVisitor<T> extends SingleProgramLanguageBaseVisitor
     {
 
         @Override
-        public T visitProgram(highLanguageParser.ProgramContext context)
+        public T visitProgram(SingleProgramLanguageParser.ProgramContext context)
         {
 
             for (int i = 0; i < context.children.size(); i++)
@@ -171,13 +159,13 @@ public class SingleProgramCompiler
 
 
         @Override
-        public Integer visitValueExp(highLanguageParser.ValueExpContext ctx)
+        public Integer visitValueExp(SingleProgramLanguageParser.ValueExpContext ctx)
         {
             return (int) ctx.children.get(0).accept(this);
         }
 
         @Override
-        public Integer visitAdditionExp(highLanguageParser.AdditionExpContext ctx)
+        public Integer visitAdditionExp(SingleProgramLanguageParser.AdditionExpContext ctx)
         {
             int lhs = (int) ctx.singleValue(0).accept(this);
             int rhs = (int) ctx.singleValue(1).accept(this);
@@ -188,7 +176,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public Integer visitSubExp(highLanguageParser.SubExpContext ctx)
+        public Integer visitSubExp(SingleProgramLanguageParser.SubExpContext ctx)
         {
             int lhs = (int) ctx.singleValue(0).accept(this);
             int rhs = (int) ctx.singleValue(1).accept(this);
@@ -199,7 +187,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public Integer visitMultExp(highLanguageParser.MultExpContext ctx)
+        public Integer visitMultExp(SingleProgramLanguageParser.MultExpContext ctx)
         {
             int lhs = (int) ctx.singleValue(0).accept(this);
             int rhs = (int) ctx.singleValue(1).accept(this);
@@ -210,7 +198,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public Integer visitDivExp(highLanguageParser.DivExpContext ctx)
+        public Integer visitDivExp(SingleProgramLanguageParser.DivExpContext ctx)
         {
             int lhs = (int) ctx.singleValue(0).accept(this);
             int rhs = (int) ctx.singleValue(1).accept(this);
@@ -221,7 +209,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public Integer visitSingleValue(highLanguageParser.SingleValueContext ctx)
+        public Integer visitSingleValue(SingleProgramLanguageParser.SingleValueContext ctx)
         {
             int reg;
             if (ctx.INT_LITERAL() != null)
@@ -239,7 +227,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public T visitAtomicBlock(highLanguageParser.AtomicBlockContext ctx)
+        public T visitAtomicBlock(SingleProgramLanguageParser.AtomicBlockContext ctx)
         {
             programText.add("ATOMIC");
 
@@ -253,9 +241,9 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public T visitBlock(highLanguageParser.BlockContext ctx)
+        public T visitBlock(SingleProgramLanguageParser.BlockContext ctx)
         {
-            for (highLanguageParser.StmtContext stmt : ctx.stmt())
+            for (SingleProgramLanguageParser.StmtContext stmt : ctx.stmt())
             {
                 stmt.accept(this);
             }
@@ -263,7 +251,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public T visitStmt(highLanguageParser.StmtContext ctx)
+        public T visitStmt(SingleProgramLanguageParser.StmtContext ctx)
         {
             for (ParseTree stmt : ctx.children)
             {
@@ -274,7 +262,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public T visitWhileStmt(highLanguageParser.WhileStmtContext ctx)
+        public T visitWhileStmt(SingleProgramLanguageParser.WhileStmtContext ctx)
         {
             String loopLabel = String.format("%s_%d:", LOOP_LABEL_PREFIX, loopCounter);
             String loopExitLabel = String.format("%s_%d_exit:", LOOP_LABEL_PREFIX, loopCounter);
@@ -296,7 +284,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public T visitIfStmt(highLanguageParser.IfStmtContext ctx)
+        public T visitIfStmt(SingleProgramLanguageParser.IfStmtContext ctx)
         {
             int ifId = ifCounter;
             ifCounter++;
@@ -307,7 +295,7 @@ public class SingleProgramCompiler
             {
                 visitCondExpEnhanced(ctx.condExp(), skipLabel, true);
 
-                for (highLanguageParser.StmtContext s : ctx.stmt())
+                for (SingleProgramLanguageParser.StmtContext s : ctx.stmt())
                     s.accept(this);
 
                 programText.add(skipLabel + ":");
@@ -317,7 +305,7 @@ public class SingleProgramCompiler
                 String elseLabel = String.format("else_%d", ifId);
                 visitCondExpEnhanced(ctx.condExp(), elseLabel, true);
 
-                for (highLanguageParser.StmtContext s : ctx.stmt())
+                for (SingleProgramLanguageParser.StmtContext s : ctx.stmt())
                     s.accept(this);
                 programText.add("JUMP " + skipLabel);
 
@@ -332,9 +320,9 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public T visitElseStmt(highLanguageParser.ElseStmtContext ctx)
+        public T visitElseStmt(SingleProgramLanguageParser.ElseStmtContext ctx)
         {
-            for (highLanguageParser.StmtContext stmt : ctx.stmt())
+            for (SingleProgramLanguageParser.StmtContext stmt : ctx.stmt())
             {
                 stmt.accept(this);
             }
@@ -343,7 +331,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public T visitAssignStmt(highLanguageParser.AssignStmtContext ctx)
+        public T visitAssignStmt(SingleProgramLanguageParser.AssignStmtContext ctx)
         {
             int registerNum = (int) ctx.valueExp().accept(this);
             programText.add(String.format("ST $R%d %s", registerNum, ctx.IDENTIFIER()));
@@ -352,7 +340,7 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public T visitAwaitStmt(highLanguageParser.AwaitStmtContext ctx)
+        public T visitAwaitStmt(SingleProgramLanguageParser.AwaitStmtContext ctx)
         {
             String varOne = ctx.IDENTIFIER(0).getText();
             String varTwo = ctx.IDENTIFIER(1).getText();
@@ -390,7 +378,7 @@ public class SingleProgramCompiler
             return null;
         }
 
-        void visitCondExpEnhanced(highLanguageParser.CondExpContext ctx, String label, boolean inverse)
+        void visitCondExpEnhanced(SingleProgramLanguageParser.CondExpContext ctx, String label, boolean inverse)
         {
 
             // Single comparison (x==5, a>b ...)
@@ -412,7 +400,7 @@ public class SingleProgramCompiler
             }
         }
 
-        void visitCondDualExpEnhanced(highLanguageParser.CondDualExpContext ctx, String label, boolean inverse)
+        void visitCondDualExpEnhanced(SingleProgramLanguageParser.CondDualExpContext ctx, String label, boolean inverse)
         {
             int lhs = (int) ctx.compExp().get(0).singleValue(0).accept(this);
             int rhs = (int) ctx.compExp().get(0).singleValue(1).accept(this);
@@ -456,7 +444,7 @@ public class SingleProgramCompiler
 
         }
 
-        private String branchOpInverseGetter(highLanguageParser.CompExpContext compExp)
+        private String branchOpInverseGetter(SingleProgramLanguageParser.CompExpContext compExp)
         {
             if (compExp.EQ_OP() != null)
             {
@@ -487,7 +475,7 @@ public class SingleProgramCompiler
             return null;
         }
 
-        String setBranchOpGetter(highLanguageParser.CompExpContext compExp)
+        String setBranchOpGetter(SingleProgramLanguageParser.CompExpContext compExp)
         {
 
             if (compExp.EQ_OP() != null)
@@ -507,7 +495,7 @@ public class SingleProgramCompiler
             return null;
         }
 
-        String branchOpGetter(highLanguageParser.CompExpContext compExp)
+        String branchOpGetter(SingleProgramLanguageParser.CompExpContext compExp)
         {
             if (compExp.NE_OP() != null)
             {
@@ -560,20 +548,20 @@ public class SingleProgramCompiler
         }
 
         @Override
-        public T visitCondExp(highLanguageParser.CondExpContext ctx)
+        public T visitCondExp(SingleProgramLanguageParser.CondExpContext ctx)
         {
             return null;
         }
 
 
         @Override
-        public T visitCondDualExp(highLanguageParser.CondDualExpContext ctx)
+        public T visitCondDualExp(SingleProgramLanguageParser.CondDualExpContext ctx)
         {
             return null;
         }
 
         @Override
-        public T visitCompExp(highLanguageParser.CompExpContext ctx)
+        public T visitCompExp(SingleProgramLanguageParser.CompExpContext ctx)
         {
             return null;
         }

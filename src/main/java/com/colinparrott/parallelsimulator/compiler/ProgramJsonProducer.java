@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.compiler;
+package com.colinparrott.parallelsimulator.compiler;
 
 
 import com.google.gson.*;

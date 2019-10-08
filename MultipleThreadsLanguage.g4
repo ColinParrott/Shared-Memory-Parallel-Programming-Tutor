@@ -1,5 +1,5 @@
 
-grammar highLanguage;
+grammar MultipleThreadsLanguage;
 
 /*
  * Lexer Rules
@@ -37,11 +37,11 @@ LINE_COMMENT: '//' ~[\r\n]* -> skip;
  * Parser Rules
  */
 
-//topProgram: oneTheadProgram | twoThreadProgram | threeThreadProgram | fourThreadProgram;
-//oneTheadProgram: program;
-//twoThreadProgram: program CO_SEPARATOR program;
-//threeThreadProgram: program CO_SEPARATOR program CO_SEPARATOR program;
-//fourThreadProgram: program CO_SEPARATOR program CO_SEPARATOR program CO_SEPARATOR program;
+topProgram: oneTheadProgram | twoThreadProgram | threeThreadProgram | fourThreadProgram;
+oneTheadProgram: program;
+twoThreadProgram: program CO_SEPARATOR program;
+threeThreadProgram: program CO_SEPARATOR program CO_SEPARATOR program;
+fourThreadProgram: program CO_SEPARATOR program CO_SEPARATOR program CO_SEPARATOR program;
 
 program: (atomicBlock | block | awaitStmt)* ;
 

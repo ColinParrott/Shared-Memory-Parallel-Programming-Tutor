@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.compiler.antlrgen;// Generated from C:/Users/Colin/IdeaProjects/tutor-test\highLanguage.g4 by ANTLR 4.7.2
+package com.colinparrott.parallelsimulator.compiler.singleprogramcompiler;// Generated from C:/Users/Colin/IdeaProjects/tutor-test\SingleProgramLanguage.g4 by ANTLR 4.7.2
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATN;
@@ -13,27 +13,28 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import java.util.List;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class highLanguageParser extends Parser {
+public class SingleProgramLanguageParser extends Parser
+{
 	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		ASSIGN=1, LBRA=2, RBRA=3, LPAR=4, RPAR=5, SC=6, IF=7, ELSE=8, WHILE=9, 
-		INT_LITERAL=10, AND_OP=11, OR_OP=12, EQ_OP=13, NE_OP=14, LT_OP=15, GT_OP=16,
+		ASSIGN=1, LBRA=2, RBRA=3, LPAR=4, RPAR=5, SC=6, IF=7, ELSE=8, WHILE=9,
+			INT_LITERAL = 10, AND_OP = 11, OR_OP = 12, EQ_OP = 13, NE_OP = 14, LT_OP = 15, GT_OP = 16,
 			GTE_OP = 17, LTE_OP = 18, MULT_MATH_OP = 19, DIV_MATH_OP = 20, CO_SEPARATOR = 21,
 			ADD_MATH_OP = 22, SUB_MATH_OP = 23, IDENTIFIER = 24, AWAIT = 25, WS = 26, COMMENT = 27,
 			LINE_COMMENT = 28;
 	public static final int
-		RULE_program = 0, RULE_atomicBlock = 1, RULE_block = 2, RULE_stmt = 3, 
-		RULE_condExp = 4, RULE_condDualExp = 5, RULE_whileStmt = 6, RULE_ifStmt = 7,
+		RULE_program = 0, RULE_atomicBlock = 1, RULE_block = 2, RULE_stmt = 3,
+			RULE_condExp = 4, RULE_condDualExp = 5, RULE_whileStmt = 6, RULE_ifStmt = 7,
 			RULE_elseStmt = 8, RULE_assignStmt = 9, RULE_awaitStmt = 10, RULE_compExp = 11,
 			RULE_valueExp = 12, RULE_additionExp = 13, RULE_subExp = 14, RULE_multExp = 15,
 			RULE_divExp = 16, RULE_singleValue = 17;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"program", "atomicBlock", "block", "stmt", "condExp", "condDualExp",
+				"program", "atomicBlock", "block", "stmt", "condExp", "condDualExp",
 				"whileStmt", "ifStmt", "elseStmt", "assignStmt", "awaitStmt", "compExp",
 				"valueExp", "additionExp", "subExp", "multExp", "divExp", "singleValue"
 		};
@@ -42,7 +43,7 @@ public class highLanguageParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'='", "'{'", "'}'", "'('", "')'", "';'", "'if'", "'else'", "'while'",
+				null, "'='", "'{'", "'}'", "'('", "')'", "';'", "'if'", "'else'", "'while'",
 				null, "'&&'", "'||'", "'=='", "'!='", "'<'", "'>'", "'>='", "'<='", "'*'",
 				"'/'", "'//'", "'+'", "'-'", null, "'AWAIT'"
 		};
@@ -50,8 +51,8 @@ public class highLanguageParser extends Parser {
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "ASSIGN", "LBRA", "RBRA", "LPAR", "RPAR", "SC", "IF", "ELSE", "WHILE", 
-			"INT_LITERAL", "AND_OP", "OR_OP", "EQ_OP", "NE_OP", "LT_OP", "GT_OP",
+			null, "ASSIGN", "LBRA", "RBRA", "LPAR", "RPAR", "SC", "IF", "ELSE", "WHILE",
+				"INT_LITERAL", "AND_OP", "OR_OP", "EQ_OP", "NE_OP", "LT_OP", "GT_OP",
 				"GTE_OP", "LTE_OP", "MULT_MATH_OP", "DIV_MATH_OP", "CO_SEPARATOR", "ADD_MATH_OP",
 				"SUB_MATH_OP", "IDENTIFIER", "AWAIT", "WS", "COMMENT", "LINE_COMMENT"
 		};
@@ -91,7 +92,10 @@ public class highLanguageParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "highLanguage.g4"; }
+	public String getGrammarFileName()
+	{
+		return "SingleProgramLanguage.g4";
+	}
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -102,7 +106,8 @@ public class highLanguageParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public highLanguageParser(TokenStream input) {
+	public SingleProgramLanguageParser(TokenStream input)
+	{
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -136,15 +141,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_program; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterProgram(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterProgram(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitProgram(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitProgram(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitProgram(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitProgram(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -204,8 +212,15 @@ public class highLanguageParser extends Parser {
 	}
 
 	public static class AtomicBlockContext extends ParserRuleContext {
-		public TerminalNode LT_OP() { return getToken(highLanguageParser.LT_OP, 0); }
-		public TerminalNode GT_OP() { return getToken(highLanguageParser.GT_OP, 0); }
+		public TerminalNode LT_OP()
+		{
+			return getToken(SingleProgramLanguageParser.LT_OP, 0);
+		}
+
+		public TerminalNode GT_OP()
+		{
+			return getToken(SingleProgramLanguageParser.GT_OP, 0);
+		}
 		public List<StmtContext> stmt() {
 			return getRuleContexts(StmtContext.class);
 		}
@@ -218,15 +233,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_atomicBlock; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterAtomicBlock(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterAtomicBlock(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitAtomicBlock(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitAtomicBlock(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitAtomicBlock(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitAtomicBlock(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -282,15 +300,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_block; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterBlock(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterBlock(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitBlock(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitBlock(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitBlock(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitBlock(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -351,15 +372,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_stmt; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterStmt(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitStmt(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitStmt(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitStmt(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -420,15 +444,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_condExp; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterCondExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterCondExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitCondExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitCondExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitCondExp(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitCondExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -474,23 +501,34 @@ public class highLanguageParser extends Parser {
 		public CompExpContext compExp(int i) {
 			return getRuleContext(CompExpContext.class,i);
 		}
-		public TerminalNode AND_OP() { return getToken(highLanguageParser.AND_OP, 0); }
-		public TerminalNode OR_OP() { return getToken(highLanguageParser.OR_OP, 0); }
+
+		public TerminalNode AND_OP()
+		{
+			return getToken(SingleProgramLanguageParser.AND_OP, 0);
+		}
+
+		public TerminalNode OR_OP()
+		{
+			return getToken(SingleProgramLanguageParser.OR_OP, 0);
+		}
 		public CondDualExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_condDualExp; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterCondDualExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterCondDualExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitCondDualExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitCondDualExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitCondDualExp(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitCondDualExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -530,14 +568,33 @@ public class highLanguageParser extends Parser {
 	}
 
 	public static class WhileStmtContext extends ParserRuleContext {
-		public TerminalNode WHILE() { return getToken(highLanguageParser.WHILE, 0); }
-		public TerminalNode LPAR() { return getToken(highLanguageParser.LPAR, 0); }
+		public TerminalNode WHILE()
+		{
+			return getToken(SingleProgramLanguageParser.WHILE, 0);
+		}
+
+		public TerminalNode LPAR()
+		{
+			return getToken(SingleProgramLanguageParser.LPAR, 0);
+		}
 		public CondExpContext condExp() {
 			return getRuleContext(CondExpContext.class,0);
 		}
-		public TerminalNode RPAR() { return getToken(highLanguageParser.RPAR, 0); }
-		public TerminalNode LBRA() { return getToken(highLanguageParser.LBRA, 0); }
-		public TerminalNode RBRA() { return getToken(highLanguageParser.RBRA, 0); }
+
+		public TerminalNode RPAR()
+		{
+			return getToken(SingleProgramLanguageParser.RPAR, 0);
+		}
+
+		public TerminalNode LBRA()
+		{
+			return getToken(SingleProgramLanguageParser.LBRA, 0);
+		}
+
+		public TerminalNode RBRA()
+		{
+			return getToken(SingleProgramLanguageParser.RBRA, 0);
+		}
 		public List<StmtContext> stmt() {
 			return getRuleContexts(StmtContext.class);
 		}
@@ -550,15 +607,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_whileStmt; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterWhileStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterWhileStmt(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitWhileStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitWhileStmt(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitWhileStmt(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitWhileStmt(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -611,21 +671,32 @@ public class highLanguageParser extends Parser {
 	}
 
 	public static class IfStmtContext extends ParserRuleContext {
-		public TerminalNode IF() { return getToken(highLanguageParser.IF, 0); }
-		public TerminalNode LPAR() { return getToken(highLanguageParser.LPAR, 0); }
+		public TerminalNode IF()
+		{
+			return getToken(SingleProgramLanguageParser.IF, 0);
+		}
+
+		public TerminalNode LPAR()
+		{
+			return getToken(SingleProgramLanguageParser.LPAR, 0);
+		}
 		public CondExpContext condExp() {
 			return getRuleContext(CondExpContext.class,0);
 		}
-		public TerminalNode RPAR() { return getToken(highLanguageParser.RPAR, 0); }
+
+		public TerminalNode RPAR()
+		{
+			return getToken(SingleProgramLanguageParser.RPAR, 0);
+		}
 
 		public TerminalNode LBRA()
 		{
-			return getToken(highLanguageParser.LBRA, 0);
+			return getToken(SingleProgramLanguageParser.LBRA, 0);
 		}
 
 		public TerminalNode RBRA()
 		{
-			return getToken(highLanguageParser.RBRA, 0);
+			return getToken(SingleProgramLanguageParser.RBRA, 0);
 		}
 		public List<StmtContext> stmt() {
 			return getRuleContexts(StmtContext.class);
@@ -644,15 +715,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_ifStmt; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterIfStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterIfStmt(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitIfStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitIfStmt(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitIfStmt(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitIfStmt(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -720,17 +794,17 @@ public class highLanguageParser extends Parser {
 	{
 		public TerminalNode ELSE()
 		{
-			return getToken(highLanguageParser.ELSE, 0);
+			return getToken(SingleProgramLanguageParser.ELSE, 0);
 		}
 
 		public TerminalNode LBRA()
 		{
-			return getToken(highLanguageParser.LBRA, 0);
+			return getToken(SingleProgramLanguageParser.LBRA, 0);
 		}
 
 		public TerminalNode RBRA()
 		{
-			return getToken(highLanguageParser.RBRA, 0);
+			return getToken(SingleProgramLanguageParser.RBRA, 0);
 		}
 
 		public List<StmtContext> stmt()
@@ -753,24 +827,23 @@ public class highLanguageParser extends Parser {
 		{
 			return RULE_elseStmt;
 		}
-
 		@Override
 		public void enterRule(ParseTreeListener listener)
 		{
-			if (listener instanceof highLanguageListener) ((highLanguageListener) listener).enterElseStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterElseStmt(this);
 		}
-
 		@Override
 		public void exitRule(ParseTreeListener listener)
 		{
-			if (listener instanceof highLanguageListener) ((highLanguageListener) listener).exitElseStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitElseStmt(this);
 		}
-
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor)
 		{
-			if (visitor instanceof highLanguageVisitor)
-				return ((highLanguageVisitor<? extends T>) visitor).visitElseStmt(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitElseStmt(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -819,27 +892,41 @@ public class highLanguageParser extends Parser {
 	}
 
 	public static class AssignStmtContext extends ParserRuleContext {
-		public TerminalNode IDENTIFIER() { return getToken(highLanguageParser.IDENTIFIER, 0); }
-		public TerminalNode ASSIGN() { return getToken(highLanguageParser.ASSIGN, 0); }
+		public TerminalNode IDENTIFIER()
+		{
+			return getToken(SingleProgramLanguageParser.IDENTIFIER, 0);
+		}
+
+		public TerminalNode ASSIGN()
+		{
+			return getToken(SingleProgramLanguageParser.ASSIGN, 0);
+		}
 		public ValueExpContext valueExp() {
 			return getRuleContext(ValueExpContext.class,0);
 		}
-		public TerminalNode SC() { return getToken(highLanguageParser.SC, 0); }
+
+		public TerminalNode SC()
+		{
+			return getToken(SingleProgramLanguageParser.SC, 0);
+		}
 		public AssignStmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_assignStmt; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterAssignStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterAssignStmt(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitAssignStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitAssignStmt(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitAssignStmt(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitAssignStmt(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -874,54 +961,62 @@ public class highLanguageParser extends Parser {
 	public static class AwaitStmtContext extends ParserRuleContext {
 		public List<TerminalNode> LT_OP()
 		{
-			return getTokens(highLanguageParser.LT_OP);
+			return getTokens(SingleProgramLanguageParser.LT_OP);
 		}
 
 		public TerminalNode LT_OP(int i)
 		{
-			return getToken(highLanguageParser.LT_OP, i);
+			return getToken(SingleProgramLanguageParser.LT_OP, i);
 		}
-		public TerminalNode AWAIT() { return getToken(highLanguageParser.AWAIT, 0); }
+
+		public TerminalNode AWAIT()
+		{
+			return getToken(SingleProgramLanguageParser.AWAIT, 0);
+		}
 
 		public List<TerminalNode> IDENTIFIER()
 		{
-			return getTokens(highLanguageParser.IDENTIFIER);
+			return getTokens(SingleProgramLanguageParser.IDENTIFIER);
 		}
 
 		public TerminalNode IDENTIFIER(int i)
 		{
-			return getToken(highLanguageParser.IDENTIFIER, i);
+			return getToken(SingleProgramLanguageParser.IDENTIFIER, i);
 		}
-		public TerminalNode SC() { return getToken(highLanguageParser.SC, 0); }
+
+		public TerminalNode SC()
+		{
+			return getToken(SingleProgramLanguageParser.SC, 0);
+		}
 
 		public List<TerminalNode> GT_OP()
 		{
-			return getTokens(highLanguageParser.GT_OP);
+			return getTokens(SingleProgramLanguageParser.GT_OP);
 		}
 
 		public TerminalNode GT_OP(int i)
 		{
-			return getToken(highLanguageParser.GT_OP, i);
+			return getToken(SingleProgramLanguageParser.GT_OP, i);
 		}
 
 		public TerminalNode EQ_OP()
 		{
-			return getToken(highLanguageParser.EQ_OP, 0);
+			return getToken(SingleProgramLanguageParser.EQ_OP, 0);
 		}
 
 		public TerminalNode NE_OP()
 		{
-			return getToken(highLanguageParser.NE_OP, 0);
+			return getToken(SingleProgramLanguageParser.NE_OP, 0);
 		}
 
 		public TerminalNode LTE_OP()
 		{
-			return getToken(highLanguageParser.LTE_OP, 0);
+			return getToken(SingleProgramLanguageParser.LTE_OP, 0);
 		}
 
 		public TerminalNode GTE_OP()
 		{
-			return getToken(highLanguageParser.GTE_OP, 0);
+			return getToken(SingleProgramLanguageParser.GTE_OP, 0);
 		}
 		public AwaitStmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -929,15 +1024,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_awaitStmt; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterAwaitStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterAwaitStmt(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitAwaitStmt(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitAwaitStmt(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitAwaitStmt(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitAwaitStmt(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -993,19 +1091,35 @@ public class highLanguageParser extends Parser {
 		public SingleValueContext singleValue(int i) {
 			return getRuleContext(SingleValueContext.class,i);
 		}
-		public TerminalNode EQ_OP() { return getToken(highLanguageParser.EQ_OP, 0); }
-		public TerminalNode NE_OP() { return getToken(highLanguageParser.NE_OP, 0); }
-		public TerminalNode LT_OP() { return getToken(highLanguageParser.LT_OP, 0); }
-		public TerminalNode GT_OP() { return getToken(highLanguageParser.GT_OP, 0); }
+
+		public TerminalNode EQ_OP()
+		{
+			return getToken(SingleProgramLanguageParser.EQ_OP, 0);
+		}
+
+		public TerminalNode NE_OP()
+		{
+			return getToken(SingleProgramLanguageParser.NE_OP, 0);
+		}
+
+		public TerminalNode LT_OP()
+		{
+			return getToken(SingleProgramLanguageParser.LT_OP, 0);
+		}
+
+		public TerminalNode GT_OP()
+		{
+			return getToken(SingleProgramLanguageParser.GT_OP, 0);
+		}
 
 		public TerminalNode GTE_OP()
 		{
-			return getToken(highLanguageParser.GTE_OP, 0);
+			return getToken(SingleProgramLanguageParser.GTE_OP, 0);
 		}
 
 		public TerminalNode LTE_OP()
 		{
-			return getToken(highLanguageParser.LTE_OP, 0);
+			return getToken(SingleProgramLanguageParser.LTE_OP, 0);
 		}
 		public CompExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1013,15 +1127,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_compExp; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterCompExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterCompExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitCompExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitCompExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitCompExp(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitCompExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1083,15 +1200,18 @@ public class highLanguageParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_valueExp; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterValueExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterValueExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitValueExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitValueExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitValueExp(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitValueExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1158,22 +1278,29 @@ public class highLanguageParser extends Parser {
 		public SingleValueContext singleValue(int i) {
 			return getRuleContext(SingleValueContext.class,i);
 		}
-		public TerminalNode ADD_MATH_OP() { return getToken(highLanguageParser.ADD_MATH_OP, 0); }
+
+		public TerminalNode ADD_MATH_OP()
+		{
+			return getToken(SingleProgramLanguageParser.ADD_MATH_OP, 0);
+		}
 		public AdditionExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_additionExp; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterAdditionExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterAdditionExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitAdditionExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitAdditionExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitAdditionExp(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitAdditionExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1210,22 +1337,29 @@ public class highLanguageParser extends Parser {
 		public SingleValueContext singleValue(int i) {
 			return getRuleContext(SingleValueContext.class,i);
 		}
-		public TerminalNode SUB_MATH_OP() { return getToken(highLanguageParser.SUB_MATH_OP, 0); }
+
+		public TerminalNode SUB_MATH_OP()
+		{
+			return getToken(SingleProgramLanguageParser.SUB_MATH_OP, 0);
+		}
 		public SubExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_subExp; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterSubExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterSubExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitSubExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitSubExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitSubExp(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitSubExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1262,22 +1396,29 @@ public class highLanguageParser extends Parser {
 		public SingleValueContext singleValue(int i) {
 			return getRuleContext(SingleValueContext.class,i);
 		}
-		public TerminalNode MULT_MATH_OP() { return getToken(highLanguageParser.MULT_MATH_OP, 0); }
+
+		public TerminalNode MULT_MATH_OP()
+		{
+			return getToken(SingleProgramLanguageParser.MULT_MATH_OP, 0);
+		}
 		public MultExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_multExp; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterMultExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterMultExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitMultExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitMultExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitMultExp(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitMultExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1314,22 +1455,29 @@ public class highLanguageParser extends Parser {
 		public SingleValueContext singleValue(int i) {
 			return getRuleContext(SingleValueContext.class,i);
 		}
-		public TerminalNode DIV_MATH_OP() { return getToken(highLanguageParser.DIV_MATH_OP, 0); }
+
+		public TerminalNode DIV_MATH_OP()
+		{
+			return getToken(SingleProgramLanguageParser.DIV_MATH_OP, 0);
+		}
 		public DivExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_divExp; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterDivExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterDivExp(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitDivExp(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitDivExp(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitDivExp(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitDivExp(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1360,23 +1508,33 @@ public class highLanguageParser extends Parser {
 	}
 
 	public static class SingleValueContext extends ParserRuleContext {
-		public TerminalNode INT_LITERAL() { return getToken(highLanguageParser.INT_LITERAL, 0); }
-		public TerminalNode IDENTIFIER() { return getToken(highLanguageParser.IDENTIFIER, 0); }
+		public TerminalNode INT_LITERAL()
+		{
+			return getToken(SingleProgramLanguageParser.INT_LITERAL, 0);
+		}
+
+		public TerminalNode IDENTIFIER()
+		{
+			return getToken(SingleProgramLanguageParser.IDENTIFIER, 0);
+		}
 		public SingleValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_singleValue; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).enterSingleValue(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).enterSingleValue(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof highLanguageListener ) ((highLanguageListener)listener).exitSingleValue(this);
+			if (listener instanceof SingleProgramLanguageListener)
+				((SingleProgramLanguageListener) listener).exitSingleValue(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof highLanguageVisitor ) return ((highLanguageVisitor<? extends T>)visitor).visitSingleValue(this);
+			if (visitor instanceof SingleProgramLanguageVisitor)
+				return ((SingleProgramLanguageVisitor<? extends T>) visitor).visitSingleValue(this);
 			else return visitor.visitChildren(this);
 		}
 	}
