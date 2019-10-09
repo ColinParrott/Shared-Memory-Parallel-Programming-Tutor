@@ -1,7 +1,10 @@
 package com.colinparrott.parallelsimulator.compiler;
 
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,7 +12,8 @@ import java.io.Writer;
 
 public class ProgramJsonProducer {
 
-    public static void produceJsonFile(String name, String[] assemblyLines){
+    public static void produceJsonFile(String name, String[] highLevelLines, String[][] assemblyLines)
+    {
         JsonObject root = new JsonObject();
         root.addProperty("name", name);
 
@@ -23,23 +27,31 @@ public class ProgramJsonProducer {
         root.add("initialMemory", initialMemory);
 
         JsonArray highLevelCode = new JsonArray();
-        highLevelCode.add("");
+        for (String s : highLevelLines)
+            highLevelCode.add(s);
+
         root.add("highLevelCode", highLevelCode);
 
         JsonArray assemblyCodeArray = new JsonArray();
-        JsonElement innerAssemblyArray = new JsonArray();
 
-        for(String line : assemblyLines){
-            innerAssemblyArray.getAsJsonArray().add(line);
+
+        for (String[] arr : assemblyLines)
+        {
+
+            JsonArray innerAssemblyArray = new JsonArray();
+            for (String line : arr)
+            {
+                innerAssemblyArray.add(line);
+            }
+            assemblyCodeArray.add(innerAssemblyArray);
         }
-        assemblyCodeArray.add(innerAssemblyArray);
 
         root.add("threadCode", assemblyCodeArray);
 
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();
-        System.out.println(gson.toJson(root));
+//        System.out.println(gson.toJson(root));
         try {
             Writer writer = new FileWriter("programs/" + name + ".json");
             gson.toJson(root, writer);

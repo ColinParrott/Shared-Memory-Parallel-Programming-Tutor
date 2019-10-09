@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.compiler.singleprogramcompiler;// Generated from C:/Users/Colin/IdeaProjects/tutor-test\SingleProgramLanguage.g4 by ANTLR 4.7.2
+package com.colinparrott.parallelsimulator.compiler.multithreadcompiler;// Generated from C:/Users/Colin/IdeaProjects/tutor-test\MultipleThreadsLanguage.g4 by ANTLR 4.7.2
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATN;
@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class SingleProgramLanguageLexer extends Lexer
+public class MultipleThreadsLanguageLexer extends Lexer
 {
     static
     {
@@ -106,7 +106,7 @@ public class SingleProgramLanguageLexer extends Lexer
     }
 
 
-    public SingleProgramLanguageLexer(CharStream input)
+    public MultipleThreadsLanguageLexer(CharStream input)
     {
         super(input);
         _interp = new LexerATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
@@ -115,7 +115,7 @@ public class SingleProgramLanguageLexer extends Lexer
     @Override
     public String getGrammarFileName()
     {
-        return "SingleProgramLanguage.g4";
+        return "MultipleThreadsLanguage.g4";
     }
 
     @Override

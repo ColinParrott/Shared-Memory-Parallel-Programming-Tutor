@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <AnchorPane fx:id="rootPane" onKeyPressed="#onKeyPressed" prefHeight="720.0" prefWidth="1280.0"
-            stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.172-ea"
+            stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.999-ea"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.colinparrott.parallelsimulator.engine.simulator.gui.GUIController">
     <children>
@@ -160,11 +160,14 @@
             </columnResizePolicy>
         </TableView>
         <JFXButton fx:id="btnLoad" buttonType="RAISED" layoutX="791.0" layoutY="620.0" mnemonicParsing="false"
-                   prefHeight="74.0" prefWidth="155.0" text="Load Program" AnchorPane.bottomAnchor="36.0"
+                   prefHeight="74.0" prefWidth="155.0" text="Load Program" AnchorPane.bottomAnchor="275.0"
                    AnchorPane.rightAnchor="334.0"/>
+        <JFXButton fx:id="btnAddProgramWindow" buttonType="RAISED" layoutX="801.0" layoutY="381.0"
+                   mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Add Program"
+                   AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="150.0"/>
         <JFXButton fx:id="btnQuestion" buttonType="RAISED" layoutX="974.0" layoutY="610.0" mnemonicParsing="false"
                    prefHeight="74.0" prefWidth="155.0" text="Start Challenge" AnchorPane.bottomAnchor="36.0"
-                   AnchorPane.rightAnchor="151.0"/>
+                   AnchorPane.rightAnchor="240.0"/>
         <JFXButton fx:id="btnReset" buttonType="RAISED" layoutX="213.0" layoutY="666.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" text="Reset" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="213.0" />
         <HBox id="seqBox" fx:id="historyBox" alignment="TOP_CENTER" layoutX="664.0" layoutY="459.0" prefHeight="145.0"
               prefWidth="544.0" AnchorPane.bottomAnchor="115.0" AnchorPane.rightAnchor="72.0">

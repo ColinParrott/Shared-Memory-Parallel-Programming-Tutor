@@ -11,8 +11,6 @@ JFXTabPane {
 }
 
 
-
-
 .tab-header-background {
     -fx-background-color: #245da3;
 }
@@ -81,12 +79,20 @@ Table {
 }
 
 
-#btnSubmit {
+#btnSubmit, #btnAddProgram {
     -fx-background-color: #008000;
 }
 
 #btnSubmitOutcome {
     -fx-background-color: #008000;
+}
+
+#compilerErrorMessage {
+    -fx-background-color: white;
+}
+
+#compilerProgramTitle {
+    -fx-text-fill: white;
 }
 
 #btnNewSequence {

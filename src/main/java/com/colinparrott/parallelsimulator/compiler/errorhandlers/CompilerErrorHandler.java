@@ -16,7 +16,7 @@ public class CompilerErrorHandler implements ANTLRErrorListener
 {
 
     private boolean hasErrors;
-    private ArrayList<String> errorMessages;
+    private ArrayList<CompilationError> errorMessages;
     private final Logger logger = LoggerFactory.getLogger(CompilerErrorHandler.class);
 
     public CompilerErrorHandler()
@@ -31,7 +31,7 @@ public class CompilerErrorHandler implements ANTLRErrorListener
         logger.info(errorMsg);
 
         hasErrors = true;
-        errorMessages.add(errorMsg);
+        errorMessages.add(new CompilationError(msg, line, charPositionInLine));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class CompilerErrorHandler implements ANTLRErrorListener
         return hasErrors;
     }
 
-    public ArrayList<String> getErrorMessages()
+    public ArrayList<CompilationError> getErrorMessages()
     {
         return errorMessages;
     }

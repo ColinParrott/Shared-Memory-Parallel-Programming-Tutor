@@ -1,5 +1,6 @@
 package com.colinparrott.parallelsimulator.compiler;
 
+import com.colinparrott.parallelsimulator.compiler.errorhandlers.CompilationResult;
 import com.colinparrott.parallelsimulator.compiler.errorhandlers.CompilerErrorHandler;
 import com.colinparrott.parallelsimulator.compiler.singleprogramcompiler.SingleProgramLanguageBaseVisitor;
 import com.colinparrott.parallelsimulator.compiler.singleprogramcompiler.SingleProgramLanguageLexer;
@@ -19,13 +20,11 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Random;
 
 import static org.antlr.v4.runtime.CharStreams.fromString;
 
 public class SingleProgramCompiler
 {
-    private String highLevelCode;
     private final Logger logger = LoggerFactory.getLogger(SingleProgramCompiler.class);
     private ArrayList<String> programText;
     private final String LOOP_LABEL_PREFIX = "loop";
@@ -35,10 +34,6 @@ public class SingleProgramCompiler
     private final int COMPARISON_REG_ONE = 8; // $R8
     private final int COMPARISON_REG_TWO = 9; // $R9
 
-    public SingleProgramCompiler(String code)
-    {
-        this.highLevelCode = code;
-    }
 
     /**
      * Compiles a single program for a thread from high-level code to assembly
@@ -47,7 +42,7 @@ public class SingleProgramCompiler
      * If no error, the error list is empty. If there is an error, the error list contains the error message(s)
      * from the lexer or parser.
      */
-    public Pair<ArrayList<String>, ArrayList<String>> compileProgram()
+    public CompilationResult compileProgram(String code)
     {
         freeRegisters = new HashSet<>();
 
@@ -59,7 +54,7 @@ public class SingleProgramCompiler
         }
 
         programText = new ArrayList<>();
-        CharStream cs = fromString(this.highLevelCode);
+        CharStream cs = fromString(code);
         SingleProgramLanguageLexer lexer = new SingleProgramLanguageLexer(cs);
 
         CompilerErrorHandler lexerErrorHandler = new CompilerErrorHandler();
@@ -75,17 +70,19 @@ public class SingleProgramCompiler
 
         if (lexerErrorHandler.hasErrors())
         {
-            return new Pair<>(null, lexerErrorHandler.getErrorMessages());
+            return new CompilationResult(null, lexerErrorHandler.getErrorMessages());
         }
 
         if (parserErrorHandler.hasErrors())
         {
-            return new Pair<>(null, parserErrorHandler.getErrorMessages());
+            return new CompilationResult(null, parserErrorHandler.getErrorMessages());
         }
 
         MyVisitor visitor = new MyVisitor();
         visitor.visit(tree);
-        return new Pair<>(programText, new ArrayList<>());
+
+        printAssemblyString();
+        return new CompilationResult(programText, new ArrayList<>());
     }
 
     private void freeRegisters(int... regNum)
@@ -140,7 +137,7 @@ public class SingleProgramCompiler
             System.out.println(i);
         }
 
-        ProgramJsonProducer.produceJsonFile("egg_" + new Random().nextInt(30000), programText.toArray(new String[0]));
+//        ProgramJsonProducer.produceJsonFile("egg_" + new Random().nextInt(30000), programText.toArray(new String[0]));
     }
 
     private class MyVisitor<T> extends SingleProgramLanguageBaseVisitor
@@ -152,6 +149,7 @@ public class SingleProgramCompiler
 
             for (int i = 0; i < context.children.size(); i++)
             {
+                System.out.println("vistProgramChild");
                 context.getChild(i).accept(this);
             }
             return null;
@@ -255,7 +253,6 @@ public class SingleProgramCompiler
         {
             for (ParseTree stmt : ctx.children)
             {
-                stmt.accept(this);
                 stmt.accept(this);
             }
             return null;

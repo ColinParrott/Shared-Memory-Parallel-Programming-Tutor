@@ -1,5 +1,4 @@
 package com.colinparrott.parallelsimulator.compiler.singleprogramcompiler;// Generated from C:/Users/Colin/IdeaProjects/tutor-test\SingleProgramLanguage.g4 by ANTLR 4.7.2
-
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -7,7 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * by {@link SingleProgramLanguageParser}.
  *
  * @param <T> The return type of the visit operation. Use {@link Void} for
- *            operations with no return type.
+ * operations with no return type.
  */
 public interface SingleProgramLanguageVisitor<T> extends ParseTreeVisitor<T>
 {

@@ -47,10 +47,16 @@ import java.util.ResourceBundle;
 public class GUIController implements Initializable {
 
     @FXML
+    public JFXButton btnAddProgramWindow;
+
+    @FXML
     private AnchorPane rootPane;
 
     @FXML
     private AnchorPane selectorAnchor;
+
+    @FXML
+    private AnchorPane programAdderAnchor;
 
     @FXML
     private ListView<String> programList;
@@ -177,6 +183,7 @@ public class GUIController implements Initializable {
 
     private Stage mainWindow;
     private Stage programSelectorWindow;
+    private Stage programAdderWindow;
 
     private MemoryLocation chosenVariable;
     private int chosenOutcome;
@@ -948,6 +955,9 @@ public class GUIController implements Initializable {
         this.mainWindow.setOnCloseRequest(e -> {
             if(programSelectorWindow != null && programSelectorWindow.isShowing())
                 programSelectorWindow.close();
+
+            if (programAdderWindow != null && programAdderWindow.isShowing())
+                programAdderWindow.close();
         });
 
         init();
@@ -986,7 +996,13 @@ public class GUIController implements Initializable {
 
         setInitialMemoryTable();
 
+        btnAddProgramWindow.setOnAction(event -> {
+            CompilerGUIController controller = new CompilerGUIController();
+            controller.showWindow();
+        });
+
         btnLoad.setOnAction(event -> {
+            programs = ProgramFileReader.readPrograms();
             VBox secondaryLayout = new VBox(30);
             secondaryLayout.setAlignment(Pos.CENTER);
             secondaryLayout.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());

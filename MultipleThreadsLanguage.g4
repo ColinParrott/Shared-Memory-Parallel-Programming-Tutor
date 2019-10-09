@@ -30,20 +30,19 @@ SUB_MATH_OP : '-' ;
 IDENTIFIER: [a-z]+ ;
 AWAIT: 'AWAIT';
 WS : [ \t\r\n]+ -> channel(HIDDEN);
-COMMENT: '/*' .*? '*/' -> skip;
-LINE_COMMENT: '//' ~[\r\n]* -> skip;
+LINE_COMMENT: '#' ~[\r\n]* -> skip;
 
 /*
  * Parser Rules
  */
 
-topProgram: oneTheadProgram | twoThreadProgram | threeThreadProgram | fourThreadProgram;
-oneTheadProgram: program;
-twoThreadProgram: program CO_SEPARATOR program;
-threeThreadProgram: program CO_SEPARATOR program CO_SEPARATOR program;
-fourThreadProgram: program CO_SEPARATOR program CO_SEPARATOR program CO_SEPARATOR program;
+topProgram: program (CO_SEPARATOR program)* EOF;
+//oneTheadProgram: program;
+//twoThreadProgram: program CO_SEPARATOR program;
+//threeThreadProgram: program CO_SEPARATOR program CO_SEPARATOR program;
+//fourThreadProgram: program CO_SEPARATOR program CO_SEPARATOR program CO_SEPARATOR program;
 
-program: (atomicBlock | block | awaitStmt)* ;
+program: (atomicBlock | block | awaitStmt)+ ;
 
 // blocks must have at least one statement
 atomicBlock: LT_OP stmt+ GT_OP;
