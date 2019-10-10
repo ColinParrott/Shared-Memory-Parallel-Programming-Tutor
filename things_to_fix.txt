@@ -2,6 +2,7 @@
 2) Enable scrolling on code list, currently not scrollable despite bar being there (make it autoscroll too)
 3) Allow AWAIT to support two conditions (currently just one) - maybe support the IDENTIFIER OP INT_LITERAL version (would need to fix instruction parser to support varying types for a single token)
 4) Added help dialog to compiler window (add program window)
+5) Add safeguards so that tool doesn't crash on launch if there's an erroneous program json file
 
 [✓] 4) Figure out how to get errors from lexer/parser and stop lexing/parsing before it hits an exception
 [✓] 5) Add whole program (multiple threads) lexer & parser

@@ -23,8 +23,8 @@ public class ProgramJsonProducer {
         root.add("sequenceData", sequenceData);
 
         JsonObject initialMemory = new JsonObject();
-        initialMemory.addProperty("a", 0);
-        root.add("initialMemory", initialMemory);
+//        initialMemory.addProperty("a", 0);
+        root.add("initialMemory", new JsonObject());
 
         JsonArray highLevelCode = new JsonArray();
         for (String s : highLevelLines)
