@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="programAdderAnchor" prefHeight="700.0" prefWidth="640.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.colinparrott.parallelsimulator.engine.simulator.gui.CompilerGUIController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="130.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <JFXTextField fx:id="compilerProgramTitle" alignment="CENTER" promptText="ENTER PROGRAM TITLE..." unFocusColor="#545151">
+               <font>
+                  <Font size="16.0" />
+               </font></JFXTextField>
+            <TextArea fx:id="codeBox" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="Consolas" size="14.0" />
+               </font>
+            </TextArea>
+         </children>
+      </VBox>
+      <JFXButton fx:id="btnAddProgram" alignment="CENTER" buttonType="RAISED" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" ripplerFill="#00ff26" stylesheets="@../css/main.css" text="Add Program" textAlignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" />
+      <Label fx:id="compilerErrorMessage" text="[ERROR]" textFill="RED" wrapText="true" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+         <font>
+            <Font name="Consolas" size="16.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
