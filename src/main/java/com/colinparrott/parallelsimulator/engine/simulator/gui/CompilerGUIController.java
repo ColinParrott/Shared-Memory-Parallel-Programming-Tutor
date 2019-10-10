@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Stack;
 
 public class CompilerGUIController implements Initializable
 {
@@ -38,6 +39,7 @@ public class CompilerGUIController implements Initializable
     @FXML
     private JFXButton btnAddProgram;
 
+
     @FXML
     private JFXTextField compilerProgramTitle;
 
@@ -45,6 +47,7 @@ public class CompilerGUIController implements Initializable
 
     private MultithreadedParser parser;
     private SingleProgramCompiler compiler;
+    private Stack<Integer> lineSizes;
 
     void showWindow()
     {
@@ -122,6 +125,7 @@ public class CompilerGUIController implements Initializable
         codeBox.setOnKeyReleased(event -> checkForErrors(codeBox.getText()));
     }
 
+
     private void checkForErrors(String code)
     {
         MultithreadedParserResult parserResult = parser.parseProgram(code);
@@ -145,10 +149,10 @@ public class CompilerGUIController implements Initializable
     private String formatErrorMessage(String error, int line, int charIndex)
     {
 
-        if (line > 0 && charIndex > 0)
+        if (line >= 0 && charIndex >= 0)
         {
             String errorTemplate = "%s (%d:%d)";
-            return String.format(errorTemplate, error, line, charIndex);
+            return String.format(errorTemplate, error, line, charIndex + 1);
         }
         else
         {

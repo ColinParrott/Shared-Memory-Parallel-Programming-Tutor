@@ -355,6 +355,7 @@ public class GUIController implements Initializable {
         btnQuestion.setOnAction(event -> {
             rewindSimulator(0);
             historyBox.setVisible(false);
+            btnAddProgramWindow.setVisible(false);
             btnLoad.setVisible(false);
             btnQuestion.setVisible(false);
             gameBox.setVisible(true);
@@ -395,6 +396,7 @@ public class GUIController implements Initializable {
             rewindSimulator(0);
             gameBox2.setVisible(false);
             historyBox.setVisible(true);
+            btnAddProgramWindow.setVisible(true);
             btnLoad.setVisible(true);
             btnQuestion.setVisible(true);
             modeToggle.setSelected(false);
@@ -405,6 +407,7 @@ public class GUIController implements Initializable {
             rewindSimulator(0);
             gameBox.setVisible(false);
             historyBox.setVisible(true);
+            btnAddProgramWindow.setVisible(true);
             btnLoad.setVisible(true);
             btnQuestion.setVisible(true);
 //            modeToggle.setSelected(false);
