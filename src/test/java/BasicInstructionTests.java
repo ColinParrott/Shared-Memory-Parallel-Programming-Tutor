@@ -417,6 +417,331 @@ public class BasicInstructionTests
         Assert.assertEquals(20, t.getRegisters()[1].getValue());
     }
 
+    @Test
+    public void branchIfGreaterThanOrEqualWhenTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 6));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new BranchGreaterThanEqual(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Execute all instructions (assuming one is missed due to branch)
+        for (int i = 0; i < 5; i++)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(-1, machine.getThread(0).getRegisters()[2].getValue());
+
+    }
+
+    @Test
+    public void branchIfGreaterThanOrEqualWhenFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 3));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new BranchGreaterThanEqual(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Jump("end"));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+        instructions.add(new Label("end"));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Execute all instructions (assuming one is missed due to branch)
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void branchIfLessThanOrEqualWhenTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 3));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new BranchLessThanEqual(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Execute all instructions (assuming one is missed due to branch)
+        for (int i = 0; i < 5; i++)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(-1, machine.getThread(0).getRegisters()[2].getValue());
+
+    }
+
+    @Test
+    public void branchIfLessThanOrEqualWhenFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 7));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new BranchLessThanEqual(0, 1, "makenegative"));
+        instructions.add(new LoadImmediate(2, 1));
+        instructions.add(new Jump("end"));
+        instructions.add(new Label("makenegative"));
+        instructions.add(new LoadImmediate(2, -1));
+        instructions.add(new Label("end"));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        // Execute all instructions (assuming one is missed due to branch)
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfEqualTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 5));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfEqual(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfEqualFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 4));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfEqual(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(0, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfNotEqualTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 4));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfNotEqual(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfNotEqualFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 5));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfNotEqual(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(0, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfGreaterThanTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 7));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfGreaterThan(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfGreaterThanFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 5));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfGreaterThan(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(0, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfGreaterThanEqualTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 5));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfGreaterThanEqual(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfGreaterThanEqualFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 4));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfGreaterThanEqual(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(0, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfLessThanTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 4));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfLessThan(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfLessThanFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 7));
+        instructions.add(new LoadImmediate(1, 7));
+        instructions.add(new SetIfLessThan(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(0, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfLessThanEqualTrue()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 4));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfLessThanEqual(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(1, machine.getThread(0).getRegisters()[2].getValue());
+    }
+
+    @Test
+    public void setIfLessThanEqualFalse()
+    {
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        instructions.add(new LoadImmediate(0, 7));
+        instructions.add(new LoadImmediate(1, 5));
+        instructions.add(new SetIfLessThanEqual(2, 0, 1));
+
+        SimulatorThread t = machine.createThread(0);
+        t.queueInstructions(instructions);
+
+        while (t.getNextInstruction() != null)
+        {
+            t.executeInstruction();
+        }
+
+        Assert.assertEquals(0, machine.getThread(0).getRegisters()[2].getValue());
+    }
 
 
 
