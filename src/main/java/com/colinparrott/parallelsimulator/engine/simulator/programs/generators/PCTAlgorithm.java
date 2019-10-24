@@ -1,15 +1,20 @@
 package com.colinparrott.parallelsimulator.engine.simulator.programs.generators;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Machine;
+import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
-import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
+import com.colinparrott.parallelsimulator.engine.instructions.*;
+import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.programs.ProgramFileReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class PCTAlgorithm
 {
+    private static final Logger logger = LoggerFactory.getLogger(PCTAlgorithm.class);
 
     public static void main(String[] args)
     {
@@ -17,20 +22,56 @@ public class PCTAlgorithm
 
         for (Program p : programs)
         {
+//            if (p.getName().equals("x++"))
+//            {
             System.out.println(p.getName());
             ArrayList<ArrayList<Instruction>> instructions = new ArrayList<>();
+
+            boolean programHasLoop = false;
+            int instructionCount = 0;
             for (int i = 0; i < p.getUsedThreadIDs().length; i++)
             {
                 instructions.add(p.getInstructionsForThread(i));
-            }
 
-            ArrayList<Integer> seq = generateSequence(instructions, 20, 1);
+                if (GenUtils.containsLoop(p.getInstructionsForThread(i)))
+                    programHasLoop = true;
+
+                // todo: only count instructions inside atomic blocks as one instruction
+                for (Instruction instr : p.getInstructionsForThread(i))
+                {
+                    if (!(instr instanceof Label || instr instanceof Atomic || instr instanceof EndAtomic))
+                        instructionCount++;
+                }
+            }
+//            System.out.println("Instruction count: " + instructionCount);
+            int maxSteps = programHasLoop ? 20 : instructionCount;
+            System.out.println("Max steps: " + maxSteps);
+
+            ArrayList<Integer> seq = generateSequence(instructions, maxSteps, 6);
             System.out.print("[");
             for (int i : seq)
             {
                 System.out.print(i + " ");
             }
             System.out.println("]");
+
+            Simulator simulator = new GenerationSim();
+            simulator.loadProgram(p);
+
+            for (int i : seq)
+            {
+                simulator.getMachine().executeInstruction(i);
+            }
+
+            for (MemoryLocation memoryLocation : getRelevantVariables(p))
+            {
+                System.out.print(memoryLocation + ":" + simulator.getMachine().getMemory().getValue(memoryLocation) + " ");
+            }
+
+            System.out.println();
+//            }
+
+
         }
     }
 
@@ -38,8 +79,8 @@ public class PCTAlgorithm
     {
         ArrayList<Integer> schedule = new ArrayList<>();
         ArrayList<Integer> priorities = new ArrayList<>();
-        ArrayList<Integer> changePoints = new ArrayList<>();
-        int currentThread = -1;
+        ArrayList<Integer> changePoints;
+        int currentThread;
 
         GenerationSim sim = new GenerationSim();
         Machine machine = sim.getMachine();
@@ -85,7 +126,6 @@ public class PCTAlgorithm
             }
         }
 
-
         return schedule;
 
     }
@@ -104,6 +144,8 @@ public class PCTAlgorithm
 
             arr.add(r);
         }
+
+        System.out.println("Change points: " + arr);
 
         return arr;
     }
@@ -124,5 +166,30 @@ public class PCTAlgorithm
         }
 
         return index;
+    }
+
+    @SuppressWarnings("Duplicates")
+    private static MemoryLocation[] getRelevantVariables(Program p)
+    {
+        HashSet<MemoryLocation> variables = new HashSet<>();
+
+        for (int i : p.getUsedThreadIDs())
+        {
+            for (Instruction instruction : p.getInstructionsForThread(i))
+            {
+                if (instruction.getKeyword() == InstructionKeyword.ST)
+                {
+                    Store s = (Store) instruction;
+                    variables.add(s.getMemoryLocation());
+                }
+                else if (instruction.getKeyword() == InstructionKeyword.LD)
+                {
+                    Load l = (Load) instruction;
+                    variables.add(l.getMemoryLocation());
+                }
+            }
+        }
+
+        return variables.toArray(new MemoryLocation[0]);
     }
 }

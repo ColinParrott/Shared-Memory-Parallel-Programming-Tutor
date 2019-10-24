@@ -907,10 +907,10 @@ public class GUIController implements Initializable {
             }
         }
 
-        for (String varStr : p.getProgramFile().getInitialMemory().keySet())
-        {
-            variables.add(MemoryLocation.valueOf(varStr));
-        }
+//        for (String varStr : p.getProgramFile().getInitialMemory().keySet())
+//        {
+//            variables.add(MemoryLocation.valueOf(varStr));
+//        }
 
         return variables.toArray(new MemoryLocation[0]);
     }
