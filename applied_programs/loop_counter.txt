@@ -1,0 +1,38 @@
+--Name--
+Loop counter
+
+
+-- Description --
+A for loop that counts the number of items with a certain condition has been sped up, by running in parallel
+with two threads doing the work.
+
+
+-- High Level Example ---
+
+...
+// inside loop
+if(item.type == target){
+    count++;
+}
+...
+// threads join when complete
+return count;
+
+
+-- Important part --
+Count is the shared variable being read and written to, and will be the problematic part depending on interleavings.
+
+
+-- High Level Code --
+x++; // x++;
+
+
+-- Assembly Code--
+
+LD $R0 x
+ADDI $R0 1
+ST $R0 x
+//
+LD $R0 x
+ADDI $R0 1
+ST $R0 x

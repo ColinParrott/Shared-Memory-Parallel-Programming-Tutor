@@ -1,0 +1,32 @@
+--Name--
+Bank balance
+
+-- Description --
+A shared bank account with a balance of £100, where two people withdraw
+£10 at the same time.
+
+-- High Level Example ---
+int withdraw(amount){
+    balance -= amount;
+}
+
+
+-- Important part --
+The update of balance as it's the shared variable;
+
+
+-- High Level Code --
+b -= 10 // b-= 10;
+
+
+-- Assembly Code --
+
+(b=100 initially)
+
+LD $R0 b
+SUBI $R0 10
+ST $R0 b
+//
+LD $R0 b
+SUBI $R0 10
+ST $R0 b

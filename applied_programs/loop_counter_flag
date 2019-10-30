@@ -1,0 +1,44 @@
+--Name--
+Loop counter
+
+
+-- Description --
+A for loop that counts the number of items with a certain condition has been sped up, by running in parallel
+with two threads doing the work. Now (incorrectly) uses a shared variable flag.
+
+
+-- High Level Example ---
+
+...
+// inside loop
+if(item.type == target){
+
+    while(flag == 0)
+    {
+        flag = 1;
+        count++;
+        flag = 0;
+    }
+}
+...
+// threads join when complete
+return count;
+
+
+-- Important part --
+Count is the shared variable being read and written to, and will be the problematic part depending on interleavings. Flag
+doesn't actually do much as both threads could read flag to be 0 and enter critical section at same time.
+
+
+-- High Level Code --
+while(flag == 0){
+    flag = 1;
+    count++;
+    flag = 0;
+}
+
+
+-- Assembly Code--
+
+(flag = f)
+(count = x)
