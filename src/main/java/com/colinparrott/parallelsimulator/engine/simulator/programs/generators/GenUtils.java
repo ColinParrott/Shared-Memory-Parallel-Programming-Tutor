@@ -4,6 +4,8 @@ import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
 import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
+import com.colinparrott.parallelsimulator.engine.instructions.Jump;
+import com.colinparrott.parallelsimulator.engine.instructions.Label;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 
 import java.util.*;
@@ -179,5 +181,36 @@ public class GenUtils
         Random r = new Random();
         ArrayList<Integer> elements = new ArrayList<>(set);
         return elements.get(r.nextInt(elements.size()));
+    }
+
+    /**
+     * Determines whether a program has a loop present
+     *
+     * @param instructions List of assembly instructions representing program
+     * @return True if program contains a loop, false otherwise
+     */
+    public static boolean containsLoop(ArrayList<Instruction> instructions)
+    {
+        HashSet<String> labels = new HashSet<>();
+
+        for (Instruction i : instructions)
+        {
+            // Add label to hashset
+            if (i instanceof Label)
+            {
+                labels.add(((Label) i).getLabel());
+            }
+            else if (i instanceof Jump)
+            {
+                String jumpLabel = ((Jump) i).getLabel();
+
+                // If label this jump goes to is already in the set, it means the label
+                // has already been encountered and therefore is before this jump (the jump goes backwards)
+                if (labels.contains(jumpLabel))
+                    return true;
+            }
+        }
+
+        return false;
     }
 }
