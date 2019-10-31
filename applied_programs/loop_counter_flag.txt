@@ -13,12 +13,11 @@ with two threads doing the work. Now (incorrectly) uses a shared variable flag.
 // inside loop
 if(item.type == target){
 
-    while(flag == 0)
-    {
-        flag = 1;
-        count++;
-        flag = 0;
-    }
+    while(flag == 1){};
+     flag = 1;
+     count++;
+     flag = 0;
+
 }
 ...
 // threads join when complete

@@ -1,0 +1,31 @@
+--Name--
+Deadlock
+
+-- Description --
+Classic deadlock problem with two threads and two locks.
+
+-- High Level Example ---
+lock_1 = 0;
+lock_2 = 0;
+
+<await (lock_1 == 0) lock_1 = 1;>
+a=5;
+<await (lock_2 == 0) lock_2 = 1;>
+a=3;
+<lock_1 = 0; lock_2=0;>
+//
+<await (lock_2 == 0) lock_2 = 1;>
+b=7;
+<await (lock_1 == 0) lock_1 = 1;>
+b=2;
+<lock_2 = 0; lock_1=0;>
+
+-- Important part --
+If both threads are granted their first locks, then they will deadlock at the second await (acquire of lock)
+
+-- High Level Code --
+Same as above basically.
+
+
+-- Assembly Code--
+ # compiler

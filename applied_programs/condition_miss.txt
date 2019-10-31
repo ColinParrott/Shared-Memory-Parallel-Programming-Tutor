@@ -1,0 +1,38 @@
+--Name--
+Condition miss
+
+-- Description --
+There are three threads. One thread awaits for some condition to become true, and when it becomes true it updates
+some variable to reflect that.
+
+-- High Level Example ---
+a = 5;
+
+
+# some code
+...
+a = 25;
+condition = 1;
+//
+<await (condition == 1); variable_to_update=a;>
+//
+# some code
+...
+condition = 0;
+
+-- Important part --
+Even if condition is set to 1, the await might never execute if the condition is set to zero by the third thread
+is executed before the await.
+
+-- High Level Code --
+
+a = 25;
+condition = 1;
+//
+<await (condition == 1) x=a;>
+//
+condition = 0;
+
+
+-- Assembly Code--
+ # compiler

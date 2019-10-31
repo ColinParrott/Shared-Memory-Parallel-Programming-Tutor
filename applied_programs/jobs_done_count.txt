@@ -1,0 +1,42 @@
+--Name--
+Jobs done counter
+
+
+-- Description --
+Imagine two threads doing some work and the final threads does something with each of their results.
+To signify if a thread has done its work, it updates the job_done counter atomically - however one thread's code
+erroneously didn't make the update atomic.
+
+-- High Level Example ---
+
+# do some work
+a = 5;
+jobs_done++; # forgot to make atomic
+//
+# do some work
+b=7;
+<jobs_done++;>
+//
+<AWAIT jobs_done==2;>
+c=a+b;
+
+
+-- Important part --
+It's possible for await to never execute if the non_atomic job_done loads 0, then atomic update in thread 2 happens,
+thread 1 finish it's increment but leaves jobs_done at 1.
+
+
+-- High Level Code --
+(j=0);
+
+a = 5;
+j=j+1;
+//
+b=7;
+<j=j+1;>
+//
+<AWAIT j==2;>
+c=a+b;
+
+-- Assembly Code--
+# compiler

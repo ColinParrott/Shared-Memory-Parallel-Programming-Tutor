@@ -1,0 +1,25 @@
+--Name--
+Trivial condition
+
+-- Description --
+Condition that in theory should ALWAYS be true, can actually evaluate to false.
+
+-- High Level Example ---
+(i,a = 0 initially)
+
+i = 5;
+//
+if(i==i){
+a = 1;
+}
+
+-- Important part --
+The condition check will involve two loads, so it's possible for it check if 0==5, if thread 1 stores 5 into
+i between the two loads
+
+-- High Level Code --
+Same as above basically.
+
+
+-- Assembly Code--
+ # compiler

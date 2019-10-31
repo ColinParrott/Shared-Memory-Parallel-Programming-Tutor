@@ -1,0 +1,48 @@
+--Name--
+User counter
+
+
+-- Description --
+Part of a program which handles users connecting/disconnecting and tracks the number of users to ensure that no
+more than 100 users can connect. We currently have 99 users and a disconnect and connect happen at the same time.
+
+
+-- High Level Example ---
+
+user_count = 99
+...
+# user connects
+if(user_count < 100){
+    # handle new connection
+    ...
+    user_count++;
+}
+//
+...
+# user disconnects
+user_count--;
+
+
+
+-- Important part --
+It's possible for the user_count to not be the expected 99 after a connect and disconnect - could be 98/100.
+
+
+-- High Level Code --
+(u=99)
+
+if(u < 100){
+u++;
+}
+//
+u--;
+
+-- Assembly Code--
+
+LD $R0 x
+ADDI $R0 1
+ST $R0 x
+//
+LD $R0 x
+ADDI $R0 1
+ST $R0 x

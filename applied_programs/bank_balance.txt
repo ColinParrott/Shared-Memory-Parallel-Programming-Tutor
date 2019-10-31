@@ -12,7 +12,7 @@ int withdraw(amount){
 
 
 -- Important part --
-The update of balance as it's the shared variable;
+The update of balance as it's the shared variable.
 
 
 -- High Level Code --
