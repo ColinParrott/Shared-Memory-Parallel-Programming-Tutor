@@ -1,0 +1,30 @@
+--Name--
+Two await conditions
+
+-- Description --
+Two threads are waiting on a condition that should only activate one of the threads,
+intuitively the i==2 thread first.
+
+-- High Level Example ---
+(i,a = 0 initially)
+
+<await (i==3;) x=2; i=4;>
+# do stuff
+//
+<await (i==2;) x=1; i=4;>
+# do stuff
+//
+while(i<3){
+i++;
+}
+
+-- Important part --
+The condition should activate the i==2 thread first however it's possible it's missed and thread i==3 goes.
+It's also possible both are activated.
+
+-- High Level Code --
+Same as above basically.
+
+
+-- Assembly Code--
+ # compiler

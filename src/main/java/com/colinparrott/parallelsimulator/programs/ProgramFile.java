@@ -21,15 +21,18 @@ public class ProgramFile {
     private String[] highLevelCode;
     private String[][] threadInstructions;
     private boolean desiredSequences;
+    private ArrayList<HashMap<MemoryLocation, Integer>> expectedOutcomes;
     private int[][] interestingSequences;
 
-    public ProgramFile(String name, HashMap<String, Integer> initialMemory, String[] highLevelCode, String[][] threadInstructions, boolean desiredSequences, int[][] interestingSequences) {
+    public ProgramFile(String name, HashMap<String, Integer> initialMemory, String[] highLevelCode, String[][] threadInstructions, boolean desiredSequences, int[][] interestingSequences, ArrayList<HashMap<MemoryLocation, Integer>> expectedOutcomes)
+    {
         this.name = name;
         this.threadInstructions = threadInstructions;
         this.initialMemory = initialMemory;
         this.highLevelCode = highLevelCode;
         this.desiredSequences = desiredSequences;
         this.interestingSequences = interestingSequences;
+        this.expectedOutcomes = expectedOutcomes;
     }
 
     public Program generateProgram() {
@@ -79,5 +82,10 @@ public class ProgramFile {
 
     public int[][] getInterestingSequences() {
         return interestingSequences;
+    }
+
+    public ArrayList<HashMap<MemoryLocation, Integer>> getExpectedOutcomes()
+    {
+        return expectedOutcomes;
     }
 }

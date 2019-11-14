@@ -24,6 +24,11 @@ public class Memory
         }
     }
 
+    public Memory(HashMap<MemoryLocation, Integer> variables)
+    {
+        this.variables = variables;
+    }
+
     /**
      * Set a variable in memory
      *

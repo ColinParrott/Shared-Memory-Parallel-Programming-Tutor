@@ -3,10 +3,7 @@ package com.colinparrott.parallelsimulator.engine.simulator.gui;
 import com.colinparrott.parallelsimulator.engine.hardware.Machine;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
-import com.colinparrott.parallelsimulator.engine.instructions.Instruction;
-import com.colinparrott.parallelsimulator.engine.instructions.InstructionKeyword;
-import com.colinparrott.parallelsimulator.engine.instructions.Load;
-import com.colinparrott.parallelsimulator.engine.instructions.Store;
+import com.colinparrott.parallelsimulator.engine.instructions.*;
 import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
 import com.colinparrott.parallelsimulator.engine.simulator.gui.anim.TableViewAnimator;
 import com.colinparrott.parallelsimulator.engine.simulator.gui.controls.JFXHistoryButton;
@@ -27,6 +24,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -903,6 +901,12 @@ public class GUIController implements Initializable {
                 } else if (instruction.getKeyword() == InstructionKeyword.LD) {
                     Load l = (Load) instruction;
                     variables.add(l.getMemoryLocation());
+                }
+                else if (instruction.getKeyword() == InstructionKeyword.AWAIT)
+                {
+                    Await await = (Await) instruction;
+                    variables.add(await.getFirstVariable());
+                    variables.add(await.getSecondVariable());
                 }
             }
         }

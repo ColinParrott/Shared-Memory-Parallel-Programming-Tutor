@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics;
+package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.old;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;

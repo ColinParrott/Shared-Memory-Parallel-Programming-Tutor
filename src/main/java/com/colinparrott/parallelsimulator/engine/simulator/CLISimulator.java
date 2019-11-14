@@ -14,8 +14,8 @@ import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.E
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenUtils;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.GenMethod;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.ThreadSequenceGen;
-import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.BatchScorer;
-import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.ScoreMethod;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.old.BatchScorer;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.old.ScoreMethod;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 

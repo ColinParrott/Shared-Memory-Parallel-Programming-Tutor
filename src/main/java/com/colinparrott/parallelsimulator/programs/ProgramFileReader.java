@@ -1,5 +1,6 @@
 package com.colinparrott.parallelsimulator.programs;
 
+import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -92,8 +93,15 @@ public class ProgramFileReader {
 
         String[][] assemblyCodeLines = readNestedStringArray(root, "threadCode");
 
+        ArrayList<HashMap<MemoryLocation, Integer>> expectedOutcomes = new ArrayList<>();
 
-        return new ProgramFile(name, initialMemory, highLevelCode, assemblyCodeLines, desiredSequences, sequences);
+        //TODO: finish
+        if (root.has("expectedOutcomes"))
+        {
+
+        }
+
+        return new ProgramFile(name, initialMemory, highLevelCode, assemblyCodeLines, desiredSequences, sequences, expectedOutcomes);
 
     }
 

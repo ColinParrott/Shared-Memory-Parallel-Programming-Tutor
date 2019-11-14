@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics;
+package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.old;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
@@ -87,7 +87,7 @@ public class Scorer
      * memory state(random if more than one)
      *
      * @param p               Program to simulate
-     * @param listOfSequences List of sequences to sim
+     * @param seq List of sequences to sim
      * @return Execution sequence (list of thread ids)
      */
 

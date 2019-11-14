@@ -108,6 +108,17 @@ public class Await extends Instruction
         t.setInstructionPointer(restorePos);
     }
 
+
+    public MemoryLocation getFirstVariable()
+    {
+        return firstVariable;
+    }
+
+    public MemoryLocation getSecondVariable()
+    {
+        return secondVariable;
+    }
+
     @Override
     public String toString()
     {

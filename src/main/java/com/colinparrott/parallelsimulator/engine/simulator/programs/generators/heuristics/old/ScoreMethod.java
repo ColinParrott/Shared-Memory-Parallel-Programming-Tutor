@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics;
+package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.old;
 
 public enum ScoreMethod
 {
