@@ -1,0 +1,55 @@
+{
+  "name": "loop_counter_flag",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory": {},
+  "highLevelCode": [
+    "while(f \u003d\u003d 0){",
+    "    f\u003d1;",
+    "    c\u003dc+1;",
+    "    f\u003d0;",
+    "}",
+    "//",
+    "while(f \u003d\u003d 0){",
+    "    f\u003d1;",
+    "    c\u003dc+1;",
+    "    f\u003d0;",
+    "}"
+  ],
+  "threadCode": [
+    [
+      "loop_0:",
+      "LD $R0 f",
+      "LDI $R1 0",
+      "BNE $R0 $R1 loop_0_exit",
+      "LDI $R0 1",
+      "ST $R0 f",
+      "LD $R0 c",
+      "LDI $R1 1",
+      "ADD $R2 $R0 $R1",
+      "ST $R2 c",
+      "LDI $R0 0",
+      "ST $R0 f",
+      "JUMP loop_0",
+      "loop_0_exit:"
+    ],
+    [
+      "loop_1:",
+      "LD $R0 f",
+      "LDI $R1 0",
+      "BNE $R0 $R1 loop_1_exit",
+      "LDI $R0 1",
+      "ST $R0 f",
+      "LD $R0 c",
+      "LDI $R1 1",
+      "ADD $R2 $R0 $R1",
+      "ST $R2 c",
+      "LDI $R0 0",
+      "ST $R0 f",
+      "JUMP loop_1",
+      "loop_1_exit:"
+    ]
+  ]
+}

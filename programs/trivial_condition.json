@@ -1,0 +1,29 @@
+{
+  "name": "trivial_condition",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory": {},
+  "highLevelCode": [
+    "i \u003d 5;",
+    "//",
+    "if(i\u003d\u003di){",
+    "a \u003d 1;",
+    "}"
+  ],
+  "threadCode": [
+    [
+      "LDI $R0 5",
+      "ST $R0 i"
+    ],
+    [
+      "LD $R0 i",
+      "LD $R1 i",
+      "BNE $R0 $R1 if_skip_0",
+      "LDI $R0 1",
+      "ST $R0 a",
+      "if_skip_0:"
+    ]
+  ]
+}

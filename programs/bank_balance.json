@@ -1,0 +1,29 @@
+{
+  "name": "bank_balance",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory": {
+    "b": 100
+  },
+  "highLevelCode": [
+    "b=b-10;",
+    "// ",
+    "b=b-10;"
+  ],
+  "threadCode": [
+    [
+      "LD $R0 b",
+      "LDI $R1 10",
+      "SUB $R2 $R0 $R1",
+      "ST $R2 b"
+    ],
+    [
+      "LD $R0 b",
+      "LDI $R1 10",
+      "SUB $R2 $R0 $R1",
+      "ST $R2 b"
+    ]
+  ]
+}

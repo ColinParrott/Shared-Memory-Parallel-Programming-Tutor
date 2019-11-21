@@ -1,0 +1,17 @@
+{
+  "name": "condition_miss",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory":
+  {
+    "z": 1
+  },
+  "highLevelCode": [["a = 25;\nc= 1; \n//\n <AWAIT (c== 1) x=a;> \n//\n c =1"]],
+  "threadCode": [
+    ["LDI $R0 25", "ST $R0 a", "LDI $R0 1", "ST $R0 c"],
+    ["ATOMIC", "AWAIT c EQ z", "LD $R0 a", "ST $R0 x", "ENDATOMIC"],
+    ["LDI $R0 1", "ST $R0 c"]
+  ]
+}

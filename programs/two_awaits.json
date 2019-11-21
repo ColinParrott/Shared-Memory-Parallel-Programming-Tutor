@@ -1,0 +1,27 @@
+{
+  "name": "two_awaits",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory":
+  {
+    "a": 2,
+    "b": 3
+  },
+  "highLevelCode": [["<AWAIT (i==3;) x=2; i=4;>\n# do stuff\n//\n<AWAIT (i==2;) x=1; i=4;>\n# do stuff\n//\nwhile(i<3){\ni++;\n}"]],
+  "threadCode": [
+    ["ATOMIC", "AWAIT i EQ b", "LDI $R0 2", "ST $R0 x", "LDI $R0 4", "ST $R0 i", "ENDATOMIC"],
+    ["ATOMIC", "AWAIT i EQ a", "LDI $R0 1", "ST $R0 x", "LDI $R0 4", "ST $R0 i", "ENDATOMIC"],
+    ["loop_0:",
+      "LD $R0 i",
+      "LDI $R1 3",
+      "BGE $R0 $R1 loop_0_exit",
+      "LD $R0 i",
+      "LDI $R1 1",
+      "ADD $R2 $R0 $R1",
+      "ST $R2 i",
+      "JUMP loop_0",
+      "loop_0_exit:"]
+  ]
+}

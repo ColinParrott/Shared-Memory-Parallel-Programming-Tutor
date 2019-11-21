@@ -1,0 +1,48 @@
+{
+  "name": "user_counter_while_loop",
+  "sequenceData": {
+    "desired": false,
+    "sequences": []
+  },
+  "initialMemory": {
+    "u": 99
+  },
+  "highLevelCode": [
+    "while(i\u003c2){",
+    "if(u \u003c 100){",
+    "u\u003du+1;",
+    "}",
+    "i\u003di+1;",
+    "}",
+    "//",
+    "u\u003du-1;"
+  ],
+  "threadCode": [
+    [
+      "loop_0:",
+      "LD $R0 i",
+      "LDI $R1 2",
+      "BGE $R0 $R1 loop_0_exit",
+      "LD $R0 u",
+      "LDI $R1 100",
+      "BGE $R0 $R1 if_skip_0",
+      "LD $R0 u",
+      "LDI $R1 1",
+      "ADD $R2 $R0 $R1",
+      "ST $R2 u",
+      "if_skip_0:",
+      "LD $R0 i",
+      "LDI $R1 1",
+      "ADD $R2 $R0 $R1",
+      "ST $R2 i",
+      "JUMP loop_0",
+      "loop_0_exit:"
+    ],
+    [
+      "LD $R0 u",
+      "LDI $R1 1",
+      "SUB $R2 $R0 $R1",
+      "ST $R2 u"
+    ]
+  ]
+}
