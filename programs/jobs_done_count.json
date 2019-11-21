@@ -7,6 +7,14 @@
   "initialMemory": {
     "z": 2
   },
+  "expectedOutcomes": [
+    {
+      "c": 12,
+      "j": 2,
+      "a": 5,
+      "b": 7
+    }
+  ],
   "highLevelCode": [
     "# do some work",
     "a \u003d 5;",

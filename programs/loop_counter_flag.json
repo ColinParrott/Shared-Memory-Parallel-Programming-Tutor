@@ -5,6 +5,11 @@
     "sequences": []
   },
   "initialMemory": {},
+  "expectedOutcomes": [
+    {
+      "c": 2
+    }
+  ],
   "highLevelCode": [
     "while(f \u003d\u003d 0){",
     "    f\u003d1;",

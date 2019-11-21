@@ -18,7 +18,7 @@ public class ScoringUtils
         // Populate expected outcomes into list of type Memory
         for (int i = 0; i < pf.getExpectedOutcomes().size(); i++)
         {
-            expectedOutcomes.add(new Memory(pf.getExpectedOutcomes().get(i)));
+            expectedOutcomes.add(pf.getExpectedOutcomes().get(i));
         }
 
         int numSequencesThatAvoidExpectedOutcomes = 0;

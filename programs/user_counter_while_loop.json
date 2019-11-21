@@ -7,6 +7,9 @@
   "initialMemory": {
     "u": 99
   },
+  "expectedOutcomes": [{
+    "u": 100
+  }],
   "highLevelCode": [
     "while(i\u003c2){",
     "if(u \u003c 100){",

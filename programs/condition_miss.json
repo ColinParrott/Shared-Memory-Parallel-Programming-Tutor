@@ -6,8 +6,12 @@
   },
   "initialMemory":
   {
-    "z": 1
+    "z": 1,
+    "a": 5
   },
+  "expectedOutcomes": [{
+    "a": 25
+  }],
   "highLevelCode": [["a = 25;\nc= 1; \n//\n <AWAIT (c== 1) x=a;> \n//\n c =1"]],
   "threadCode": [
     ["LDI $R0 25", "ST $R0 a", "LDI $R0 1", "ST $R0 c"],

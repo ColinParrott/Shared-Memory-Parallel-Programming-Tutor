@@ -7,6 +7,11 @@
   "initialMemory": {
     "u": 99
   },
+  "expectedOutcomes": [
+    {
+      "u": 99
+    }
+  ],
   "highLevelCode": [
     "if(u \u003c 100){",
     "u\u003du+1;",

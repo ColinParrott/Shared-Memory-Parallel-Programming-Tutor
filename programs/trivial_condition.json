@@ -5,6 +5,11 @@
     "sequences": []
   },
   "initialMemory": {},
+  "expectedOutcomes": [
+    {
+      "a": 1
+    }
+  ],
   "highLevelCode": [
     "i \u003d 5;",
     "//",

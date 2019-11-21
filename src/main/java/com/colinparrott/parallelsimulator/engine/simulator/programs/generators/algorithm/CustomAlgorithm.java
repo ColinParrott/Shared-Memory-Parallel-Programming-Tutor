@@ -1,4 +1,4 @@
-package com.colinparrott.parallelsimulator.engine.simulator.programs.generators;
+package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.algorithm;
 
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.programs.ProgramFile;
@@ -6,7 +6,7 @@ import com.colinparrott.parallelsimulator.programs.ProgramFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class GenerationAlgorithm
+public class CustomAlgorithm
 {
 
     private double[] threadWeights;

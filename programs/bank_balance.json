@@ -7,9 +7,14 @@
   "initialMemory": {
     "b": 100
   },
+  "expectedOutcomes": [
+    {
+      "b": 80
+    }
+  ],
   "highLevelCode": [
     "b=b-10;",
-    "// ",
+    "//",
     "b=b-10;"
   ],
   "threadCode": [

@@ -8,9 +8,13 @@
   {
     "f": 0
   },
+  "expectedOutcomes": [{
+    "b": 2,
+    "a": 3
+  }],
   "highLevelCode": [["<await (x == 0) x = 1;>\na=5;\n<await (y == 0) y = 1;>\na=3;\n<x = 0; y=0;>\n//\n<await (y == 0) y = 1;>\nb=7;\n<await (x == 0) x = 1;>\nb=2;\n<y = 0; x=0;>"]],
   "threadCode": [
-    ["ATOMIC", "AWAIT x EQ f", "LDI $R0 1", "ST $R0 x", "ENDATOMIC", "LDI $R0 5", "ST $R0 a", "ATOMIC", "AWAIT y EQ f", "LDI $R0 1", "ST $R0 y", "ENDATOMIC", "LDI $R0 3", "ST $R0 a", "ATOMIC", "LDI $R0 0", "ST $R0 x", "ST $R0 y"],
-    ["ATOMIC", "AWAIT y EQ f", "LDI $R0 1", "ST $R0 y", "ENDATOMIC", "LDI $R0 7", "ST $R0 b", "ATOMIC", "AWAIT x EQ f", "LDI $R0 1", "ST $R0 x", "ENDATOMIC", "LDI $R0 2", "ST $R0 b", "ATOMIC", "LDI $R0 0", "ST $R0 y", "ST $R0 x"]
+    ["ATOMIC", "AWAIT x EQ f", "LDI $R0 1", "ST $R0 x", "ENDATOMIC", "LDI $R0 5", "ST $R0 a", "ATOMIC", "AWAIT y EQ f", "LDI $R0 1", "ST $R0 y", "ENDATOMIC", "LDI $R0 3", "ST $R0 a", "ATOMIC", "LDI $R0 0", "ST $R0 x", "ST $R0 y", "ENDATOMIC"],
+    ["ATOMIC", "AWAIT y EQ f", "LDI $R0 1", "ST $R0 y", "ENDATOMIC", "LDI $R0 7", "ST $R0 b", "ATOMIC", "AWAIT x EQ f", "LDI $R0 1", "ST $R0 x", "ENDATOMIC", "LDI $R0 2", "ST $R0 b", "ATOMIC", "LDI $R0 0", "ST $R0 y", "ST $R0 x", "ENDATOMIC"]
   ]
 }

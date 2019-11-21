@@ -9,6 +9,12 @@
     "a": 2,
     "b": 3
   },
+  "expectedOutcomes": [
+    {
+      "x": 1,
+      "i": 4
+    }
+  ],
   "highLevelCode": [["<AWAIT (i==3;) x=2; i=4;>\n# do stuff\n//\n<AWAIT (i==2;) x=1; i=4;>\n# do stuff\n//\nwhile(i<3){\ni++;\n}"]],
   "threadCode": [
     ["ATOMIC", "AWAIT i EQ b", "LDI $R0 2", "ST $R0 x", "LDI $R0 4", "ST $R0 i", "ENDATOMIC"],

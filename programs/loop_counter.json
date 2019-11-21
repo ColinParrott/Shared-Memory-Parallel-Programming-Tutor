@@ -5,6 +5,9 @@
     "sequences": []
   },
   "initialMemory": {},
+  "expectedOutcomes": [{
+    "i": 2
+  }],
   "highLevelCode": [
     "i\u003di+1;",
     "//",

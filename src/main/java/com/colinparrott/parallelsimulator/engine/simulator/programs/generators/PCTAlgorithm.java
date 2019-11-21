@@ -145,7 +145,7 @@ public class PCTAlgorithm
             arr.add(r);
         }
 
-        System.out.println("Change points: " + arr);
+//        System.out.println("Change points: " + arr);
 
         return arr;
     }
