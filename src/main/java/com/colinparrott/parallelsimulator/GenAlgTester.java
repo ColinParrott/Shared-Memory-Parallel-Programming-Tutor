@@ -6,13 +6,11 @@ import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.P
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.algorithm.RoundRobinAlgorithm;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.GenMethod;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.askoutcome.ThreadSequenceGen;
-import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.old.Scorer;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.heuristics.old.ScoringUtils;
 import com.colinparrott.parallelsimulator.programs.ProgramFile;
 import com.colinparrott.parallelsimulator.programs.ProgramFileReader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class GenAlgTester {
@@ -29,7 +27,7 @@ public class GenAlgTester {
 
     public static void main(String[] args) {
         ArrayList<ProgramFile> pfs = getProgramsWithExpectedOutcomesAvailabe(Objects.requireNonNull(ProgramFileReader.readProgramFiles()));
-        int steps = 20;
+        int steps = 40;
         int sequencesToGenerate = 1000;
         ratePCT(pfs, steps, sequencesToGenerate);
         rateOldAlgorithms(pfs, steps, sequencesToGenerate);
@@ -60,7 +58,7 @@ public class GenAlgTester {
             total += percentage;
         }
 
-        System.out.println(String.format("Round Robin (%s) : %.5f", checkForComplete, total / pfs.size()));
+        System.out.println(String.format("Round Robin (%s) : %.0f / %d", checkForComplete, total, pfs.size() * sequencesToGenerate));
     }
     private static void rateOldAlgorithms(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate){
         for(GenMethod genMethod : GenMethod.values()){
@@ -77,7 +75,7 @@ public class GenAlgTester {
                 genMethodTotal += percentage;
             }
 
-            System.out.println(String.format("%s: %.5f", genMethod, genMethodTotal / pfs.size()));
+            System.out.println(String.format("%s: %.0f / %d", genMethod, genMethodTotal, pfs.size() * sequencesToGenerate));
         }
     }
     private static void ratePCT(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate){
@@ -101,7 +99,7 @@ public class GenAlgTester {
                 total += percentage;
             }
 
-            System.out.println(String.format("Depth %d: %.5f", depth, total / pfs.size()));
+            System.out.println(String.format("Depth %d: %.0f / %d", depth, total, pfs.size() * sequencesToGenerate));
         }
     }
 }

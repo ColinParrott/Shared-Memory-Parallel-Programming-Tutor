@@ -13,13 +13,7 @@ public class ScoringUtils
     public static double scoreSequences(ProgramFile pf, ArrayList<int[]> sequences)
     {
         ArrayList<Memory> outcomes = new ArrayList<>();
-        ArrayList<Memory> expectedOutcomes = new ArrayList<>();
-
-        // Populate expected outcomes into list of type Memory
-        for (int i = 0; i < pf.getExpectedOutcomes().size(); i++)
-        {
-            expectedOutcomes.add(pf.getExpectedOutcomes().get(i));
-        }
+        ArrayList<Memory> expectedOutcomes = pf.getExpectedOutcomes();
 
         int numSequencesThatAvoidExpectedOutcomes = 0;
 
@@ -39,16 +33,16 @@ public class ScoringUtils
         }
 
         // Return percentage of sequences that avoided all expected outcomes
-        return (double) numSequencesThatAvoidExpectedOutcomes / sequences.size();
-
+//        return (double) numSequencesThatAvoidExpectedOutcomes / sequences.size();
+        return numSequencesThatAvoidExpectedOutcomes;
     }
 
 
-    private static boolean outcomeAvoidsExpectedOutcomes(ArrayList<Memory> expectedOutcomes, Memory generatedOutcome)
+    public static boolean outcomeAvoidsExpectedOutcomes(ArrayList<Memory> expectedOutcomes, Memory generatedOutcome)
     {
         for (Memory expected : expectedOutcomes)
         {
-            if (!memoryStatesEqual(expected, generatedOutcome))
+            if (memoryStatesEqual(expected, generatedOutcome))
             {
                 return false;
             }
@@ -56,7 +50,7 @@ public class ScoringUtils
         return true;
     }
 
-    private static boolean memoryStatesEqual(Memory a, Memory b)
+    public static boolean memoryStatesEqual(Memory a, Memory b)
     {
         for (MemoryLocation var : a.getVariables().keySet())
         {
