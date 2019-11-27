@@ -95,6 +95,7 @@ public class ProgramFileReader {
         String[][] assemblyCodeLines = readNestedStringArray(root, "threadCode");
 
         ArrayList<Memory> expectedOutcomes = new ArrayList<>();
+        ArrayList<ArrayList<MemoryLocation>> outcomeVariables = new ArrayList<>();
 
         //TODO: finish
         if (root.has("expectedOutcomes"))
@@ -103,19 +104,22 @@ public class ProgramFileReader {
 
             for(JsonElement e : outcomesArray){
                 Memory memory = new Memory();
+                ArrayList<MemoryLocation> vars = new ArrayList<>();
                 JsonObject memoryDict = e.getAsJsonObject();
 
                 for(String s : memoryDict.keySet()){
                     MemoryLocation location = MemoryLocation.valueOf(s);
                     int value = memoryDict.get(s).getAsInt();
                     memory.setVariable(location, value);
+                    vars.add(location);
                 }
 
+                outcomeVariables.add(vars);
                 expectedOutcomes.add(memory);
             }
         }
 
-        return new ProgramFile(name, initialMemory, highLevelCode, assemblyCodeLines, desiredSequences, sequences, expectedOutcomes);
+        return new ProgramFile(name, initialMemory, highLevelCode, assemblyCodeLines, desiredSequences, sequences, expectedOutcomes, outcomeVariables);
 
     }
 

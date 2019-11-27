@@ -4,6 +4,8 @@ import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenerationSim;
 import com.colinparrott.parallelsimulator.programs.ProgramFile;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 
@@ -37,6 +39,33 @@ public class ScoringUtils
         return numSequencesThatAvoidExpectedOutcomes;
     }
 
+    public static ImmutablePair<Integer, ArrayList<Memory>> scoreSequencesReturnOutcomes(ProgramFile pf, ArrayList<int[]> sequences)
+    {
+        ArrayList<Memory> outcomes = new ArrayList<>();
+        ArrayList<Memory> expectedOutcomes = pf.getExpectedOutcomes();
+
+        int numSequencesThatAvoidExpectedOutcomes = 0;
+
+        for (int[] seq : sequences)
+        {
+            GenerationSim sim = new GenerationSim();
+            sim.simSequence(pf.generateProgram(), seq);
+            outcomes.add(sim.getMachine().getMemory());
+        }
+
+        for (Memory outcome : outcomes)
+        {
+            if (outcomeAvoidsExpectedOutcomesNew(pf, outcome))
+            {
+                numSequencesThatAvoidExpectedOutcomes++;
+            }
+        }
+
+        // Return percentage of sequences that avoided all expected outcomes
+//        return (double) numSequencesThatAvoidExpectedOutcomes / sequences.size();
+        return new ImmutablePair<>(numSequencesThatAvoidExpectedOutcomes, outcomes);
+    }
+
 
     public static boolean outcomeAvoidsExpectedOutcomes(ArrayList<Memory> expectedOutcomes, Memory generatedOutcome)
     {
@@ -47,6 +76,37 @@ public class ScoringUtils
                 return false;
             }
         }
+        return true;
+    }
+
+    public static boolean outcomeAvoidsExpectedOutcomesNew(ProgramFile pf, Memory generatedOutcome)
+    {
+//        for (Memory expected : pf.getExpectedOutcomes())
+//        {
+//            if (memoryStatesEqualSelectVariables(pf.getOutcomeVariables(), expected, generatedOutcome))
+//                return false;
+//        }
+        for (int i = 0; i < pf.getExpectedOutcomes().size(); i++)
+        {
+            if (memoryStatesEqualSelectVariables(pf.getOutcomeVariables().get(i), pf.getExpectedOutcomes().get(i), generatedOutcome))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean memoryStatesEqualSelectVariables(ArrayList<MemoryLocation> locations, Memory a, Memory b)
+    {
+        for (MemoryLocation var : locations)
+        {
+            if (a.getValue(var) != b.getValue(var))
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
