@@ -34,12 +34,26 @@ public class GenAlgTester
     {
         ArrayList<ProgramFile> pfs = getProgramsWithExpectedOutcomesAvailabe(Objects.requireNonNull(ProgramFileReader.readProgramFiles()));
         int steps = 40;
-        int sequencesToGenerate = 1000;
+        int sequencesToGenerate = 100;
 //        rateProbMostStoresStatic(pfs, steps, 1);
+//        ratePCT(pfs, steps, sequencesToGenerate);
+//        rateOldAlgorithms(pfs, steps, sequencesToGenerate);
+//        rateRR(pfs, steps, sequencesToGenerate, true);
+//        rateRR(pfs, steps, sequencesToGenerate, false);
+        for(ProgramFile pf : pfs){
+            ratePerProgram(pf, steps ,sequencesToGenerate);
+        }
+    }
+
+    private static void ratePerProgram(ProgramFile pf, int steps, int sequencesToGenerate){
+        System.out.println("--------------- " + pf.getName() +" ---------------");
+        ArrayList<ProgramFile> pfs = new ArrayList<>();
+        pfs.add(pf);
         ratePCT(pfs, steps, sequencesToGenerate);
         rateOldAlgorithms(pfs, steps, sequencesToGenerate);
         rateRR(pfs, steps, sequencesToGenerate, true);
         rateRR(pfs, steps, sequencesToGenerate, false);
+        System.out.println("----------------------------------------------------\n");
     }
 
     private static void rateProbMostStoresStatic(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate)
