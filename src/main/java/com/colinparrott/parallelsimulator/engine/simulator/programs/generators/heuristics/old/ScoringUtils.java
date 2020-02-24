@@ -2,10 +2,10 @@ package com.colinparrott.parallelsimulator.engine.simulator.programs.generators.
 
 import com.colinparrott.parallelsimulator.engine.hardware.Memory;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
+import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.generators.GenerationSim;
 import com.colinparrott.parallelsimulator.programs.ProgramFile;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class ScoringUtils
         return numSequencesThatAvoidExpectedOutcomes;
     }
 
-    public static ImmutablePair<Integer, ArrayList<Memory>> scoreSequencesReturnOutcomes(ProgramFile pf, ArrayList<int[]> sequences)
+    public static ImmutablePair<Integer, ArrayList<Memory>> scoreSequencesReturnOutcomes(ProgramFile pf, ArrayList<int[]> sequences, boolean countOnlyCompletedPrograms)
     {
         ArrayList<Memory> outcomes = new ArrayList<>();
         ArrayList<Memory> expectedOutcomes = pf.getExpectedOutcomes();
@@ -48,10 +48,31 @@ public class ScoringUtils
 
         for (int[] seq : sequences)
         {
+            Program p = pf.generateProgram();
             GenerationSim sim = new GenerationSim();
-            sim.simSequence(pf.generateProgram(), seq);
-            outcomes.add(sim.getMachine().getMemory());
+            sim.simSequence(p, seq);
+
+            // Only count outcome if all threads were completed (and boolean was set for this option)
+            if(countOnlyCompletedPrograms)
+            {
+                boolean allThreadsCompleted = true;
+                for(int id : p.getUsedThreadIDs()){
+                    if (sim.getMachine().getThread(id).getNextInstruction() != null){
+                        allThreadsCompleted = false;
+                        break;
+                    }
+                }
+
+                if (allThreadsCompleted)
+                    outcomes.add(sim.getMachine().getMemory());
+            }
+            else
+            {
+                outcomes.add(sim.getMachine().getMemory());
+            }
+
         }
+
 
         for (Memory outcome : outcomes)
         {

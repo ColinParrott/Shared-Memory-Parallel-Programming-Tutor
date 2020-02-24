@@ -18,7 +18,7 @@ import java.util.Objects;
 public class GenAlgTester
 {
 
-    private static ArrayList<ProgramFile> getProgramsWithExpectedOutcomesAvailabe(ArrayList<ProgramFile> programFiles)
+    private static ArrayList<ProgramFile> getProgramsWithExpectedOutcomesAvailable(ArrayList<ProgramFile> programFiles)
     {
         ArrayList<ProgramFile> result = new ArrayList<>();
         for (ProgramFile pf : programFiles)
@@ -32,31 +32,31 @@ public class GenAlgTester
 
     public static void main(String[] args)
     {
-        ArrayList<ProgramFile> pfs = getProgramsWithExpectedOutcomesAvailabe(Objects.requireNonNull(ProgramFileReader.readProgramFiles()));
+        ArrayList<ProgramFile> pfs = getProgramsWithExpectedOutcomesAvailable(Objects.requireNonNull(ProgramFileReader.readProgramFiles()));
         int steps = 40;
-        int sequencesToGenerate = 100;
+        int sequencesToGenerate = 1000;
 //        rateProbMostStoresStatic(pfs, steps, 1);
 //        ratePCT(pfs, steps, sequencesToGenerate);
 //        rateOldAlgorithms(pfs, steps, sequencesToGenerate);
 //        rateRR(pfs, steps, sequencesToGenerate, true);
 //        rateRR(pfs, steps, sequencesToGenerate, false);
         for(ProgramFile pf : pfs){
-            ratePerProgram(pf, steps ,sequencesToGenerate);
+            ratePerProgram(pf, steps ,sequencesToGenerate, false);
         }
     }
 
-    private static void ratePerProgram(ProgramFile pf, int steps, int sequencesToGenerate){
+    private static void ratePerProgram(ProgramFile pf, int steps, int sequencesToGenerate, boolean onlyCountComplete){
         System.out.println("--------------- " + pf.getName() +" ---------------");
         ArrayList<ProgramFile> pfs = new ArrayList<>();
         pfs.add(pf);
-        ratePCT(pfs, steps, sequencesToGenerate);
-        rateOldAlgorithms(pfs, steps, sequencesToGenerate);
-        rateRR(pfs, steps, sequencesToGenerate, true);
-        rateRR(pfs, steps, sequencesToGenerate, false);
+        ratePCT(pfs, steps, sequencesToGenerate, onlyCountComplete);
+        rateOldAlgorithms(pfs, steps, sequencesToGenerate, onlyCountComplete);
+        rateRR(pfs, steps, sequencesToGenerate, true, onlyCountComplete);
+        rateRR(pfs, steps, sequencesToGenerate, false, onlyCountComplete);
         System.out.println("----------------------------------------------------\n");
     }
 
-    private static void rateProbMostStoresStatic(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate)
+    private static void rateProbMostStoresStatic(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate, boolean onlyCountComplete)
     {
         double total = 0.0;
 
@@ -75,7 +75,7 @@ public class GenAlgTester
                 programSequences.add(seq);
             }
 
-            ImmutablePair<Integer, ArrayList<Memory>> resultPair = ScoringUtils.scoreSequencesReturnOutcomes(pf, programSequences);
+            ImmutablePair<Integer, ArrayList<Memory>> resultPair = ScoringUtils.scoreSequencesReturnOutcomes(pf, programSequences, false);
             int avoidsExpectedCount = resultPair.getLeft();
             ArrayList<Memory> outcomes = resultPair.getRight();
 
@@ -93,7 +93,7 @@ public class GenAlgTester
 
     }
 
-    private static void rateRR(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate, boolean checkForComplete)
+    private static void rateRR(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate, boolean checkForComplete, boolean onlyCountComplete)
     {
         double total = 0.0;
         for (ProgramFile pf : pfs)
@@ -114,7 +114,7 @@ public class GenAlgTester
                 programSequences.add(seq.stream().mapToInt(x -> x).toArray());
             }
 
-            ImmutablePair<Integer, ArrayList<Memory>> resultPair = ScoringUtils.scoreSequencesReturnOutcomes(pf, programSequences);
+            ImmutablePair<Integer, ArrayList<Memory>> resultPair = ScoringUtils.scoreSequencesReturnOutcomes(pf, programSequences, onlyCountComplete);
             int avoidsExpectedCount = resultPair.getLeft();
             ArrayList<Memory> outcomes = resultPair.getRight();
             total +=avoidsExpectedCount;
@@ -123,7 +123,7 @@ public class GenAlgTester
         System.out.println(String.format("Round Robin (%s) : %.0f / %d", checkForComplete, total, pfs.size() * sequencesToGenerate));
     }
 
-    private static void rateOldAlgorithms(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate)
+    private static void rateOldAlgorithms(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate, boolean onlyCountComplete)
     {
         for (GenMethod genMethod : GenMethod.values())
         {
@@ -138,7 +138,7 @@ public class GenAlgTester
                     programSequences.add(seq);
                 }
 
-                ImmutablePair<Integer, ArrayList<Memory>> resultPair = ScoringUtils.scoreSequencesReturnOutcomes(pf, programSequences);
+                ImmutablePair<Integer, ArrayList<Memory>> resultPair = ScoringUtils.scoreSequencesReturnOutcomes(pf, programSequences, onlyCountComplete);
                 int avoidsExpectedCount = resultPair.getLeft();
                 ArrayList<Memory> outcomes = resultPair.getRight();
 
@@ -150,7 +150,7 @@ public class GenAlgTester
         }
     }
 
-    private static void ratePCT(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate)
+    private static void ratePCT(ArrayList<ProgramFile> pfs, int steps, int sequencesToGenerate, boolean onlyCountComplete)
     {
         for (int depth = 1; depth <= 10; depth++)
         {
@@ -172,7 +172,7 @@ public class GenAlgTester
                     sequences.add(seq.stream().mapToInt(x -> x).toArray());
                 }
 
-                ImmutablePair<Integer, ArrayList<Memory>> resultPair = ScoringUtils.scoreSequencesReturnOutcomes(programFile, sequences);
+                ImmutablePair<Integer, ArrayList<Memory>> resultPair = ScoringUtils.scoreSequencesReturnOutcomes(programFile, sequences, onlyCountComplete);
                 int avoidsExpectedCount = resultPair.getLeft();
                 ArrayList<Memory> outcomes = resultPair.getRight();
                 total += avoidsExpectedCount;

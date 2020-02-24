@@ -49,7 +49,7 @@ public class CompilerGUIController implements Initializable
     private SingleProgramCompiler compiler;
     private Stack<Integer> lineSizes;
 
-    void showWindow()
+    public void showWindow()
     {
         Parent root;
         try

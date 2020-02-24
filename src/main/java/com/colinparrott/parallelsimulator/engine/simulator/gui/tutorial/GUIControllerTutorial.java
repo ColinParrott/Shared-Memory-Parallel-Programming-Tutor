@@ -1,10 +1,12 @@
-package com.colinparrott.parallelsimulator.engine.simulator.gui;
+package com.colinparrott.parallelsimulator.engine.simulator.gui.tutorial;
 
 import com.colinparrott.parallelsimulator.engine.hardware.Machine;
 import com.colinparrott.parallelsimulator.engine.hardware.MemoryLocation;
 import com.colinparrott.parallelsimulator.engine.hardware.SimulatorThread;
 import com.colinparrott.parallelsimulator.engine.instructions.*;
 import com.colinparrott.parallelsimulator.engine.simulator.Simulator;
+import com.colinparrott.parallelsimulator.engine.simulator.gui.CompilerGUIController;
+import com.colinparrott.parallelsimulator.engine.simulator.gui.LabelValue;
 import com.colinparrott.parallelsimulator.engine.simulator.gui.anim.TableViewAnimator;
 import com.colinparrott.parallelsimulator.engine.simulator.gui.controls.JFXHistoryButton;
 import com.colinparrott.parallelsimulator.engine.simulator.programs.Program;
@@ -26,6 +28,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.*;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -42,7 +45,8 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class GUIController implements Initializable {
+@SuppressWarnings("Duplicates")
+public class GUIControllerTutorial implements Initializable {
 
     @FXML
     public JFXButton btnAddProgramWindow;
@@ -175,7 +179,7 @@ public class GUIController implements Initializable {
     private ListView<String>[] threadListViews;
     private ArrayList<LabelValue[]> threadRegisters;
     private TableViewAnimator tableViewAnimator;
-    private static final Logger logger = LoggerFactory.getLogger(GUIController.class);
+    private static final Logger logger = LoggerFactory.getLogger(GUIControllerTutorial.class);
 
     private ArrayList<Program> programs;
 
@@ -196,11 +200,28 @@ public class GUIController implements Initializable {
     private String hintString = "";
     private String allowedThreadIDs = "";
 
+//    @FXML
+//    private HBox dialogCodePanel1;
+
     enum GameMode
     {
         OUTCOME, SEQUENCE
     }
 
+
+    private void disableAllButtons(){
+        btnBackward.setDisable(true);
+        btnForward.setDisable(true);
+        btnLoad.setDisable(true);
+        btnQuestion.setDisable(true);
+        btnReset.setDisable(true);
+        btnAddProgramWindow.setDisable(true);
+        historyNodes.setDisable(true);
+        tableRegisters.setEffect(new GaussianBlur(5));
+        tableMemory.setEffect(new GaussianBlur(5));
+//        dialogCodePanel1.setVisible(false);
+
+    }
 
     public void init() {
         System.out.println("initialise");
@@ -956,7 +977,7 @@ public class GUIController implements Initializable {
         tableRegisters.refresh();
     }
 
-    void create(Simulator simulator, Stage window, Program program, boolean tutorialMode) {
+    public void create(Simulator simulator, Stage window, Program program, boolean tutorialMode) {
         this.mainWindow = window;
         this.tutorialMode = tutorialMode;
 
@@ -1058,7 +1079,7 @@ public class GUIController implements Initializable {
             programSelectorWindow.show();
         });
 
-
+        disableAllButtons();
     }
 
     private void reset(Program p){
