@@ -40,10 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @SuppressWarnings("Duplicates")
 public class GUIControllerTutorial implements Initializable {
@@ -52,164 +49,177 @@ public class GUIControllerTutorial implements Initializable {
     public JFXButton btnAddProgramWindow;
 
     @FXML
-    private AnchorPane rootPane;
+    public AnchorPane rootPane;
 
     @FXML
-    private AnchorPane selectorAnchor;
+    public AnchorPane selectorAnchor;
 
     @FXML
-    private AnchorPane programAdderAnchor;
+    public AnchorPane programAdderAnchor;
 
     @FXML
-    private ListView<String> programList;
+    public ListView<String> programList;
 
     @FXML
-    private ListView<String> threadOneList;
+    public ListView<String> threadOneList;
 
     @FXML
-    private ListView<String> threadTwoList;
+    public ListView<String> threadTwoList;
 
     @FXML
-    private ListView<String> threadThreeList;
+    public ListView<String> threadThreeList;
 
     @FXML
-    private ListView<String> threadFourList;
+    public ListView<String> threadFourList;
 
     @FXML
-    private ListView<String> codeList;
+    public ListView<String> codeList;
 
     @FXML
-    private Button btnForward;
+    public Button btnForward;
 
     @FXML
-    private Button btnBackward;
+    public Button btnBackward;
 
     @FXML
-    private HBox historyBox;
+    public HBox historyBox;
 
     @FXML
-    private HBox gameBox;
+    public HBox gameBox;
 
     @FXML
-    private HBox gameBox2;
+    public HBox gameBox2;
 
     @FXML
-    private Label lblChallengeOutcome;
+    public Label lblChallengeOutcome;
 
     @FXML
-    private Label lblCorrectOutcome;
+    public Label lblCorrectOutcome;
 
     @FXML
-    private JFXTextField challengeInputFieldSequence;
+    public JFXTextField challengeInputFieldSequence;
 
     @FXML
-    private JFXButton btnSubmitOutcome;
+    public JFXButton btnSubmitOutcome;
 
     @FXML
-    private JFXButton btnShowAnswerOutcome;
+    public JFXButton btnShowAnswerOutcome;
 
     @FXML
-    private JFXButton btnExploreMode2;
+    public JFXButton btnExploreMode2;
 
     @FXML
-    private Label lblChallengeSequence;
+    public Label lblChallengeSequence;
 
     @FXML
-    private Label lblChallengeQuestion;
+    public Label lblChallengeQuestion;
 
     @FXML
-    private Label lblCorrect;
+    public Label lblCorrect;
 
     @FXML
-    private JFXTextField challengeInputField;
+    public JFXTextField challengeInputField;
 
     @FXML
-    private JFXButton btnSubmit;
+    public JFXButton btnSubmit;
 
     @FXML
-    private JFXButton btnExploreMode;
+    public JFXButton btnExploreMode;
 
     @FXML
-    private JFXButton btnShowAnswer;
+    public JFXButton btnShowAnswer;
 
     @FXML
-    private Button btnLoad;
+    public Button btnLoad;
 
     @FXML
-    private Button btnQuestion;
+    public Button btnQuestion;
 
     @FXML
-    private Button btnReset;
+    public Button btnReset;
 
     @FXML
-    private JFXTabPane threadTabPane;
+    public JFXTabPane threadTabPane;
 
     @FXML
-    private JFXNodesList historyNodes;
+    public JFXNodesList historyNodes;
 
     @FXML
-    private TableColumn tableRegisterValue;
+    public TableColumn tableRegisterValue;
 
     @FXML
-    private TableView<LabelValue> tableRegisters;
+    public TableView<LabelValue> tableRegisters;
 
     @FXML
-    private TableView<LabelValue> tableMemory;
+    public TableView<LabelValue> tableMemory;
 
 
     @FXML
-    private Label titleLabel;
+    public Label titleLabel;
 
     @FXML
-    private Label registersTitle;
+    public Label registersTitle;
 
     @FXML
-    private Label memoryTitle;
+    public Label memoryTitle;
 
     @FXML
-    private HBox modeBox;
+    public HBox modeBox;
 
     @FXML
-    private JFXToggleButton modeToggle;
+    public JFXToggleButton modeToggle;
 
-    private JFXSnackbar snackbar;
 
-    private Simulator simulator;
+    @FXML
+    public Label lblToggleGuessOutcome;
+
+    @FXML
+    public Label lblToggleGuessSequence;
+
+    public JFXSnackbar snackbar;
+
+    public Simulator simulator;
+
     ArrayList<Tab> tabs;
-    private ListView<String>[] threadListViews;
-    private ArrayList<LabelValue[]> threadRegisters;
-    private TableViewAnimator tableViewAnimator;
-    private static final Logger logger = LoggerFactory.getLogger(GUIControllerTutorial.class);
+    public ListView<String>[] threadListViews;
+    public ArrayList<LabelValue[]> threadRegisters;
+    public TableViewAnimator tableViewAnimator;
+    public static final Logger logger = LoggerFactory.getLogger(GUIControllerTutorial.class);
 
-    private ArrayList<Program> programs;
+    public ArrayList<Program> programs;
 
-    private Stage mainWindow;
-    private Stage programSelectorWindow;
-    private Stage programAdderWindow;
+    public Stage mainWindow;
+    public Stage programSelectorWindow;
+    public Stage programAdderWindow;
 
-    private MemoryLocation chosenVariable;
-    private int chosenOutcome;
-    private int correctAnswer;
-    private int[] correctAnswerSequence;
-    private boolean tutorialMode;
+    public MemoryLocation chosenVariable;
+    public int chosenOutcome;
+    public int correctAnswer;
+    public int[] correctAnswerSequence;
+    public boolean tutorialMode;
 
     @FXML
-    private JFXButton btnHint;
+    public JFXButton btnHint;
 
-    private GameMode gameMode;
-    private String hintString = "";
-    private String allowedThreadIDs = "";
+    public GameMode gameMode;
+    public String hintString = "";
+    public String allowedThreadIDs = "";
 
-//    @FXML
-//    private HBox dialogCodePanel1;
+    public static PopupController popupController;
+    public static GUIControllerTutorial guiController;
 
-    enum GameMode
-    {
+    public boolean btnForwardAllowed, btnBackwardAllowed, btnLoadAllowed, btnQuestionAllowed, btnResetAllowed, btnAddProgramWindowAllowed, historyNodesAllowed = false;
+
+    enum GameMode {
         OUTCOME, SEQUENCE
     }
 
 
-    private void disableAllButtons(){
+    public static GUIControllerTutorial getInstance() {
+        return guiController;
+    }
+
+    public void disableAllButtons() {
         btnBackward.setDisable(true);
         btnForward.setDisable(true);
         btnLoad.setDisable(true);
@@ -219,12 +229,29 @@ public class GUIControllerTutorial implements Initializable {
         historyNodes.setDisable(true);
         tableRegisters.setEffect(new GaussianBlur(5));
         tableMemory.setEffect(new GaussianBlur(5));
+        historyBox.setEffect(new GaussianBlur(10));
+//        dialogCodePanel1.setVisible(false);
+
+    }
+
+    public void enableAllButtons() {
+        btnBackward.setDisable(false);
+        btnForward.setDisable(false);
+        btnLoad.setDisable(false);
+        btnQuestion.setDisable(false);
+        btnReset.setDisable(false);
+        btnAddProgramWindow.setDisable(false);
+        historyNodes.setDisable(false);
+        tableRegisters.setEffect(null);
+        tableMemory.setEffect(null);
+        historyBox.setEffect(null);
 //        dialogCodePanel1.setVisible(false);
 
     }
 
     public void init() {
         System.out.println("initialise");
+        popupController = Objects.requireNonNull(PopupController.getInstance());
         tableViewAnimator = new TableViewAnimator();
         snackbar = new JFXSnackbar(rootPane);
 
@@ -234,20 +261,15 @@ public class GUIControllerTutorial implements Initializable {
 
         btnBackward.setDisable(true);
 
-        btnReset.setOnAction(e -> {
-            rewindSimulator(0);
-        });
+        btnReset.setOnAction(e -> rewindSimulator(0));
 
         btnHint.setOnAction(event -> {
-            if (gameMode == GameMode.SEQUENCE)
-            {
-                if (hintString.length() < correctAnswerSequence.length)
-                {
+            if (gameMode == GameMode.SEQUENCE) {
+                if (hintString.length() < correctAnswerSequence.length) {
                     hintString = hintString + correctAnswerSequence[hintString.length()];
                     challengeInputFieldSequence.setText(hintString);
 
-                    if (hintString.length() == correctAnswerSequence.length)
-                    {
+                    if (hintString.length() == correctAnswerSequence.length) {
                         onCorrectOutcome();
                     }
                 }
@@ -255,6 +277,7 @@ public class GUIControllerTutorial implements Initializable {
         });
 
         JFXHistoryButton historyNodeButton = new JFXHistoryButton("[]", 0);
+        historyNodeButton.setFocusTraversable(false);
 //        historyNodeButton.setTooltip(new Tooltip("Reset to initial program state"));
         historyNodeButton.setStyle("-fx-font-size: 20px");
         historyNodeButton.setOnAction(event -> {
@@ -304,42 +327,31 @@ public class GUIControllerTutorial implements Initializable {
         });
 
 
-        challengeInputField.textProperty().addListener(new ChangeListener<String>()
-        {
+        challengeInputField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue)
-            {
-                if (newValue.length() > 9)
-                {
+                                String newValue) {
+                if (newValue.length() > 9) {
                     challengeInputField.setText(newValue.substring(0, 9));
-                }
-                else if (!newValue.matches("\\d*"))
-                {
+                } else if (!newValue.matches("\\d*")) {
                     challengeInputField.setText(newValue.replaceAll("[^\\d]", ""));
                 }
             }
         });
 
-        challengeInputFieldSequence.textProperty().addListener(new ChangeListener<String>()
-        {
+        challengeInputFieldSequence.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue)
-            {
+                                String newValue) {
                 System.out.println(newValue);
-                if (newValue.length() > 15)
-                {
+                if (newValue.length() > 15) {
                     challengeInputFieldSequence.setText(newValue.substring(0, 15));
-                }
-                else if (!newValue.matches(String.format("[%s]*", allowedThreadIDs)))
-                {
+                } else if (!newValue.matches(String.format("[%s]*", allowedThreadIDs))) {
                     System.out.println("shit");
                     challengeInputFieldSequence.setText(newValue.replaceAll(String.format("[^%s]", allowedThreadIDs), ""));
                 }
 
-                if (challengeInputFieldSequence.getLength() < hintString.length())
-                {
+                if (challengeInputFieldSequence.getLength() < hintString.length()) {
                     challengeInputFieldSequence.setText(hintString);
                 }
             }
@@ -381,28 +393,27 @@ public class GUIControllerTutorial implements Initializable {
             gameBox.setVisible(true);
             modeBox.setVisible(true);
             beginChallengeMode();
+            popupController.challengeModePressed();
         });
 
+        modeToggle.setFocusTraversable(false);
         modeToggle.selectedProperty().addListener(((observable, oldValue, newValue) -> {
 
+            popupController.togglePressed();
             // guess outcome
-            if (newValue == false)
-            {
+            if (newValue == false) {
                 rewindSimulator(0);
                 boolean switchedModes = gameBox2.isVisible();
 
 
                 // Only show guess outcome mode if switched from guess sequence mode (rather than when trying to going back to explore mode button which resets toggle to false)
-                if (switchedModes)
-                {
+                if (switchedModes) {
                     gameBox2.setVisible(false);
                     gameBox.setVisible(true);
                     beginChallengeMode();
                 }
 
-            }
-            else
-            {
+            } else {
                 System.out.println("hi");
                 rewindSimulator(0);
                 gameBox.setVisible(false);
@@ -435,8 +446,7 @@ public class GUIControllerTutorial implements Initializable {
         });
 
         btnShowAnswer.setOnAction(event -> {
-            if (btnShowAnswer.getText().equals("Show Answer"))
-            {
+            if (btnShowAnswer.getText().equals("Show Answer")) {
                 challengeInputField.setEditable(false);
                 challengeInputField.setText("" + correctAnswer);
                 lblChallengeQuestion.setText("The value of " + chosenVariable + " would be:");
@@ -444,17 +454,14 @@ public class GUIControllerTutorial implements Initializable {
                 lblCorrect.setText("");
                 btnSubmit.setVisible(false);
                 btnShowAnswer.setText("New Challenge");
-            }
-            else
-            {
+            } else {
                 beginChallengeMode();
             }
 
         });
 
         btnShowAnswerOutcome.setOnAction(event -> {
-            if (btnShowAnswerOutcome.getText().equals("Show Answer"))
-            {
+            if (btnShowAnswerOutcome.getText().equals("Show Answer")) {
                 challengeInputFieldSequence.setEditable(false);
 
                 StringBuilder answer = new StringBuilder();
@@ -465,9 +472,7 @@ public class GUIControllerTutorial implements Initializable {
                 lblCorrectOutcome.setText("");
                 btnSubmitOutcome.setVisible(false);
                 btnShowAnswerOutcome.setText("New Challenge");
-            }
-            else
-            {
+            } else {
                 beginChallengeModeGuessSequence();
             }
 
@@ -477,28 +482,23 @@ public class GUIControllerTutorial implements Initializable {
     }
 
     @FXML
-    private void onKeyPressed(KeyEvent ke)
-    {
-        if (ke.getCode() == KeyCode.RIGHT)
-        {
+    private void onKeyPressed(KeyEvent ke) {
+        popupController.onKeyPassedPass(ke);
+        if (ke.getCode() == KeyCode.RIGHT) {
             btnForward.fire();
-        }
-        else if (ke.getCode() == KeyCode.LEFT)
-        {
+        } else if (ke.getCode() == KeyCode.LEFT) {
             btnBackward.fire();
         }
     }
 
-    private void beginChallengeModeGuessSequence()
-    {
+    private void beginChallengeModeGuessSequence() {
 
         gameMode = GameMode.SEQUENCE;
         hintString = "";
         btnHint.setVisible(true);
 
         StringBuilder sb = new StringBuilder();
-        for (int i : simulator.getCurrentProgram().getUsedThreadIDs())
-        {
+        for (int i : simulator.getCurrentProgram().getUsedThreadIDs()) {
             sb.append(i);
         }
         allowedThreadIDs = sb.toString();
@@ -535,16 +535,14 @@ public class GUIControllerTutorial implements Initializable {
         System.out.println("CHOSEN VALUE: " + chosenOutcome);
 
         btnSubmitOutcome.setOnAction(event -> {
-            if (challengeInputFieldSequence.getText() != null && challengeInputFieldSequence.getText().length() > 0)
-            {
+            if (challengeInputFieldSequence.getText() != null && challengeInputFieldSequence.getText().length() > 0) {
                 String input = challengeInputFieldSequence.getText().replaceAll("\\s+", "");
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i : chosenSeq) stringBuilder.append(i);
                 String answer = stringBuilder.toString().trim();
                 int[] seqAnswer = new int[input.length()];
 
-                for (int i = 0; i < input.length(); i++)
-                {
+                for (int i = 0; i < input.length(); i++) {
                     seqAnswer[i] = Integer.valueOf(String.valueOf(input.charAt(i)));
                 }
 
@@ -552,14 +550,11 @@ public class GUIControllerTutorial implements Initializable {
 
                 System.out.println("CALCULATED OUTCOME: " + calculatedOutcome);
 
-                if (input.equals(answer) || chosenOutcome == calculatedOutcome)
-                {
+                if (input.equals(answer) || chosenOutcome == calculatedOutcome) {
                     System.out.println("correct!");
 
                     onCorrectOutcome();
-                }
-                else
-                {
+                } else {
                     System.out.println("incorrect!");
 
                     // Define the Durations
@@ -587,8 +582,7 @@ public class GUIControllerTutorial implements Initializable {
 
     }
 
-    private void beginChallengeMode()
-    {
+    private void beginChallengeMode() {
         gameMode = GameMode.OUTCOME;
 
         ProgramFile programFile = simulator.getCurrentProgram().getProgramFile();
@@ -620,18 +614,14 @@ public class GUIControllerTutorial implements Initializable {
         correctAnswer = OutcomeCalculator.calculateVariableOutcome(chosenVariable, chosenSeq, simulator.getCurrentProgram().getInitialMemory(), simulator.getCurrentProgram());
         btnSubmit.setOnAction(event -> {
 
-            if (challengeInputField.getText() != null && challengeInputField.getText().length() > 0)
-            {
+            if (challengeInputField.getText() != null && challengeInputField.getText().length() > 0) {
                 int input = Integer.valueOf(challengeInputField.getText());
 
-                if (input == correctAnswer)
-                {
+                if (input == correctAnswer) {
                     System.out.println("correct!");
 
                     onCorrect();
-                }
-                else
-                {
+                } else {
                     System.out.println("incorrect!");
 
                     // Define the Durations
@@ -656,16 +646,14 @@ public class GUIControllerTutorial implements Initializable {
                 }
             }
             // INPUT EMPTY
-            else
-            {
+            else {
 
             }
 
         });
     }
 
-    private void onCorrect()
-    {
+    private void onCorrect() {
         lblCorrect.setText("Correct!");
         lblCorrect.setStyle("-fx-text-fill: #008000");
         challengeInputField.getStylesheets().clear();
@@ -675,8 +663,7 @@ public class GUIControllerTutorial implements Initializable {
         btnShowAnswer.setText("New Challenge");
     }
 
-    private void onCorrectOutcome()
-    {
+    private void onCorrectOutcome() {
         lblCorrectOutcome.setText("Correct!");
         lblCorrectOutcome.setStyle("-fx-text-fill: #008000");
         challengeInputFieldSequence.getStylesheets().clear();
@@ -688,8 +675,7 @@ public class GUIControllerTutorial implements Initializable {
 
     }
 
-    private void onIncorrect()
-    {
+    private void onIncorrect() {
         lblCorrect.setText("Incorrect");
         lblCorrect.setStyle("-fx-text-fill: red");
         challengeInputField.getStylesheets().clear();
@@ -713,8 +699,7 @@ public class GUIControllerTutorial implements Initializable {
         timeline.play();
     }
 
-    private void onIncorrectOutcome()
-    {
+    private void onIncorrectOutcome() {
         lblCorrectOutcome.setText("Incorrect");
         lblCorrectOutcome.setStyle("-fx-text-fill: red");
         challengeInputFieldSequence.getStylesheets().clear();
@@ -738,8 +723,7 @@ public class GUIControllerTutorial implements Initializable {
         timeline.play();
     }
 
-    private void resetGuessStylesheet()
-    {
+    private void resetGuessStylesheet() {
         challengeInputField.getStylesheets().clear();
         challengeInputField.getStylesheets().add(getClass().getClassLoader().getResource("css/textfield.css").toExternalForm());
         challengeInputFieldSequence.getStylesheets().clear();
@@ -765,7 +749,7 @@ public class GUIControllerTutorial implements Initializable {
 
     private void rewindSimulator(int step) {
         logger.debug("rewindSimulator(" + step + ")");
-        if(simulator.getStepsTaken() > 0){
+        if (simulator.getStepsTaken() > 0) {
             int numToRewind = simulator.getStepsTaken() - step;
             for (int i = 0; i < numToRewind; i++) {
                 simulator.stepBackward();
@@ -776,7 +760,7 @@ public class GUIControllerTutorial implements Initializable {
             for (int i = 0; i < simulator.getCurrentProgram().getUsedThreadIDs().length; i++) {
                 System.out.println("thread id: " + i);
                 System.out.println(simulator.getMachine().getThread(i) == null);
-                if(simulator.getMachine().getThread(i).getNextInstruction() != null)
+                if (simulator.getMachine().getThread(i).getNextInstruction() != null)
                     highlightInstruction(i, simulator.getMachine().getThread(i).getInstructionPointer(), simulator.getMachine().getThread(i).getNextInstruction().getKeyword());
             }
         }
@@ -785,6 +769,7 @@ public class GUIControllerTutorial implements Initializable {
 
     private void addHistoryNodes(int id) {
         JFXHistoryButton historyNodeButton = new JFXHistoryButton(id + "", simulator.getStepsTaken());
+        historyNodeButton.setFocusTraversable(false);
         historyNodeButton.setOnAction(event -> {
             rewindSimulator(historyNodeButton.getMachineStep());
         });
@@ -858,24 +843,24 @@ public class GUIControllerTutorial implements Initializable {
         if (thread.getInstructionPointer() >= thread.getInstructionsList().size()) {
             btnForward.setDisable(true);
         } else if (btnForward.isDisabled()) {
-            btnForward.setDisable(false);
+            if (btnForwardAllowed)
+                btnForward.setDisable(false);
         }
 
         boolean canGoBackwards = false;
 
-        for(int i : simulator.getCurrentProgram().getUsedThreadIDs()){
-            if(simulator.getMachine().getThread(i).getInstructionPointer() > 0){
+        for (int i : simulator.getCurrentProgram().getUsedThreadIDs()) {
+            if (simulator.getMachine().getThread(i).getInstructionPointer() > 0) {
                 canGoBackwards = true;
                 break;
             }
         }
 
         System.out.println(historyNodes.getChildren().size());
-        if (canGoBackwards || historyNodes.getChildren().size() > 1)
-        {
-            btnBackward.setDisable(false);
-        }
-        else{
+        if (canGoBackwards || historyNodes.getChildren().size() > 1) {
+            if (btnBackwardAllowed)
+                btnBackward.setDisable(false);
+        } else {
             btnBackward.setDisable(true);
         }
 
@@ -923,9 +908,7 @@ public class GUIControllerTutorial implements Initializable {
                 } else if (instruction.getKeyword() == InstructionKeyword.LD) {
                     Load l = (Load) instruction;
                     variables.add(l.getMemoryLocation());
-                }
-                else if (instruction.getKeyword() == InstructionKeyword.AWAIT)
-                {
+                } else if (instruction.getKeyword() == InstructionKeyword.AWAIT) {
                     Await await = (Await) instruction;
                     variables.add(await.getFirstVariable());
                     variables.add(await.getSecondVariable());
@@ -983,19 +966,18 @@ public class GUIControllerTutorial implements Initializable {
 
         // Close program select window when main window closed
         this.mainWindow.setOnCloseRequest(e -> {
-            if(programSelectorWindow != null && programSelectorWindow.isShowing())
+            if (programSelectorWindow != null && programSelectorWindow.isShowing())
                 programSelectorWindow.close();
 
             if (programAdderWindow != null && programAdderWindow.isShowing())
                 programAdderWindow.close();
         });
-
+        guiController = this;
         init();
         programs = ProgramFileReader.readPrograms();
         Program tutProgram = null;
         for (Program p : programs) {
-            if(p.getName().equals("x++"))
-            {
+            if (p.getName().equals("x++")) {
                 tutProgram = p;
             }
             System.out.println(p.getName());
@@ -1003,13 +985,13 @@ public class GUIControllerTutorial implements Initializable {
 
 
         Program p;
-        if(program == null)
+        if (program == null)
             p = programs.get(0);
         else
             p = program;
 
         // If tutorial mode active set basic program to x++
-        if(tutorialMode)
+        if (tutorialMode)
             p = tutProgram;
 
         this.simulator = simulator;
@@ -1067,6 +1049,10 @@ public class GUIControllerTutorial implements Initializable {
             button.setOnAction(e -> {
 //                create(new InternalSimulator(), mainWindow, programs.get(list.getSelectionModel().getSelectedIndex()));
                 Program pro = programs.get(list.getSelectionModel().getSelectedIndex());
+
+                if (pro.getName().equals("<x++> (atomic version)"))
+                    popupController.loadedProgramForStage12();
+
                 simulator.loadProgram(pro);
                 reset(pro);
                 programSelectorWindow.close();
@@ -1082,22 +1068,20 @@ public class GUIControllerTutorial implements Initializable {
         disableAllButtons();
     }
 
-    private void reset(Program p){
+    private void reset(Program p) {
 
-        if(threadTabPane.getTabs().size() < p.getUsedThreadIDs().length + 1)
-        {
-            while(threadTabPane.getTabs().size() < p.getUsedThreadIDs().length + 1){
+        if (threadTabPane.getTabs().size() < p.getUsedThreadIDs().length + 1) {
+            while (threadTabPane.getTabs().size() < p.getUsedThreadIDs().length + 1) {
                 int lastIndex = threadTabPane.getTabs().size() - 1;
                 Tab codeTab = threadTabPane.getTabs().get(lastIndex);
                 threadTabPane.getTabs().remove(lastIndex);
                 threadTabPane.getTabs().add(tabs.get(lastIndex));
                 threadTabPane.getTabs().add(codeTab);
             }
-        }
-        else if(threadTabPane.getTabs().size() > p.getUsedThreadIDs().length + 1){
+        } else if (threadTabPane.getTabs().size() > p.getUsedThreadIDs().length + 1) {
             int lastIndex = threadTabPane.getTabs().size() - 1;
             Tab codeTab = threadTabPane.getTabs().get(lastIndex);
-            while(threadTabPane.getTabs().size() > p.getUsedThreadIDs().length){
+            while (threadTabPane.getTabs().size() > p.getUsedThreadIDs().length) {
                 threadTabPane.getTabs().remove(threadTabPane.getTabs().size() - 1);
             }
             threadTabPane.getTabs().add(codeTab);
@@ -1106,7 +1090,7 @@ public class GUIControllerTutorial implements Initializable {
         setInitialMemoryTable();
 
 
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             updateUIState(i);
         }
 
@@ -1115,7 +1099,7 @@ public class GUIControllerTutorial implements Initializable {
         initThreadLists(p);
 //        threadTabPane.getTabs().remove(p.getUsedThreadIDs().length + 1, p.getu);
 
-        for(int i : p.getUsedThreadIDs()){
+        for (int i : p.getUsedThreadIDs()) {
             highlightInstruction(i, 0, p.getInstructionsForThread(i).get(0).getKeyword());
         }
 

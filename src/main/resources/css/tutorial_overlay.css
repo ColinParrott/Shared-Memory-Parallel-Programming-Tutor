@@ -1,3 +1,25 @@
 #lblDescribeCode1{
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+}
+
+#lblDescribeCode2{
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+}
+
+#lblDescribeCode3{
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+}
+
+#lblDescribeCode4{
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+}
+
+#lblDescribeCode5{
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+}
+
+
+
+#pressSpace{
     -fx-background-color: rgba(0, 0, 0, 0.4);
 }

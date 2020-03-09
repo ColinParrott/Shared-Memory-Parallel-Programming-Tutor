@@ -41,7 +41,7 @@ public class CompilerGUIController implements Initializable
 
 
     @FXML
-    private JFXTextField compilerProgramTitle;
+    public JFXTextField compilerProgramTitle;
 
     private Stage programAdderWindow;
 

@@ -25,8 +25,8 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                <children>
-                      <JFXButton fx:id="btnBackward" buttonType="RAISED" mnemonicParsing="false" prefHeight="40.0" prefWidth="235.0" text="Step Backward" GridPane.halignment="CENTER" />
-                      <JFXButton fx:id="btnForward" buttonType="RAISED" mnemonicParsing="false" prefHeight="40.0" prefWidth="235.0" text="Step Forward" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+                      <JFXButton fx:id="btnBackward" buttonType="RAISED" focusTraversable="false" mnemonicParsing="false" prefHeight="40.0" prefWidth="235.0" text="Step Backward" GridPane.halignment="CENTER" />
+                      <JFXButton fx:id="btnForward" buttonType="RAISED" focusTraversable="false" mnemonicParsing="false" prefHeight="40.0" prefWidth="235.0" text="Step Forward" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
                </children>
                 </GridPane>
             </children>
@@ -117,13 +117,13 @@
         </TableView>
         <HBox fx:id="modeBox" alignment="CENTER" layoutX="429.0" layoutY="618.0" prefHeight="58.0" prefWidth="305.0" visible="false" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="300.0">
             <children>
-                <Label text="Guess Outcome" textFill="WHITE">
+                <Label fx:id="lblToggleGuessOutcome" text="Guess Outcome" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
                 <JFXToggleButton fx:id="modeToggle" mnemonicParsing="false" text=" " toggleColor="WHITE" toggleLineColor="#bfbdbd" unToggleColor="WHITE" unToggleLineColor="#bfbdbd" />
-                <Label text="Guess Sequence" textFill="WHITE">
+                <Label fx:id="lblToggleGuessSequence" text="Guess Sequence" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
@@ -153,10 +153,10 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <JFXButton fx:id="btnLoad" buttonType="RAISED" layoutX="791.0" layoutY="620.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Load Program" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="334.0" />
-        <JFXButton fx:id="btnAddProgramWindow" buttonType="RAISED" layoutX="801.0" layoutY="381.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Add Program" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="150.0" />
-        <JFXButton fx:id="btnQuestion" buttonType="RAISED" layoutX="974.0" layoutY="610.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Start Challenge" AnchorPane.bottomAnchor="36.0" AnchorPane.rightAnchor="240.0" />
-        <JFXButton fx:id="btnReset" buttonType="RAISED" layoutX="213.0" layoutY="666.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" text="Reset" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="213.0" />
+        <JFXButton fx:id="btnLoad" buttonType="RAISED" focusTraversable="false" layoutX="791.0" layoutY="620.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Load Program" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="334.0" />
+        <JFXButton fx:id="btnAddProgramWindow" buttonType="RAISED" focusTraversable="false" layoutX="801.0" layoutY="381.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Add Program" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="150.0" />
+        <JFXButton fx:id="btnQuestion" buttonType="RAISED" focusTraversable="false" layoutX="974.0" layoutY="610.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="155.0" text="Start Challenge" AnchorPane.bottomAnchor="36.0" AnchorPane.rightAnchor="240.0" />
+        <JFXButton fx:id="btnReset" buttonType="RAISED" focusTraversable="false" layoutX="213.0" layoutY="666.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" text="Reset" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="213.0" />
         <HBox id="seqBox" fx:id="historyBox" alignment="TOP_CENTER" layoutX="664.0" layoutY="459.0" prefHeight="145.0" prefWidth="544.0" AnchorPane.bottomAnchor="115.0" AnchorPane.rightAnchor="72.0">
             <children>
                 <VBox prefHeight="147.0" prefWidth="524.0" spacing="10.0">
@@ -166,7 +166,7 @@
                          <Font name="Open Sans Regular" size="33.0" />
                      </font>
                   </Label>
-                   <ScrollPane fx:id="historyScrollPane" hbarPolicy="ALWAYS" prefHeight="99.0" prefWidth="524.0" vbarPolicy="NEVER">
+                   <ScrollPane fx:id="historyScrollPane" focusTraversable="false" hbarPolicy="ALWAYS" prefHeight="99.0" prefWidth="524.0" vbarPolicy="NEVER">
                        <content>
                            <AnchorPane maxWidth="2000.0" prefHeight="45.0" prefWidth="1500.0">
                                <children>
